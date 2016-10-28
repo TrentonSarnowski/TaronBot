@@ -1,4 +1,4 @@
-package com.company.TaronBot.EndCalc;
+package com.company.TaronBot.Harness.EndCalc;
 
 import java.util.List;
 

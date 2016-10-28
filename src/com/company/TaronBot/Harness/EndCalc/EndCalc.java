@@ -1,9 +1,5 @@
-package com.company.TaronBot.EndCalc;
+package com.company.TaronBot.Harness.EndCalc;
 
-import com.company.Main;
-import com.company.TaronBot.MoveCalc.*;
-
-import java.util.LinkedList;
 import java.util.List;
 
 /**

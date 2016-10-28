@@ -1,4 +1,5 @@
-package com.company;
+package com.company.TaronBot.Game;
+
 
 import java.util.List;
 
@@ -6,6 +7,7 @@ import java.util.List;
  * Created by sarnowskit on 10/21/2016.
  */
 public class Board {
+    /**
     private BoardPosition[][] board;
     int boardSize;
     public Board(int x){
@@ -39,6 +41,7 @@ public class Board {
      * @param move
      * @return
      */
+    /**
     public boolean move(int x, int y, boolean sideways, boolean up, List<Integer> move){
         int sum=0;
         for(int i:move){
@@ -46,4 +49,5 @@ public class Board {
         }
         return sum <= board[x][y].depth();
     }
+    **/
 }
