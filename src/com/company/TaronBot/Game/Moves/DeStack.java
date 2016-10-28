@@ -1,7 +1,8 @@
-package com.company.TaronBot.Moves;
+package com.company.TaronBot.Game.Moves;
+
+import com.company.TaronBot.Game.Move;
 
 import java.util.List;
-
 /**
  * Created by sarnowskit on 10/28/2016.
  */
@@ -20,6 +21,7 @@ public class DeStack implements Move {
         this.pickUpC=pickup;
         this.up=verticalAxis;
         this.positive =positiveDirection;
+
     }
 
     @Override

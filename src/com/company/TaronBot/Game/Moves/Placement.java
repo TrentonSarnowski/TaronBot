@@ -1,4 +1,6 @@
-package com.company.TaronBot.Moves;
+package com.company.TaronBot.Game.Moves;
+
+import com.company.TaronBot.Game.Move;
 
 import java.util.List;
 
@@ -6,9 +8,9 @@ import java.util.List;
  * Created by sarnowskit on 10/28/2016.
  */
 public class Placement implements Move {
-    int x;
-    int y;
-    int type;
+    protected int x;
+    protected int y;
+    protected int type;
     public Placement(int x, int y, int type){
         this.x=x;
         this.y=y;
