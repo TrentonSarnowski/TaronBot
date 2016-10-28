@@ -1,6 +1,10 @@
 package com.company.TaronBot.EndCalc;
 
 import com.company.Main;
+import com.company.TaronBot.MoveCalc.*;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by sarnowskit on 10/21/2016.
@@ -245,5 +249,8 @@ public class EndCalc {
         }
         return false;
     }
-
+    private long[] things;
+    public List<Road> getRoads(boolean road) {
+        return null;
+    }
 }

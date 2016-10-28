@@ -16,4 +16,7 @@ public class cord {
         real=reals;
         partOf= new LinkedList<>();
     }
+    public void addRoad(Road road){
+        partOf.add(road);
+    }
 }
