@@ -1,4 +1,4 @@
-package com.company.TaronBot;
+package com.company.TaronBot.Harness;
 
 /**
  * Created by sarnowskit on 10/21/2016.
