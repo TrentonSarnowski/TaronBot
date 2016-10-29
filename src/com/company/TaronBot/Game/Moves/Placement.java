@@ -11,18 +11,26 @@ public class Placement implements Move {
     protected int x;
     protected int y;
     protected int type;
+    public Placement(String move){
+
+    }
     public Placement(int x, int y, int type){
         this.x=x;
         this.y=y;
         this.type=type;
     }
     @Override
-    public List<Integer>[][] performMove(List<Integer>[][] map) {
+    public List<Integer>[][] performMove(List<Integer>[][] map, boolean control) {
         if (map[x][y].isEmpty()==true) {
-            map[x][y].add(type);
-
+            if(control){
+                map[x][y].add(type);
+                return map;
+            }else{
+                map[x][y].add(type*-1);
+                return map;
+            }
         }
-        return map;
+        return null;
     }
     public String toString(){
         String ret="";

@@ -8,6 +8,5 @@ import java.util.List;
 public interface Move {
 
     String toString();
-
-    List<Integer>[][] performMove(List<Integer>[][] map);
+    List<Integer>[][] performMove(List<Integer>[][] map, boolean control);
 }
