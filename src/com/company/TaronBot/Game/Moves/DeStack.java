@@ -14,6 +14,9 @@ public class DeStack implements Move {
     boolean positive;// positive goes up, else goes down
     int x;//inside of bounds
     int y;//inside of bounds
+    public DeStack(String move){
+
+    }
     public DeStack(int x, int y, List<Integer> left, int pickup, boolean verticalAxis, boolean positiveDirection){
         this.x=x;
         this.y=y;
@@ -78,23 +81,23 @@ public class DeStack implements Move {
 
     @Override
     //Map should be a square array
-    public List<Integer>[][] performMove(List<Integer>[][] map) {
+    public List<Integer>[][] performMove(List<Integer>[][] map, boolean control) {
         List<Integer> pickUp=map[x][y];
         int sum=pickUp.size()-pickUpC;
         if(up&& positive) {
             if(leftBehind.size()+y>map.length){
-                return map;
+                return null;
                 //edge check
             }
             //wall/cap check
             for (int i = 0; i < leftBehind.size(); i++) {
                 if(Math.abs(map[x][y+i].get(map[x][y+i].size()))==3){
-                    return map;
+                    return null;
                 }else if(Math.abs(map[x][y+i].get(map[x][y+i].size()))==2){
-                    if(pickUp.get(pickUp.size())==3 && leftBehind.get(leftBehind.size())==1){
-
+                    if(Math.abs(pickUp.get(pickUp.size()))==3 && leftBehind.get(leftBehind.size())==1){
+                        map[x][y+i].set(map[x][y+i].size(),map[x][y+i].get(map[x][y+i].size())/2);
                     }else{
-                        return map;
+                        return null;
                     }
                 }else{
 
