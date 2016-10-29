@@ -60,6 +60,7 @@ public class NetworkLayer {
 	private double corolate(double[][][][] weights, double[][][][] input) {
 		
 		double sum = 0;
+		
 		for(int i = 0; i < previousLayerDimensions[0]; i++){
 			for(int j = 0; j < previousLayerDimensions[1]; j++){
 				for(int k = 0; k < previousLayerDimensions[2]; k++){
