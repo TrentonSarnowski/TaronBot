@@ -1,6 +1,7 @@
 package com.company.TaronBot.network;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class NetworkLayer {
 	int[] previousLayerDimensions, outputLayerDimensions;
@@ -74,5 +75,66 @@ public class NetworkLayer {
 		
 		
 		return sum;
+	}
+
+	
+	
+	//randomizes fully the weights of the layer
+	public void randomize(Random rand) {
+		// TODO Auto-generated method stub
+		
+		for(int i = 0; i < outputLayerDimensions[0]; i++){
+			for(int j = 0; j < outputLayerDimensions[1]; j++){
+				for(int k = 0; k < outputLayerDimensions[2]; k++){
+					for(int l = 0; l < outputLayerDimensions[3]; l++){
+						
+						for(int m = 0;  m< previousLayerDimensions[0]; m++){
+							for(int n = 0;  n< previousLayerDimensions[1]; n++){
+								for(int o = 0;  o< previousLayerDimensions[2]; o++){
+									for(int p = 0;  p< previousLayerDimensions[3]; p++){
+										
+										mutators.get(i).get(j).get(k).get(l)[m][n][o][p] = rand.nextDouble();
+									}
+								}
+							}
+						}
+						
+					}
+				}
+			}
+		}
+		
+	}
+
+
+	public void mutate(Random rand, double changePrecentage) {
+		// TODO Auto-generated method stub
+		
+		
+		for(int i = 0; i < outputLayerDimensions[0]; i++){
+			for(int j = 0; j < outputLayerDimensions[1]; j++){
+				for(int k = 0; k < outputLayerDimensions[2]; k++){
+					for(int l = 0; l < outputLayerDimensions[3]; l++){
+						
+						for(int m = 0;  m< previousLayerDimensions[0]; m++){
+							for(int n = 0;  n< previousLayerDimensions[1]; n++){
+								for(int o = 0;  o< previousLayerDimensions[2]; o++){
+									for(int p = 0;  p< previousLayerDimensions[3]; p++){
+										
+										
+										if(rand.nextDouble() <= changePrecentage){
+											mutators.get(i).get(j).get(k).get(l)[m][n][o][p] = rand.nextDouble();
+										}
+									}
+								}
+							}
+						}
+						
+					}
+				}
+			}
+		}
+		
+		
 	}
 }

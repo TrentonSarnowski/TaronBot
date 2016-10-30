@@ -2,6 +2,7 @@ package com.company.TaronBot.network;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.company.TaronBot.Game.Move;
 
@@ -12,9 +13,12 @@ public class Network {
 	int layers;
 	
 	ArrayList<NetworkLayer> network = new ArrayList<NetworkLayer>();
-	nonLinearFunction function = ((double d) -> Math.tanh(d));
+	nonLinearFunction function = ((double d) -> (6/(1+(Math.pow(Math.E,(-.5*d)))-2.99)));
+	//function is slightly modified version of tanh
+	//-3 to 3, and the input range is ~-10 to ~10
 	
 	
+	//this constructor creates a fully blank network of the given size. 
 	public Network(int height, int width, int depth, int layers){
 		int[] inputDimensions = {width,depth,height,1};
 		int[] middleDimensions = {width,height,1,1};
@@ -36,14 +40,36 @@ public class Network {
 	}
 	
 	
-	public List<Move> calculateMoves(int[][][] board){
+	//fully radomizes the entire network.
+	public void randomize(Random rand){
+		for(NetworkLayer layer : network){
+			layer.randomize(rand);
+			
+		}
+	}
+	
+	/**
+	 * 
+	 * @param rand input random generator
+	 * @param changePrecentage the percentage of nodes that should be changed. (0.0-1.0) expected
+	 */
+	public void mutate (Random rand, double changePrecentage){
+		
+		for(NetworkLayer layer : network){
+			layer.mutate(rand, changePrecentage);
+			
+		}
+	}
+	
+	
+	public List<Move> calculate(int[][][] board){
 		
 		//TODO, convert the board to a 4 d array. 
 		
 		double[][][][] output;
 		
 		//inital calculation
-		output = network.get(0).calculate(convertArray(board)); //TODO test if tgus needs to be a -2 or -1
+		output = network.get(0).calculate(convertArray(board)); //TODO test if this needs to be a -2 or -1
 		for(int i = 1; i < network.size()-1; i++){
 			output = network.get(i).calculate(output); //do all other layers but the last 2
 		}
