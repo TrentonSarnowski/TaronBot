@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.company.TaronBot.Game.Move;
+import com.company.TaronBot.Game.Moves.Placement;
 
 public class Network {
 	int width;
@@ -63,9 +64,7 @@ public class Network {
 	
 	
 	public List<Move> calculate(int[][][] board){
-		
-		//TODO, convert the board to a 4 d array. 
-		
+				
 		double[][][][] output;
 		
 		//inital calculation
@@ -105,9 +104,41 @@ public class Network {
 	private List<Move> sortedMoves(double[][][][] placements, double[][][][] moveOutput) {		
 		List<Move> moves = new ArrayList<Move>(placements[0].length * placements.length*(3+moveOutput.length));
 		
-		//TODO add the creation method. 
+		for(int i = 0; i < placements.length; i++){
+			for(int j = 0; j < placements[0].length; j++){
+				moves.add(new Placement(i,j,1,placements[0][i][j][0]));
+			}
+		}
+		
+		for(int i = 0; i < placements.length; i++){
+			for(int j = 0; j < placements[0].length; j++){
+				moves.add(new Placement(i,j,2,placements[1][i][j][0]));
+			}
+		}
+		
+		for(int i = 0; i < placements.length; i++){
+			for(int j = 0; j < placements[0].length; j++){
+				moves.add(new Placement(i,j,3,placements[2][i][j][0]));
+			}
+		}
+		
+		for(int i = 0; i < placements.length; i++){
+			for(int j = 0; j < placements[0].length; j++){
+				moves.add(createPlacement(i,j,0, moveOutput));// todo, figure out how the move output is created. set it up so that I can pass an array 3 times. 
+				moves.add(createPlacement(i,j,1, moveOutput));
+				moves.add(createPlacement(i,j,2, moveOutput));
+			}
+		}
 		
 		
+		
+		
+		return null;
+	}
+
+
+	private Move createPlacement(int XInput, int YInput, int NumOfMove, double[][][][] moveOutput) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 	

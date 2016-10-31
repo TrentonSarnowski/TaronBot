@@ -93,7 +93,7 @@ public class NetworkLayer {
 								for(int o = 0;  o< previousLayerDimensions[2]; o++){
 									for(int p = 0;  p< previousLayerDimensions[3]; p++){
 										
-										mutators.get(i).get(j).get(k).get(l)[m][n][o][p] = rand.nextDouble();
+										mutators.get(i).get(j).get(k).get(l)[m][n][o][p] = rand.nextDouble()*2-1;
 									}
 								}
 							}
@@ -123,7 +123,7 @@ public class NetworkLayer {
 										
 										
 										if(rand.nextDouble() <= changePrecentage){
-											mutators.get(i).get(j).get(k).get(l)[m][n][o][p] = rand.nextDouble();
+											mutators.get(i).get(j).get(k).get(l)[m][n][o][p] = rand.nextDouble()*2-1;
 										}
 									}
 								}
