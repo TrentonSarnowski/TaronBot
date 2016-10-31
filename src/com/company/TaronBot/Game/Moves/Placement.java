@@ -11,10 +11,12 @@ public class Placement implements Move {
     protected int x;
     protected int y;
     protected int type;
+    protected double weight;
     public Placement(String move){
 
     }
-    public Placement(int x, int y, int type){
+    public Placement(int x, int y, int type, double weight){
+        this.weight=weight;
         this.x=x;
         this.y=y;
         this.type=type;
@@ -32,6 +34,12 @@ public class Placement implements Move {
         }
         return null;
     }
+
+    @Override
+    public boolean checkFeasible(List<Integer>[][] map) {
+        return map[x][y].isEmpty();
+    }
+
     public String toString(){
         String ret="";
         switch (type){
@@ -78,5 +86,10 @@ public class Placement implements Move {
         ret+=""+(y+1);
 
         return ret;
+    }
+
+    @Override
+    public double getWeight() {
+        return weight;
     }
 }
