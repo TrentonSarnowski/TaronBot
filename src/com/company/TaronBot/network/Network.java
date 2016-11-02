@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.company.TaronBot.Game.Move;
+import com.company.TaronBot.Game.Moves.DeStack;
 import com.company.TaronBot.Game.Moves.Placement;
 
 public class Network {
@@ -23,8 +24,8 @@ public class Network {
 	public Network(int height, int width, int depth, int layers){
 		int[] inputDimensions = {width,depth,height,1};
 		int[] middleDimensions = {width,height,1,1};
-		int[] outputDimensions = {width,depth,4,1};
-		int[] moveOutputDimensions = {1,1,width+3,3}; //make the move output dimenstions the last 2d array
+		int[] outputDimensions = {4,width,depth,1};
+		int[] moveOutputDimensions = {1,1,3,width+3}; //make the move output dimenstions the last 2d array
 		
 				
 		network.add(new NetworkLayer(inputDimensions, middleDimensions, function));
@@ -127,9 +128,9 @@ public class Network {
 		
 		for(int i = 0; i < placements.length; i++){
 			for(int j = 0; j < placements[0].length; j++){
-				moves.add(createPlacement(i,j,0, moveOutput[0][0]));// todo, figure out how the move output is created. set it up so that I can pass an array 3 times. 
-				moves.add(createPlacement(i,j,1, moveOutput[0][0]));
-				moves.add(createPlacement(i,j,2, moveOutput[0][0]));
+				moves.add(createPlacement(i,j,0, moveOutput[0][0][0], placements[3][i][j][0]));// todo, figure out how the move output is created. set it up so that I can pass an array 3 times. 
+				moves.add(createPlacement(i,j,1, moveOutput[0][0][1], placements[3][i][j][0]));
+				moves.add(createPlacement(i,j,2, moveOutput[0][0][2], placements[3][i][j][0]));
 			}
 		}
 		
@@ -140,14 +141,16 @@ public class Network {
 	}
 
 
-	
-	private Move createPlacement(int XInput, int YInput, int NumOfMove, double[][] moveOutput) {
+	//[verticle][direction][pickedUp][][][][][]
+	private Move createPlacement(int XInput, int YInput, int NumOfMove, double[] moveOutput, double weight) {
 		Move movement = null;
+		Integer[] left = new Integer[width];
+		int pickup = (int)(width * moveOutput[3] / 3.0);
 		
 		
+		//TODO Make PLACEMENT ARRAY.
 		
-		
-		
+		movement = DeStack.DeStack(XInput, YInput, left, pickup, (moveOutput[0] > 0?true:false), (moveOutput[1] > 0?true:false), weight );
 		
 		return movement;
 	}

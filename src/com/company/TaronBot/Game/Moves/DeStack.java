@@ -24,7 +24,7 @@ public class DeStack implements Move {
     public DeStack(String move){
 
     }
-    public DeStack DeStack(int x, int y, Integer[] left, int pickup, boolean verticalAxis, boolean positiveDirection,double weight) {
+    public static DeStack DeStack(int x, int y, Integer[] left, int pickup, boolean verticalAxis, boolean positiveDirection,double weight) {
         ArrayList<Integer> leftbehind=new ArrayList<>();
         for (Integer i:left) {
             leftbehind.add(i);
