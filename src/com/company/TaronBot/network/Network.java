@@ -24,7 +24,7 @@ public class Network {
 		int[] inputDimensions = {width,depth,height,1};
 		int[] middleDimensions = {width,height,1,1};
 		int[] outputDimensions = {width,depth,4,1};
-		int[] moveOutputDimensions = {width+3,3,1,1};
+		int[] moveOutputDimensions = {1,1,width+3,3}; //make the move output dimenstions the last 2d array
 		
 				
 		network.add(new NetworkLayer(inputDimensions, middleDimensions, function));
@@ -35,6 +35,7 @@ public class Network {
 		}
 		
 		network.add(new NetworkLayer(middleDimensions, outputDimensions , function));
+		network.add(new NetworkLayer(middleDimensions, middleDimensions, function));
 		network.add(new NetworkLayer(middleDimensions, moveOutputDimensions , function));
 		
 		
@@ -69,14 +70,16 @@ public class Network {
 		
 		//inital calculation
 		output = network.get(0).calculate(convertArray(board)); //TODO test if this needs to be a -2 or -1
-		for(int i = 1; i < network.size()-1; i++){
+		for(int i = 1; i < network.size()-2; i++){
 			output = network.get(i).calculate(output); //do all other layers but the last 2
 		}
 		
 		
 		//output to 
-		double[][][][] placements = network.get(network.size()-1).calculate(output);
-		double[][][][] moveOutput = network.get(network.size()).calculate(output);
+		double[][][][] placements = network.get(network.size()-2).calculate(output);
+		
+		double[][][][] moveOutput = network.get(network.size()-1).calculate(output);
+		moveOutput = network.get(network.size()).calculate(moveOutput);
 		
 		return sortedMoves(placements, moveOutput);
 				
@@ -124,9 +127,9 @@ public class Network {
 		
 		for(int i = 0; i < placements.length; i++){
 			for(int j = 0; j < placements[0].length; j++){
-				moves.add(createPlacement(i,j,0, moveOutput));// todo, figure out how the move output is created. set it up so that I can pass an array 3 times. 
-				moves.add(createPlacement(i,j,1, moveOutput));
-				moves.add(createPlacement(i,j,2, moveOutput));
+				moves.add(createPlacement(i,j,0, moveOutput[0][0]));// todo, figure out how the move output is created. set it up so that I can pass an array 3 times. 
+				moves.add(createPlacement(i,j,1, moveOutput[0][0]));
+				moves.add(createPlacement(i,j,2, moveOutput[0][0]));
 			}
 		}
 		
@@ -137,9 +140,16 @@ public class Network {
 	}
 
 
-	private Move createPlacement(int XInput, int YInput, int NumOfMove, double[][][][] moveOutput) {
-		// TODO Auto-generated method stub
-		return null;
+	
+	private Move createPlacement(int XInput, int YInput, int NumOfMove, double[][] moveOutput) {
+		Move movement = null;
+		
+		
+		
+		
+		
+		
+		return movement;
 	}
 	
 	
