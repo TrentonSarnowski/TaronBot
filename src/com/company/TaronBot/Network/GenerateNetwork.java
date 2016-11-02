@@ -1,4 +1,4 @@
-package com.company.TaronBot.network;
+package com.company.TaronBot.Network;
 
 public class GenerateNetwork {
 
