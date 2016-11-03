@@ -2,6 +2,7 @@ package com.company.TaronBot.Game;
 
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.company.TaronBot.Game.Moves.*;
@@ -10,7 +11,7 @@ import com.company.TaronBot.Game.Moves.*;
  * Created by sarnowskit on 10/21/2016.
  */
 public class Board {
-    List<Integer> map[][];
+    private List<Integer> map[][];
 
     public Board(int sideLength, List<Move> boardState, boolean start){
         map=new List[sideLength][sideLength];
@@ -20,11 +21,21 @@ public class Board {
             }
 
         }
+        for (int i = 0; i <sideLength ; i++) {
+            for (int j = 0; j <sideLength ; j++) {
+                map[i][j]=new ArrayList<>();
+            }
+        }
         boolean ready=start;
         for (Move e:boardState) {
             tryMove(e, ready);
         }
     }
+
+    public List<Integer>[][] getMap() {
+        return map;
+    }
+
     public boolean tryMove(Move e, boolean positive){
         List<Integer> check[][]=e.performMove(map, positive);
         if(null!=check){
@@ -521,10 +532,8 @@ public class Board {
         for (int i = 0; i <map.length ; i++) {
             for (int j = 0; j <map.length ; j++) {
                 for (int k = 0; k < map.length+1; k++) {
-                    if(map[i][j].size()-(map.length+2)+k>0){
-                        AIMap[i][j][map.length+1-k]=map[i][j].get(map[i][j].size()-(map.length+2)+k);
-                    }else{
-                        AIMap[i][j][map.length+1-k]=0;
+                    if(map[i][j].size()-(map.length+2)-k>0){
+                        AIMap[i][j][map.length+1-k]=map[i][j].get(map[i][j].size()-(map.length+2)-k);
                     }
 
 
