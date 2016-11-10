@@ -1,4 +1,4 @@
-package com.company.TaronBot.network;
+package com.company.TaronBot.Network;
 
 import java.util.ArrayList;
 import java.util.Random;
