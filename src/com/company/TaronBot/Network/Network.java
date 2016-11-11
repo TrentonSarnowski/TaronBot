@@ -23,7 +23,7 @@ public class Network {
 	//this constructor creates a fully blank network of the given size. 
 	public Network(int height, int width, int depth, int layers){
 		int[] inputDimensions = {width,depth,height,1};
-		int[] middleDimensions = {width,height,1,1};
+		int[] middleDimensions = {width,height,1,1};//depth may need to be adjusted. 
 		int[] outputDimensions = {4,width,depth,1};
 		int[] moveOutputDimensions = {1,1,3,width+3}; //make the move output dimenstions the last 2d array
 		
