@@ -12,8 +12,8 @@ public class Tools {
 	private static final String ANSI_CYAN = "\u001B[36m";
 	private static final String ANSI_WHITE = "\u001B[37m";
 	
-	public static void Print(String string, String escape){
-		System.out.print(escape + string + ANSI_RESET);
+	public static void Print(String string){
+		System.out.print(string + ANSI_RESET);
 	}
 	
 	public static void PrintColor(String string, String color){
@@ -22,25 +22,25 @@ public class Tools {
 			System.out.print(ANSI_BLACK + string + ANSI_RESET);
 			break;
 		case "red":
-			System.out.print(ANSI_BLACK + string + ANSI_RESET);
+			System.out.print(ANSI_RED + string + ANSI_RESET);
 			break;
 		case "green":
-			System.out.print(ANSI_BLACK + string + ANSI_RESET);
+			System.out.print(ANSI_GREEN + string + ANSI_RESET);
 			break;
 		case "yellow":
-			System.out.print(ANSI_BLACK + string + ANSI_RESET);
+			System.out.print(ANSI_YELLOW + string + ANSI_RESET);
 			break;
 		case "blue":
-			System.out.print(ANSI_BLACK + string + ANSI_RESET);
+			System.out.print(ANSI_BLUE + string + ANSI_RESET);
 			break;
 		case "purple":
-			System.out.print(ANSI_BLACK + string + ANSI_RESET);
+			System.out.print(ANSI_PURPLE + string + ANSI_RESET);
 			break;
 		case "cyan":
-			System.out.print(ANSI_BLACK + string + ANSI_RESET);
+			System.out.print(ANSI_CYAN + string + ANSI_RESET);
 			break;
 		case "white":
-			System.out.print(ANSI_BLACK + string + ANSI_RESET);
+			System.out.print(ANSI_WHITE + string + ANSI_RESET);
 			break;
 		default:
 			System.out.print(string + ANSI_RESET);

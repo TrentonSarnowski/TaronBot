@@ -15,14 +15,15 @@ public class Network {
 	int layers;
 	
 	ArrayList<NetworkLayer> network = new ArrayList<NetworkLayer>();
-	nonLinearFunction function = ((double d) -> (6/(1+(Math.pow(Math.E,(-.5*d)))-2.99)));
+	nonLinearFunction function = ((double d) -> ((6/(1+(Math.pow(Math.E,(-.5*d)))))-2.99));
+	
 	//function is slightly modified version of tanh
 	//-3 to 3, and the input range is ~-10 to ~10
 	
 	
 	//this constructor creates a fully blank network of the given size. 
 	public Network(int height, int width, int depth, int layers){
-		int[] inputDimensions = {width,depth,height,1};
+		int[] inputDimensions = {depth,width,height,1};
 		int[] middleDimensions = {width,height,1,1};//depth may need to be adjusted. 
 		int[] outputDimensions = {4,width,depth,1};
 		int[] moveOutputDimensions = {1,1,3,width+3}; //make the move output dimenstions the last 2d array
@@ -69,18 +70,17 @@ public class Network {
 				
 		double[][][][] output;
 		
-		//inital calculation
-		output = network.get(0).calculate(convertArray(board)); //TODO test if this needs to be a -2 or -1
-		for(int i = 1; i < network.size()-2; i++){
+		//inital calculation. 
+		output = network.get(0).calculate(convertArray(board));
+		for(int i = 1; i < network.size()-3; i++){
 			output = network.get(i).calculate(output); //do all other layers but the last 2
 		}
 		
 		
-		//output to 
-		double[][][][] placements = network.get(network.size()-2).calculate(output);
+		double[][][][] placements = network.get(network.size()-3).calculate(output);
 		
-		double[][][][] moveOutput = network.get(network.size()-1).calculate(output);
-		moveOutput = network.get(network.size()).calculate(moveOutput);
+		double[][][][] moveOutput = network.get(network.size()-2).calculate(output);
+		moveOutput = network.get(network.size()-1).calculate(moveOutput);
 		
 		return sortedMoves(placements, moveOutput);
 				
@@ -100,7 +100,7 @@ public class Network {
 			}
 		}
 		
-		return null;
+		return output;
 	}
 
 	//takes the output from the network and converts it into a sorted series of moves
@@ -137,7 +137,7 @@ public class Network {
 		
 		
 		
-		return null;
+		return moves;
 	}
 
 

@@ -70,7 +70,7 @@ public class NetworkLayer {
 			}
 		}
 
-		return null;
+		return output;
 	}
 
 	/**
