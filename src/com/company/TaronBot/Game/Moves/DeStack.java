@@ -170,7 +170,7 @@ public class DeStack implements Move {
              leftBehind) {
             ret+=i;
         }
-        return null;
+        return ret;
     }
 
     @Override

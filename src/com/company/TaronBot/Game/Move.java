@@ -11,4 +11,5 @@ public interface Move {
     List<Integer>[][] performMove(List<Integer>[][] map, boolean control);
     boolean checkFeasible(List<Integer>[][] map);
     double getWeight();
+    String toPlayTakString();
 }

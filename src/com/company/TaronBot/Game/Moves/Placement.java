@@ -89,7 +89,9 @@ public class Placement implements Move {
 
         return ret;
     }
-
+    public String toPlayTakString(){
+        return toString();
+    }
     @Override
     public double getWeight() {
         return weight;

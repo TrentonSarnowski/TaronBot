@@ -61,8 +61,83 @@ public class Board {
             }
         }
 
+
         return null;
     }
+    private Move getMoves(boolean[][] needFill, boolean[][] topLevel) {
+        for (int i=0;i<map.length;i++) {
+            for (int j=0;i<map.length;j++) {
+                int pickup=0;
+                if(topLevel[i][j]) {
+                    if (needFill[i][j]) {//gets the depth to pick up
+                        for (int k = 0; k < map[i][j].size(); k++) {
+                            if (map[i][j].get(k) > 0) {
+                                pickup = k;
+                            }
+                        }
+
+                    }
+                }
+
+            }
+        }
+        return null;
+    }
+    private Move getDirectionalMove(int x, int y,boolean[][] needFill,boolean vertical, boolean positive, int pickup){
+        int xActive;
+        int dropcount;
+        int dropSum=0;
+        int yActive;
+        int sign;
+        int distance=1;
+        if(vertical){
+            xActive=0;
+            yActive=1;
+        }else{
+            xActive=1;
+            yActive=0;
+        }
+        if(positive){
+            sign=1;
+        }else{
+            sign=-1;
+        }
+        List<Integer> leftOnStack=new LinkedList<Integer>();
+        for (int i = 1; i <=pickup ; i++) {
+            leftOnStack.add(map[x][y].get(map[x][y].size()-i));
+        }
+        ArrayList<Integer> leftBehind=new ArrayList<>();
+
+
+            for (int i = 1; i < ((1+sign)*2)*(map.length-(x*xActive+y*yActive)*(1+sign)/2)&&!leftOnStack.isEmpty() ; i++) {
+                if(needFill[x+i*xActive*(1+sign)/2][y+i*yActive*(1+sign)/2]){
+                    int topLevel=map[x+i*xActive*(1+sign)/2][y+i*yActive*(1+sign)/2].get(map[x+i*xActive*(1+sign)/2][y+i*yActive*(1+sign)/2].size()-1);
+                    if(Math.abs(topLevel)==2){
+                        //todo check if top of drop=3 {
+                        //todo check for need control previous and relevant other conditions}
+                        //else{
+                        //todo drop all at previous break out conditions met}
+                    }if(Math.abs(topLevel)==3){
+                        //todo drop all at previous break out condition met
+
+                    }else{
+                        //todo leave behind enough to control
+                    }
+                }else{
+                    int topLevel=map[x+i*xActive*(1+sign)/2][y+i*yActive*(1+sign)/2].get(map[x+i*xActive*(1+sign)/2][y+i*yActive*(1+sign)/2].size()-1);
+                    if(Math.abs(topLevel)==2){
+                        //todo drop at all on previous break out conditions met
+                    }if(Math.abs(topLevel)==3) {
+                        //todo drop all at previous break out condition met
+                    }else{
+                        leftBehind.add(1);
+                    }
+                }
+
+        }
+        return new DeStack(x,y,leftBehind,pickup,vertical,positive,0);
+    }
+
     private Move getMove(boolean[][] needFill, boolean[][] topLevel, int row, boolean vertical){
         if(vertical){
             int sum=0;

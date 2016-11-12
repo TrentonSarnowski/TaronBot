@@ -46,7 +46,7 @@ public class BoardTests extends TestCase{
         }
         assertTrue(board.checkForVictory()!=null);
     }
-    public void testMovementVictory(){
+    public void testPlacementFalseVictory(){
         board =new Board(5,new LinkedList<>(),true);
         for (int i = 1; i <5 ; i++) {
             board.getMap()[0][i].add(1);
@@ -54,6 +54,19 @@ public class BoardTests extends TestCase{
         }
         board.getMap()[0][0].add(-1);
         assertTrue(board.checkForVictory()==null);
+
+    }
+    public void testMovementVictory(){
+        board =new Board(5,new LinkedList<>(),true);
+        for (int i = 1; i <5 ; i++) {
+            board.getMap()[i][0].add(1);
+
+        }
+        board.getMap()[0][0].add(-1);
+        board.getMap()[0][1].add(1);
+        board.getMap()[1][1].add(-1);
+
+        assertTrue(board.checkForVictory()!=null);
 
     }
 
