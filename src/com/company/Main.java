@@ -53,6 +53,7 @@ public class Main {
     	ArrayList<TakNetwork> takNetworks = new ArrayList<TakNetwork>(20);
     	long startTime = System.nanoTime();
     	startData = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
+    	List<Move> moves = new ArrayList<Move>(1);
     	for(int i = 0; i < 20; i++){
     		PrintColor("Network " + i + "\n","green");
     		
@@ -64,7 +65,8 @@ public class Main {
     		testNetwork.randomize(random);
     		genTime = System.nanoTime();
     		genData = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
-    		List<Move> moves = testNetwork.calculate(blank);
+    		moves.clear();
+    		moves = testNetwork.calculate(blank);
     		endTime = System.nanoTime();
     		endData = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
     		
@@ -82,6 +84,12 @@ public class Main {
     	PrintColor(("Total Time " + (endTime-startTime)/1000000.0 + "ms\n") ,"red");
 		PrintColor(("Calc data " + (endData-startData)/1024 + "Kb\n") ,"red");
     	
+		for(Move move: moves){
+			
+			PrintColor("   " + move.toString() + "\n", "blue");
+		}
+		
+		
     }
     
     private static int[][][] createTestBlank(){
