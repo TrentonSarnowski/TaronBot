@@ -1,6 +1,8 @@
 package com.company.TaronBot.Network;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -8,7 +10,7 @@ import com.company.TaronBot.Game.Move;
 import com.company.TaronBot.Game.Moves.DeStack;
 import com.company.TaronBot.Game.Moves.Placement;
 
-public class Network {
+public class TakNetwork {
 	int width;
 	int height;
 	int depth;
@@ -22,7 +24,7 @@ public class Network {
 	
 	
 	//this constructor creates a fully blank network of the given size. 
-	public Network(int height, int width, int depth, int layers){
+	public TakNetwork(int height, int width, int depth, int layers){
 		int[] inputDimensions = {depth,width,height,1};
 		int[] middleDimensions = {width,height,1,1};//depth may need to be adjusted. 
 		int[] outputDimensions = {4,width,depth,1};
@@ -134,8 +136,13 @@ public class Network {
 			}
 		}
 		
-		
-		
+		Collections.sort(moves, 
+						new Comparator<Move>() {
+        					public int compare(Move m1, Move m2) {
+        						return (m1.getWeight() < m2.getWeight() ? -1 : (m1.getWeight() == m2.getWeight() ? 0 : 1));
+        					}
+    					}
+						);
 		
 		return moves;
 	}
@@ -143,13 +150,46 @@ public class Network {
 
 	//[verticle][direction][pickedUp][][][][][]
 	private Move createPlacement(int XInput, int YInput, int NumOfMove, double[] moveOutput, double weight) {
+		//x location input
+		//y location input
+		//what move it is
+		//the output form the move function
+		//the weight of the 
 		Move movement = null;
 		Integer[] left = new Integer[width];
 		int pickup = (int)(width * moveOutput[3] / 3.0);
 		
+		double range = Math.abs(function.operation(-1000000) - function.operation(1000000)); //gets the range of the function outputs. 
+		range = Math.abs(function.operation(-range) - function.operation(range));
+		//System.out.println(range);
 		
-		//TODO Make PLACEMENT ARRAY.
+		//loop
+		/*
+		 * get the remaning total
+		 * get the output number in the space
+		 * get the percentage
+		 * multiply by remaning peices
+		 * round up
+		 * */ 
 		
+		int pickedUp = (int) Math.abs(moveOutput[2]*range/2.0);
+		double remaningTotal = 0;
+		double percentage;
+		for(int i = 3; i < moveOutput.length; i++){
+			remaningTotal = 0;
+			for(int j = i; j < moveOutput.length; j++){
+				remaningTotal += moveOutput[j]; 
+			}
+			
+			percentage = moveOutput[i]/remaningTotal;
+			left[i-3] = (int) (Math.floor(percentage*pickedUp)+1);
+			
+			pickedUp -= left[i-3];
+			if(pickedUp <= 0 ){
+				break;
+			}
+		} 
+				
 		movement = DeStack.DeStack(XInput, YInput, left, pickup, (moveOutput[0] > 0?true:false), (moveOutput[1] > 0?true:false), weight );
 		
 		return movement;

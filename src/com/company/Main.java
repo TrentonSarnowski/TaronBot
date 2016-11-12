@@ -3,7 +3,7 @@ package com.company;
 import java.util.ArrayList;
 import java.util.Random;
 
-import com.company.TaronBot.Network.Network;
+import com.company.TaronBot.Network.TakNetwork;
 
 import tech.deef.Tools.Tools;
 
@@ -25,7 +25,7 @@ public class Main {
     	long time = System.nanoTime();
     	System.out.println(data/1024 + " kB");
     	
-    	Network testNetwork = new Network(8,8,9,8);
+    	TakNetwork testNetwork = new TakNetwork(8,8,9,8);
     	Random rand = new Random(1);
     	testNetwork.randomize(rand);
     	
@@ -48,10 +48,10 @@ public class Main {
     	
     	long startupTime = 0, genTime=0, endTime=0,startData=0, startupData=0,genData=0,endData=0;
     	
-    	ArrayList<Network> networks = new ArrayList<Network>(1000);
+    	ArrayList<TakNetwork> takNetworks = new ArrayList<TakNetwork>(20);
     	long startTime = System.nanoTime();
     	startData = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
-    	for(int i = 0; i < 1000; i++){
+    	for(int i = 0; i < 20; i++){
     		PrintColor("Network " + i + "\n","green");
     		if(i == 341){
     			
@@ -59,8 +59,8 @@ public class Main {
     		}
     		startupTime = System.nanoTime();
     		startupData = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
-    		testNetwork = new Network(8,8,9,8);
-    		networks.add(testNetwork);
+    		testNetwork = new TakNetwork(8,8,9,10);
+    		takNetworks.add(testNetwork);
     		Random random = new Random(i);
     		testNetwork.randomize(random);
     		genTime = System.nanoTime();
@@ -69,20 +69,19 @@ public class Main {
     		endTime = System.nanoTime();
     		endData = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
     		
-    		PrintColor(("\tTotal Data data " + (endData-startData)/1024/1024.0 + "Mb\n") ,"cyan");
+    		PrintColor(("\tCurrent data " + (endData-startData)/1024/1024.0 + "Mb\n") ,"red");
 
     		//gen time
     		//gen data size
     		//run time
     		//run dataSize
-    		//PrintColor(("\tGen  Time " + (genTime-startupTime)/1000000.0 + "ms\n") ,"yellow");
-    		//PrintColor(("\tGen  data " + (genData-startData)/1024 + "kB\n") ,"cyan");
-    		//PrintColor(("\tCalc Time " + (endTime-genTime)/1000000.0 + "ms\n") ,"yellow");
-    		//PrintColor(("\tCalc data " + (endData-genData)/1024 + "Kb\n") ,"cyan");//expected 0
+    		PrintColor(("\tGen  Time " + (genTime-startupTime)/1000000.0 + "ms\n") ,"yellow");
+    		PrintColor(("\tGen  data " + (genData-startData)/1024 + "kB\n") ,"blue");
+    		PrintColor(("\tCalc Time " + (endTime-genTime)/1000000.0 + "ms\n") ,"yellow");
     	}
     	
-    	PrintColor(("\tTotal Time " + (startupTime-endTime)/1000000.0 + "ms\n") ,"yellow");
-		PrintColor(("\tCalc data " + (startupData-endData)/1024 + "Kb\n") ,"cyan");
+    	PrintColor(("Total Time " + (endTime-startTime)/1000000.0 + "ms\n") ,"red");
+		PrintColor(("Calc data " + (endData-startData)/1024 + "Kb\n") ,"red");
     	
     }
     
