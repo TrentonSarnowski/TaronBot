@@ -29,6 +29,9 @@ public class TakNetwork {
 		int[] middleDimensions = {width,height,1,1};//depth may need to be adjusted. 
 		int[] outputDimensions = {4,width,depth,1};
 		int[] moveOutputDimensions = {1,1,3,width+3}; //make the move output dimenstions the last 2d array
+		this.width = width;
+		this.height = height;
+		this.depth = depth;
 		
 				
 		network.add(new NetworkLayer(inputDimensions, middleDimensions, function));
@@ -139,7 +142,7 @@ public class TakNetwork {
 		Collections.sort(moves, 
 						new Comparator<Move>() {
         					public int compare(Move m1, Move m2) {
-        						return (m1.getWeight() < m2.getWeight() ? -1 : (m1.getWeight() == m2.getWeight() ? 0 : 1));
+        						return (m1.getWeight() < m2.getWeight() ? 1 : (m1.getWeight() == m2.getWeight() ? 0 : -1));
         					}
     					}
 						);
@@ -156,11 +159,8 @@ public class TakNetwork {
 		//the output form the move function
 		//the weight of the 
 		Move movement = null;
-		Integer[] left = new Integer[width];
-		int pickup = (int)(width * moveOutput[3] / 3.0);
-		
+		Integer[] left = new Integer[width];		
 		double range = Math.abs(function.operation(-1000000) - function.operation(1000000)); //gets the range of the function outputs. 
-		range = Math.abs(function.operation(-range) - function.operation(range));
 		//System.out.println(range);
 		
 		//loop
@@ -171,17 +171,17 @@ public class TakNetwork {
 		 * multiply by remaning peices
 		 * round up
 		 * */ 
-		
-		int pickedUp = (int) Math.abs(moveOutput[2]*range/2.0);
+		double d =  Math.abs(moveOutput[2]*width/(range/2));
+		int pickedUp = (int) d;
 		double remaningTotal = 0;
 		double percentage;
 		for(int i = 3; i < moveOutput.length; i++){
 			remaningTotal = 0;
 			for(int j = i; j < moveOutput.length; j++){
-				remaningTotal += moveOutput[j]; 
+				remaningTotal += Math.abs((moveOutput[j])); 
 			}
 			
-			percentage = moveOutput[i]/remaningTotal;
+			percentage = Math.abs(moveOutput[i])/remaningTotal;
 			left[i-3] = (int) (Math.floor(percentage*pickedUp)+1);
 			
 			pickedUp -= left[i-3];
@@ -190,7 +190,7 @@ public class TakNetwork {
 			}
 		} 
 				
-		movement = DeStack.DeStack(XInput, YInput, left, pickup, (moveOutput[0] > 0?true:false), (moveOutput[1] > 0?true:false), weight );
+		movement = DeStack.DeStack(XInput, YInput, left, pickedUp, (moveOutput[0] > 0?true:false), (moveOutput[1] > 0?true:false), weight );
 		
 		return movement;
 	}

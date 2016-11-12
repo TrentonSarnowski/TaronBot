@@ -1,8 +1,10 @@
 package com.company;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+import com.company.TaronBot.Game.Move;
 import com.company.TaronBot.Network.TakNetwork;
 
 import tech.deef.Tools.Tools;
@@ -53,10 +55,7 @@ public class Main {
     	startData = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
     	for(int i = 0; i < 20; i++){
     		PrintColor("Network " + i + "\n","green");
-    		if(i == 341){
-    			
-    			System.out.println("stuff");
-    		}
+    		
     		startupTime = System.nanoTime();
     		startupData = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
     		testNetwork = new TakNetwork(8,8,9,10);
@@ -65,7 +64,7 @@ public class Main {
     		testNetwork.randomize(random);
     		genTime = System.nanoTime();
     		genData = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
-    		testNetwork.calculate(blank);
+    		List<Move> moves = testNetwork.calculate(blank);
     		endTime = System.nanoTime();
     		endData = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
     		
