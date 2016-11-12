@@ -25,7 +25,9 @@ public class Placement implements Move {
     public List<Integer>[][] performMove(List<Integer>[][] map, boolean control) {
         if (map[x][y].isEmpty()==true) {
             if(control){
+
                 map[x][y].add(type);
+
                 return map;
             }else{
                 map[x][y].add(type*-1);
@@ -87,7 +89,9 @@ public class Placement implements Move {
 
         return ret;
     }
-
+    public String toPlayTakString(){
+        return toString();
+    }
     @Override
     public double getWeight() {
         return weight;

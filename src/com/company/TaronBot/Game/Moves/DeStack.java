@@ -170,7 +170,7 @@ public class DeStack implements Move {
              leftBehind) {
             ret+=i;
         }
-        return null;
+        return ret;
     }
 
     @Override
@@ -178,145 +178,101 @@ public class DeStack implements Move {
     public List<Integer>[][] performMove(List<Integer>[][] map, boolean control) {
         List<Integer> pickUp=map[x][y];
         int sum=pickUp.size()-pickUpC;
+        int yChange;
+        int xChange;
+        int sign;
+        if(up){
+            xChange=0;
+            yChange=1;
+        }else{
+            xChange=1;
+            yChange=0;
+        }
+        if(positive){
+            sign=1;
+        }else{
+            sign=-1;
+        }
         if(!checkFeasible(map)){
             return null;
         }
-        if(up&& positive) {
 
-            for (int i = 0; i <leftBehind.size() ; i++) {
-                for (int j = 0; j <leftBehind.get(i) ; j++) {
-                    map[x][y+i].add(pickUp.get(sum));
+            for (int i = 1; i <=leftBehind.size() ; i++) {
+
+                if(!map[x + i * xChange * sign][y + i * yChange * sign].isEmpty()&&Math.abs(map[x + i * xChange * sign][y + i * yChange * sign].get(map[x + i * xChange * sign][y + i * yChange * sign].size()-1))==2) {
+                    map[x + i * xChange * sign][y + i * yChange * sign].set(
+                            map[x + i * xChange * sign][y + i * yChange * sign].size() - 1,
+                            map[x + i * xChange * sign][y + i * yChange * sign].get(map[x + i * xChange * sign][y + i * yChange * sign].size() - 1) / 2);
+                }
+                for (int j = 0; j <leftBehind.get(i-1) ; j++) {
+                    map[x+i*(sign*xChange)][y+i*(sign*yChange)].add(pickUp.get(sum));
                     sum++;
                 }
             }
             for (int i = 0; i < pickUpC; i++) {
-                map[x][y].remove(map[x][y].size()-i);
-            }
-        }else if(up&&!positive){
-
-            for (int i = 0; i <leftBehind.size() ; i++) {
-                for (int j = 0; j <leftBehind.get(i) ; j++) {
-                    map[x][y-i].add(pickUp.get(sum));
-                    sum++;
-                }
-            }
-            for (int i = 0; i < pickUpC; i++) {
-                map[x][y].remove(map[x][y].size()-i);
-            }
-        }else if(!up && positive){
-
-            for (int i = 0; i <leftBehind.size() ; i++) {
-                for (int j = 0; j <leftBehind.get(i) ; j++) {
-                    map[x+i][y].add(pickUp.get(sum));
-                    sum++;
-                }
-            }
-            for (int i = 0; i < pickUpC; i++) {
-                map[x][y].remove(map[x][y].size()-i);
+                map[x][y].remove(map[x][y].size()-1);
             }
 
-        }else if(!up && !positive){
-
-            for (int i = 0; i <leftBehind.size() ; i++) {
-                for (int j = 0; j <leftBehind.get(i) ; j++) {
-                    map[x-i][y].add(pickUp.get(sum));
-                    sum++;
-                }
-            }
-            for (int i = 0; i < pickUpC; i++) {
-                map[x][y].remove(map[x][y].size()-i);
-            }
-        }
 
 
         return map;
     }
     public boolean checkFeasible(List<Integer>[][] map){
         List<Integer> pickUp=map[x][y];
+        int xChange;
+        int yChange;
+        int sign;
+        if(up){
+            xChange=0;
+            yChange=1;
+        }else{
+            xChange=1;
+            yChange=0;
+        }
+        if(positive){
+            sign=1;
+        }else{
+            sign=-1;
+        }
         int sum=pickUp.size()-pickUpC;
-        if(up&& positive) {
-            if(leftBehind.size()+y>map.length){
-                return false;
-                //edge check
-            }
-            //wall/cap check
-            for (int i = 0; i < leftBehind.size(); i++) {
-                if(Math.abs(map[x][y+i].get(map[x][y+i].size()))==3){
-                    return false;
-                }else if(Math.abs(map[x][y+i].get(map[x][y+i].size()))==2){
-                    if(Math.abs(pickUp.get(pickUp.size()))==3 && leftBehind.get(leftBehind.size())==1){
-                        map[x][y+i].set(map[x][y+i].size(),map[x][y+i].get(map[x][y+i].size())/2);
-                    }else{
-                        return false;
-                    }
-                }else{
-
-                }
-            }
-
-        }else if(up&&!positive){
-            if(y-leftBehind.size()<0){
-                return false;
-                //edge check
-            }
-            //wall/cap check
-            for (int i = 0; i < leftBehind.size(); i++) {
-                if(Math.abs(map[x][y-i].get(map[x][y-i].size()))==3){
-                    return false;
-                }else if(Math.abs(map[x][y-i].get(map[x][y-i].size()))==2){
-                    if(pickUp.get(pickUp.size())==3 && leftBehind.get(leftBehind.size())==1){
-
-                    }else{
-                        return false;
-                    }
-                }else{
-
-                }
-            }
-
-        }else if(!up && positive){
-
-            if(leftBehind.size()+x>map.length){
-                return false;
-                //edge check
-            }
-            //wall/cap check
-            for (int i = 0; i < leftBehind.size(); i++) {
-                if(Math.abs(map[x+i][y].get(map[x+i][y].size()))==3){
-                    return false;
-                }else if(Math.abs(map[x+i][y].get(map[x+i][y].size()))==2){
-                    if(pickUp.get(pickUp.size())==3 && leftBehind.get(leftBehind.size())==1){
-
-                    }else{
-                        return false;
-                    }
-                }else{
-
-                }
-            }
-
-
-        }else if(!up && !positive){
-            if(x-leftBehind.size()<0){
-                return false;
-                //edge check
-            }
-            //wall/cap check
-            for (int i = 0; i < leftBehind.size(); i++) {
-                if(Math.abs(map[x-i][y].get(map[x-i][y].size()))==3){
-                    return false;
-                }else if(Math.abs(map[x-i][y].get(map[x-i][y].size()))==2){
-                    if(pickUp.get(pickUp.size())==3 && leftBehind.get(leftBehind.size())==1){
-
-                    }else{
-                        return false;
-                    }
-                }else{
-
-                }
-            }
+        int sum2=0;
+        int sum3=0;
+        for (Integer left:leftBehind) {
+            sum2+=left;
+        }
+        for (Integer left:pickUp) {
+            sum3+=1;
         }
 
+        if(sum3<pickUpC){
+
+            return false;
+        };
+            if(sign*(sign*leftBehind.size()+y*yChange+x*xChange)>map.length*((1+sign)/2)){
+                System.err.println("3");
+
+                return false;
+                //edge check
+            }
+            //wall/cap check
+            for (int i = 1; i < leftBehind.size()-1; i++) {
+                if(map[x+i*xChange*sign][y+i*yChange*sign].size()!=0&&Math.abs(map[x+i*xChange*sign][y+i*yChange*sign].get(map[x+i*xChange*sign][y+i*yChange*sign].size()-1))==3){
+                    System.err.println("3");
+
+                    return false;
+                }else if(map[x+i*xChange*sign][y+i*yChange*sign].size()!=0&&Math.abs(map[x+i*xChange*sign][y+i*yChange*sign].get(map[x+i*xChange*sign][y+i*yChange*sign].size()-1))==2){
+
+                    if(Math.abs(pickUp.get(pickUp.size()-1))==3 && leftBehind.get(leftBehind.size()-1)==1){
+
+                    }else{
+                        System.err.println("4");
+
+                        return false;
+                    }
+                }else{
+
+                }
+            }
         return true;
     }
 

@@ -2,6 +2,7 @@ package com.company.TaronBot.Game;
 
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.company.TaronBot.Game.Moves.*;
@@ -10,7 +11,7 @@ import com.company.TaronBot.Game.Moves.*;
  * Created by sarnowskit on 10/21/2016.
  */
 public class Board {
-    List<Integer> map[][];
+    private List<Integer> map[][];
 
     public Board(int sideLength, List<Move> boardState, boolean start){
         map=new List[sideLength][sideLength];
@@ -20,38 +21,123 @@ public class Board {
             }
 
         }
+        for (int i = 0; i <sideLength ; i++) {
+            for (int j = 0; j <sideLength ; j++) {
+                map[i][j]=new ArrayList<>();
+            }
+        }
         boolean ready=start;
         for (Move e:boardState) {
-            tryMove(e, ready);
+            System.err.println(tryMove(e, ready));
+            ready=!ready;
         }
     }
+
+    public List<Integer>[][] getMap() {
+        return map;
+    }
+
     public boolean tryMove(Move e, boolean positive){
-        List<Integer> check[][]=e.performMove(map, positive);
-        if(null!=check){
-            map=check;
-            return true;
-        }
+        e.performMove(map, positive);
+
         return false;
     }
     public Move checkForVictory(){
         boolean topLevel[][]=topLevel();
+        Move m=null;
         for (int i = 0; i < topLevel.length ; i++) {
             //// TODO: 10/28/2016
-            for (int j = 0; j <topLevel.length ; j++) {
-                needFill(i,0,new boolean[topLevel.length][topLevel.length],topLevel,j,
+            for (int j = 4; j >=0 ; j--) {
+                m=needFill(i,0,new boolean[topLevel.length][topLevel.length],topLevel,j,
+                        true,new boolean[topLevel.length][topLevel.length]);
+                if(m!=null){
+                    return m;
+                }
+                m=needFill(i,0,new boolean[topLevel.length][topLevel.length],topLevel,j,
                         false,new boolean[topLevel.length][topLevel.length]);
-
+                if(m!=null){
+                    return m;
+                }
             }
         }
-        for (int i = 0; i <topLevel.length ; i++) {
-            for (int j = 0; j <topLevel.length ; j++) {
-                needFill(0,i,new boolean[topLevel.length][topLevel.length],topLevel,j,
-                        true,new boolean[topLevel.length][topLevel.length]);
+
+
+        return null;
+    }
+    private Move getMoves(boolean[][] needFill, boolean[][] topLevel) {
+        for (int i=0;i<map.length;i++) {
+            for (int j=0;i<map.length;j++) {
+                int pickup=0;
+                if(topLevel[i][j]) {
+                    if (needFill[i][j]) {//gets the depth to pick up
+                        for (int k = 0; k < map[i][j].size(); k++) {
+                            if (map[i][j].get(k) > 0) {
+                                pickup = k;
+                            }
+                        }
+
+                    }
+                }
 
             }
         }
         return null;
     }
+    private Move getDirectionalMove(int x, int y,boolean[][] needFill,boolean vertical, boolean positive, int pickup){
+        int xActive;
+        int dropcount;
+        int dropSum=0;
+        int yActive;
+        int sign;
+        int distance=1;
+        if(vertical){
+            xActive=0;
+            yActive=1;
+        }else{
+            xActive=1;
+            yActive=0;
+        }
+        if(positive){
+            sign=1;
+        }else{
+            sign=-1;
+        }
+        List<Integer> leftOnStack=new LinkedList<Integer>();
+        for (int i = 1; i <=pickup ; i++) {
+            leftOnStack.add(map[x][y].get(map[x][y].size()-i));
+        }
+        ArrayList<Integer> leftBehind=new ArrayList<>();
+
+
+            for (int i = 1; i < ((1+sign)*2)*(map.length-(x*xActive+y*yActive)*(1+sign)/2)&&!leftOnStack.isEmpty() ; i++) {
+                if(needFill[x+i*xActive*(1+sign)/2][y+i*yActive*(1+sign)/2]){
+                    int topLevel=map[x+i*xActive*(1+sign)/2][y+i*yActive*(1+sign)/2].get(map[x+i*xActive*(1+sign)/2][y+i*yActive*(1+sign)/2].size()-1);
+                    if(Math.abs(topLevel)==2){
+                        //todo check if top of drop=3 {
+                        //todo check for need control previous and relevant other conditions}
+                        //else{
+                        //todo drop all at previous break out conditions met}
+                    }if(Math.abs(topLevel)==3){
+                        //todo drop all at previous break out condition met
+
+                    }else{
+                        //todo leave behind enough to control
+                    }
+                }else{
+                    int topLevel=map[x+i*xActive*(1+sign)/2][y+i*yActive*(1+sign)/2].get(map[x+i*xActive*(1+sign)/2][y+i*yActive*(1+sign)/2].size()-1);
+                    if(Math.abs(topLevel)==2){
+                        //todo drop at all on previous break out conditions met
+                    }if(Math.abs(topLevel)==3) {
+                        //todo drop all at previous break out condition met
+                    }else{
+                        leftBehind.add(1);
+                    }
+                }
+
+        }
+        return new DeStack(x,y,leftBehind,pickup,vertical,positive,0);
+    }
+
     private Move getMove(boolean[][] needFill, boolean[][] topLevel, int row, boolean vertical){
         if(vertical){
             int sum=0;
@@ -169,7 +255,7 @@ public class Board {
                 }
 
                 for (int i = 0; i < map.length; i++) {
-                    if (map[i][value].get(map[i][value].size() - 1) > 0) {
+                    if (!map[i][value].isEmpty()&&map[i][value].get(map[i][value].size() - 1) > 0) {
                         int inStack = 0;
                         for (int piece : map[i][value]) {
                             if (piece == 1 || piece == 3) {
@@ -181,7 +267,7 @@ public class Board {
                             //check for movement
                         }
                     }
-                    if (map[row][i].get(map[row][i].size() - 1 - 1) > 0) {
+                    if (map[row][i].get(map[row][i].size() - 1 ) > 0) {
                         int inStack = 0;
                         for (int piece : map[row][i]) {
                             if (piece == 1 || piece == 3) {
@@ -196,10 +282,10 @@ public class Board {
 
                 }
 
-            } else if (map[row][value].get(map[row][value].size() - 1) == -3) {
+            } else if (!map[row][value].isEmpty()&&map[row][value].get(map[row][value].size() - 1) == -3) {
                 return null;
             }
-            if (map[row][value].get(map[row][value].size() - 1) == 2) {
+            if (!map[row][value].isEmpty()&&map[row][value].get(map[row][value].size() - 1) == 2) {
                 int inStack = 0;
                 for (int piece : map[row][value]) {
                     if (piece == 1 || piece == 3) {
@@ -212,7 +298,7 @@ public class Board {
                 }
             }
 
-            if (Math.abs(map[row][value].get(map[row][value].size() - 1)) == 2) {
+            if (!map[row][value].isEmpty()&&Math.abs(map[row][value].get(map[row][value].size() - 1)) == 2) {
                 for (int i = 0; i < map.length; i++) {
                     if (map[i][value].get(map[i][value].size() - 1) == 3) {
                         getDeStack(i, value, needFill, topLevel, row > i, vertical);
@@ -388,7 +474,7 @@ public class Board {
     }
 
     private boolean checkRoadEquivalence(boolean[][] needFill, boolean[][] topLevelClone) {
-        for (int i = 0; i <=topLevelClone.length ; i++) {
+        for (int i = 0; i <topLevelClone.length ; i++) {
             for (int j = 0; j <topLevelClone.length ; j++) {
                 if(needFill[i][j]&&!topLevelClone[i][j]){
                     return true;
@@ -421,110 +507,154 @@ public class Board {
      * @param visitable can not visit things marked as 1
      * @param topLevel can not visit things marked as zero
      * @param row allowed empty row
-     * @param veritical vertical/horizontal
+     * @param vertical vertical/horizontal
      * @param needFill returns the positions in a row that need to be filled to get a road
      * @return
      */
     private Move needFill(int x, int y,
                                  boolean[][] visitable, boolean[][] topLevel,
-                                 int row, boolean veritical, boolean[][] needFill){
+                                 int row, boolean vertical, boolean[][] needFill){
         Move ret;
-        if(y+1<topLevel.length) {
-            if (visitable[x][y + 1] == false && (topLevel[x][y + 1] == true || (x == row && !veritical) || (y + 1 == row && veritical))) {
-                visitable[x + 1][y] = true;
-                visitable[x - 1][y] = true;
-                visitable[x][y + 1] = true;
-                visitable[x][y - 1] = true;
-                needFill[x][y + 1] = true;
-                ret=needFill(x, y + 1, visitable, topLevel, row, veritical, needFill);
+        needFill[x][y] = true;
+        boolean forwardVisitable[][]=new boolean[visitable.length][visitable.length];
+        for (int i = 0; i <visitable.length ; i++) {
+            for (int j = 0; j <visitable.length ; j++) {
+                forwardVisitable[i][j]=visitable[i][j];
+            }
+        }
+        setSaidNoTrue(x, y, forwardVisitable);
+
+
+
+
+        if(y+1<needFill.length) {
+
+
+            if (visitable[x][y + 1] == false && (topLevel[x][y + 1] == true || (x == row && !vertical) || (y + 1 == row && vertical))) {
+
+
+                ret=needFill(x, y + 1, forwardVisitable, topLevel, row, vertical, needFill);
+
                 if(ret!=null){
                     return ret;
                 }
-                visitable[x + 1][y] = false;
-                visitable[x - 1][y] = false;
-                visitable[x][y + 1] = false;
-                visitable[x][y - 1] = false;
-                needFill[x][y + 1] = false;
+
             }
         }else{
-            ret = getMove(needFill, topLevel, row, veritical);
+
+            needFill[x][y]=true;
+            ret = getMove(needFill, topLevel, row, vertical);
+            /**for (boolean n[]:
+                    needFill) {
+                for(boolean a:n) {
+                    if(a) {
+                        System.err.print(1 + " ");
+                    }else{
+                        System.err.print(0 + " ");
+
+                    }
+                }
+                System.err.println();
+
+
+             }*/
+            needFill[x][y]=false;
+
+
+                return ret;
+
+
         }
-        if(x+1>needFill.length) {
-            if (visitable[x + 1][y] == false && (topLevel[x + 1][y] == true || (x + 1 == row && !veritical) || (y == row && veritical))) {
-                visitable[x + 1][y] = true;
-                visitable[x - 1][y] = true;
-                visitable[x][y + 1] = true;
-                visitable[x][y - 1] = true;
-                needFill[x + 1][y] = true;
-                ret=needFill(x + 1, y, visitable, topLevel, row, veritical, needFill);
+
+        if(x+1<needFill.length) {
+
+            if (visitable[x + 1][y] == false && (topLevel[x + 1][y] == true || (x + 1 == row && !vertical) || (y == row && vertical))) {
+
+                ret=needFill(x + 1, y, forwardVisitable, topLevel, row, vertical, needFill);
                 if(ret!=null){
                     return ret;
                 }
-                visitable[x + 1][y] = false;
-                visitable[x - 1][y] = false;
-                visitable[x][y + 1] = false;
-                visitable[x][y - 1] = false;
-                needFill[x + 1][y] = false;
+
             }
         }
         if(x-1>0) {
-            if (visitable[x - 1][y] == false && (topLevel[x - 1][y] == true || (x - 1 == row && !veritical) || (y == row && veritical))) {
-                visitable[x + 1][y] = true;
-                visitable[x - 1][y] = true;
-                visitable[x][y + 1] = true;
-                visitable[x][y - 1] = true;
-                needFill[x - 1][y] = true;
-                ret=needFill(x - 1, y, visitable, topLevel, row, veritical, needFill);
+
+            if (visitable[x - 1][y] == false && (topLevel[x - 1][y] == true || (x - 1 == row && !vertical) || (y == row && vertical))) {
+
+                ret=needFill(x - 1, y, forwardVisitable, topLevel, row, vertical, needFill);
                 if(ret!=null){
                     return ret;
                 }
-                visitable[x + 1][y] = false;
-                visitable[x - 1][y] = false;
-                visitable[x][y + 1] = false;
-                visitable[x][y - 1] = false;
-                needFill[x - 1][y] = false;
+
             }
         }
 
-        if(y-1>0) {
-            if (visitable[x][y - 1] == false && (topLevel[x][y - 1] == true || (x == row && !veritical) || (y - 1 == row && veritical))) {
-                visitable[x + 1][y] = true;
-                visitable[x - 1][y] = true;
-                visitable[x][y + 1] = true;
-                visitable[x][y - 1] = true;
-                needFill[x][y - 1] = true;
-                ret=needFill(x, y - 1, visitable, topLevel, row, veritical, needFill);
+        if(y-1>=0) {
+
+            if (visitable[x][y - 1] == false && (topLevel[x][y - 1] == true || (x == row && !vertical) || (y - 1 == row && vertical))) {
+
+                ret=needFill(x, y - 1, forwardVisitable, topLevel, row, vertical, needFill);
                 if(ret!=null){
                     return ret;
                 }
-                visitable[x + 1][y] = false;
-                visitable[x - 1][y] = false;
-                visitable[x][y + 1] = false;
-                visitable[x][y - 1] = false;
-                needFill[x][y - 1] = false;
+
             }
         }
+        needFill[x][y] = false;
+
         return null;
     }
+
+    private void setSaidNoTrue(int x, int y, boolean[][] visitable) {
+        visitable[x][y]=true;
+        if(x+1<visitable.length) {
+            visitable[x + 1][y] = true;
+        }
+        if(x-1>=0) {
+            visitable[x -1][y] = true;
+        }
+        if(y+1<visitable.length) {
+            visitable[x][y+1] = true;
+        }
+        if(y-1>=0) {
+            visitable[x][y-1] = true;
+        }
+    }
+
+
+
     public boolean[][] topLevel(){
         boolean topLevel[][]=new boolean[map.length][map.length];
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map.length; j++) {
-                int temp=map[i][j].get(map[i][j].size()-1);
-                topLevel[i][j] = temp == 1 || temp == 3;
+                if(!map[i][j].isEmpty()){
+                    int temp = map[i][j].get(map[i][j].size() - 1);
+                    topLevel[i][j] = temp == 1 || temp == 3;
+                }
             }
         }
         return topLevel;
     }
-    public int[][][] getAIMap(){
+    public int[][][] getAIMap(boolean control){
+        int sign=-1;
+
+        if(control){
+            sign=1;
+        }
         int AIMap[][][]=new int[map.length][map.length][map.length+1];
+
+
         for (int i = 0; i <map.length ; i++) {
+
+
             for (int j = 0; j <map.length ; j++) {
+
+
                 for (int k = 0; k < map.length+1; k++) {
-                    if(map[i][j].size()-(map.length+2)+k>0){
-                        AIMap[i][j][map.length+1-k]=map[i][j].get(map[i][j].size()-(map.length+2)+k);
-                    }else{
-                        AIMap[i][j][map.length+1-k]=0;
+
+                    if(map[i][j].size()-1>=k){
+
+                        AIMap[i][j][k]=sign*map[i][j].get(k);
                     }
 
 
