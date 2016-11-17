@@ -12,7 +12,7 @@ public class MateNetworks {
 		
 		//generate a blank network for the mutation. 
 		TakNetwork newNetwork = new TakNetwork(net0.getHeight(), net0.getWidth(), net0.getDepth(), net0.getLayers());
-		/*
+		/*TODO fix this section of code to mutate properly
 		for(int a = 0; a < net0.getTotalNumberOfLayers(); a++){
 			
 			//loop through tevery dimension of the mutator for this specific dimension
