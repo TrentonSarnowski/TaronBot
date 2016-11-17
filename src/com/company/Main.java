@@ -7,8 +7,6 @@ import java.util.Random;
 import com.company.TaronBot.Game.Move;
 import com.company.TaronBot.Network.TakNetwork;
 
-import tech.deef.Tools.Tools;
-
 import static tech.deef.Tools.Tools.*;
 
 public class Main {

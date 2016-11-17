@@ -156,4 +156,9 @@ public class NetworkLayer {
 		}
 
 	}
+	
+	public double[][][][] getMutatorArray(int i, int j, int k, int l){
+		
+		return mutators.get(i).get(j).get(k).get(l);
+	}
 }

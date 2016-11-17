@@ -11,11 +11,31 @@ import com.company.TaronBot.Game.Moves.DeStack;
 import com.company.TaronBot.Game.Moves.Placement;
 
 public class TakNetwork {
-	int width;
-	int height;
-	int depth;
-	int layers;
+	private int width;
+	private int height;
+	private int depth;
+	private int layers;
 	
+	public int getWidth() {
+		return width;
+	}
+
+
+	public int getHeight() {
+		return height;
+	}
+
+
+	public int getDepth() {
+		return depth;
+	}
+
+
+	public int getLayers() {
+		return layers;
+	}
+
+
 	ArrayList<NetworkLayer> network = new ArrayList<NetworkLayer>();
 	nonLinearFunction function = ((double d) -> ((6/(1+(Math.pow(Math.E,(-.5*d)))))-2.99));
 	
@@ -195,7 +215,12 @@ public class TakNetwork {
 		return movement;
 	}
 	
+	public NetworkLayer getLayer(int i){
+		return network.get(i);
+	}
 	
-	
+	public int getTotalNumberOfLayers(){
+		return network.size();
+	}
 	
 }
