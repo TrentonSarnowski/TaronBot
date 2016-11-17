@@ -65,7 +65,7 @@ public class TakNetwork {
 	public void mutate (Random rand, double changePrecentage){
 		
 		for(NetworkLayer layer : network){
-			layer.mutate(rand, changePrecentage);
+			layer.changePercentageSingleNetworkMutate(rand, changePrecentage);
 			
 		}
 	}

@@ -128,7 +128,7 @@ public class NetworkLayer {
 
 	}
 
-	public void mutate(Random rand, double changePrecentage) {
+	public void changePercentageSingleNetworkMutate(Random rand, double changePrecentage) {
 		// TODO Auto-generated method stub
 
 		for (int i = 0; i < outputLayerDimensions[0]; i++) {
