@@ -32,7 +32,69 @@ public class Board {
             ready=!ready;
         }
     }
+    public boolean checkVictory(boolean topLevel[][]){
+        for (int i = 0; i <topLevel.length ; i++) {
+            if(checkVictory(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
+                return true;
+            };
+            if(checkVictory(i,0,topLevel,new boolean[topLevel.length][topLevel.length], true)){
+                return true;
+            };
+        }
+        return false;
+    }
+    private boolean checkVictory( int x, int y, boolean topLevel[][], boolean saidNo[][], boolean vertical ){
+        int xActive=0;
+        int yActive=0;
+        if(vertical){
+            yActive=1;
+        }else{
+            xActive=1;
+        }
+        if(x<=topLevel.length&&y<=topLevel.length&&x>=0&&y>=0) {
+            if (!topLevel[x][y]) {
+                return false;
+            } else if (topLevel.length == x * xActive + y * yActive) {
+                return true;
+            } else {
+                boolean saidNoSendDown[][] = new boolean[saidNo.length][saidNo.length];
+                for (int i = 0; i < saidNo.length; i++) {
+                    for (int j = 0; j < saidNo.length; j++) {
+                        saidNoSendDown[i][j]=saidNo[i][j];
 
+                    }
+                }
+                if (x > 0) {
+                    saidNoSendDown[x - 1][y] = true;
+                }
+                if (x < saidNo.length) {
+                    saidNoSendDown[x + 1][y] = true;
+                }
+                if (y > 0) {
+                    saidNoSendDown[x][y - 1] = true;
+                }
+                if (y < saidNo.length) {
+                    saidNoSendDown[x][y + 1] = true;
+                }
+                if (checkVictory(x+1,y,topLevel, saidNoSendDown,vertical)){
+                    return true;
+                }
+                if (checkVictory(x,y+1,topLevel, saidNoSendDown,vertical)){
+                    return true;
+                }
+                if (checkVictory(x-1,y,topLevel, saidNoSendDown,vertical)){
+                    return true;
+                }
+                if (checkVictory(x,y-1,topLevel, saidNoSendDown,vertical)){
+                    return true;
+                }
+
+
+
+            }
+        }
+        return false;
+    }
     public List<Integer>[][] getMap() {
         return map;
     }
