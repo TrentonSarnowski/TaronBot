@@ -1,6 +1,7 @@
 package com.company.TaronBot.Network;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -47,8 +48,8 @@ public class TakNetwork {
 	public TakNetwork(int height, int width, int depth, int layers){
 		int[] inputDimensions = {depth,width,height,1};
 		int[] middleDimensions = {width,height,1,1};//depth may need to be adjusted. 
-		int[] outputDimensions = {4,width,depth,1};
-		int[] moveOutputDimensions = {1,1,3,width+3}; //make the move output dimenstions the last 2d array
+		int[] outputDimensions = {1,width,depth,width+7};
+		 //make the move output dimenstions the last 2d array
 		this.width = width;
 		this.height = height;
 		this.depth = depth;
@@ -62,8 +63,7 @@ public class TakNetwork {
 		}
 		
 		network.add(new NetworkLayer(middleDimensions, outputDimensions , function));
-		network.add(new NetworkLayer(middleDimensions, middleDimensions, function));
-		network.add(new NetworkLayer(middleDimensions, moveOutputDimensions , function));
+		
 		
 		
 	}
@@ -97,17 +97,12 @@ public class TakNetwork {
 		
 		//inital calculation. 
 		output = network.get(0).calculate(convertArray(board));
-		for(int i = 1; i < network.size()-3; i++){
+		for(int i = 1; i < network.size(); i++){
 			output = network.get(i).calculate(output); //do all other layers but the last 2
 		}
 		
 		
-		double[][][][] placements = network.get(network.size()-3).calculate(output);
-		
-		double[][][][] moveOutput = network.get(network.size()-2).calculate(output);
-		moveOutput = network.get(network.size()-1).calculate(moveOutput);
-		
-		return sortedMoves(placements, moveOutput);
+		return sortedMoves(output);
 				
 	}
 
@@ -130,32 +125,31 @@ public class TakNetwork {
 
 	//takes the output from the network and converts it into a sorted series of moves
 	//all moves are added to this list, including those that would make the bot immediately lose or win. 
-	private List<Move> sortedMoves(double[][][][] placements, double[][][][] moveOutput) {		
-		List<Move> moves = new ArrayList<Move>(placements[0].length * placements.length*(3+moveOutput.length));
+	private List<Move> sortedMoves(double[][][][] placements) {		
+		List<Move> moves = new ArrayList<Move>(width * height * 4);
 		
-		for(int i = 0; i < placements.length; i++){
-			for(int j = 0; j < placements[0].length; j++){
+		for(int i = 0; i < width; i++){
+			for(int j = 0; j < depth; j++){
 				moves.add(new Placement(i,j,1,placements[0][i][j][0]));
 			}
 		}
 		
-		for(int i = 0; i < placements.length; i++){
-			for(int j = 0; j < placements[0].length; j++){
-				moves.add(new Placement(i,j,2,placements[1][i][j][0]));
+		for(int i = 0; i < width; i++){
+			for(int j = 0; j < depth; j++){
+				moves.add(new Placement(i,j,2,placements[0][i][j][1]));
 			}
 		}
 		
-		for(int i = 0; i < placements.length; i++){
-			for(int j = 0; j < placements[0].length; j++){
-				moves.add(new Placement(i,j,3,placements[2][i][j][0]));
+		for(int i = 0; i < width; i++){
+			for(int j = 0; j < depth; j++){
+				moves.add(new Placement(i,j,3,placements[0][i][j][2]));
 			}
 		}
 		
-		for(int i = 0; i < placements.length; i++){
-			for(int j = 0; j < placements[0].length; j++){
-				moves.add(createPlacement(i,j,0, moveOutput[0][0][0], placements[3][i][j][0]));// todo, figure out how the move output is created. set it up so that I can pass an array 3 times. 
-				moves.add(createPlacement(i,j,1, moveOutput[0][0][1], placements[3][i][j][0]));
-				moves.add(createPlacement(i,j,2, moveOutput[0][0][2], placements[3][i][j][0]));
+		for(int i = 0; i < width; i++){
+			for(int j = 0; j < depth; j++){
+				moves.add(createPlacement(i,j, Arrays.copyOfRange(placements[0][i][j], 4, placements[0][i][j].length), placements[0][i][j][3]));
+				// todo, figure out how the move output is created. set it up so that I can pass an array 3 times. 
 			}
 		}
 		
@@ -172,7 +166,7 @@ public class TakNetwork {
 
 
 	//[verticle][direction][pickedUp][][][][][]
-	private Move createPlacement(int XInput, int YInput, int NumOfMove, double[] moveOutput, double weight) {
+	private Move createPlacement(int XInput, int YInput, double[] moveOutput, double weight) {
 		//x location input
 		//y location input
 		//what move it is
@@ -193,6 +187,7 @@ public class TakNetwork {
 		 * */ 
 		double d =  Math.abs(moveOutput[2]*width/(range/2));
 		int pickedUp = (int) d;
+		
 		double remaningTotal = 0;
 		double percentage;
 		for(int i = 3; i < moveOutput.length; i++){
@@ -210,7 +205,7 @@ public class TakNetwork {
 			}
 		} 
 				
-		movement = DeStack.DeStack(XInput, YInput, left, pickedUp, (moveOutput[0] > 0?true:false), (moveOutput[1] > 0?true:false), weight );
+		movement = DeStack.DeStack(XInput, YInput, left, (int) d, (moveOutput[0] > 0?true:false), (moveOutput[1] > 0?true:false), weight );
 		
 		return movement;
 	}
