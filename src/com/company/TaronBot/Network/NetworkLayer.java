@@ -128,9 +128,11 @@ public class NetworkLayer {
 
 	}
 
-	public void changePercentageSingleNetworkMutate(Random rand, double changePrecentage) {
+	public NetworkLayer changePercentageSingleLayerMutate(Random rand, double changePrecentage) {
 		// TODO Auto-generated method stub
-
+		
+		NetworkLayer newLayer = new NetworkLayer(previousLayerDimensions, outputLayerDimensions, function);
+		
 		for (int i = 0; i < outputLayerDimensions[0]; i++) {
 			for (int j = 0; j < outputLayerDimensions[1]; j++) {
 				for (int k = 0; k < outputLayerDimensions[2]; k++) {
@@ -142,8 +144,10 @@ public class NetworkLayer {
 									for (int p = 0; p < previousLayerDimensions[3]; p++) {
 
 										if (rand.nextDouble() <= changePrecentage) {
-											mutators.get(i).get(j).get(k).get(l)[m][n][o][p] = rand.nextDouble() * 2
-													- 1;
+											newLayer.getMutatorArray(i, j, k, l)[m][n][o][p] = rand.nextDouble() * 2 - 1;
+										}
+										else {
+											newLayer.getMutatorArray(i, j, k, l)[m][n][o][p] = getMutatorArray(i,j,k,l)[m][n][o][p];
 										}
 									}
 								}
@@ -155,6 +159,7 @@ public class NetworkLayer {
 			}
 		}
 
+		return newLayer;
 	}
 	
 	public double[][][][] getMutatorArray(int i, int j, int k, int l){

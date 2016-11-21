@@ -82,15 +82,26 @@ public class TakNetwork {
 	 * @param rand input random generator
 	 * @param changePrecentage the percentage of nodes that should be changed. (0.0-1.0) expected
 	 */
-	public void mutate (Random rand, double changePrecentage){
+	public TakNetwork returnAnotherMutatedNetwork (Random rand, double changePrecentage){
 		
-		for(NetworkLayer layer : network){
-			layer.changePercentageSingleNetworkMutate(rand, changePrecentage);
+		TakNetwork newNetwork = new TakNetwork(getHeight(), getWidth(), getDepth(), getLayers());
+
+		for(int i = 0 ; i < layers; i++){
+			newNetwork.setLayer(i, this.getLayer(i).changePercentageSingleLayerMutate(rand, changePrecentage));
+			
 			
 		}
+		
+		return newNetwork;
 	}
 	
 	
+	private void setLayer(int i, NetworkLayer changePercentageSingleLayerMutate) {
+		// TODO set the layer at i with the given layer
+		network.set(i, changePercentageSingleLayerMutate);
+	}
+
+
 	public List<Move> calculate(int[][][] board){
 				
 		double[][][][] output;
