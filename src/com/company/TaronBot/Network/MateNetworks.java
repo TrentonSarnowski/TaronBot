@@ -7,7 +7,7 @@ public class MateNetworks {
 	// takes in a list of networks and produces a single network that has been
 	// mutated and generated from the given network
 
-	public TakNetwork MateNetworks(List<TakNetwork> networks){
+	public static TakNetwork MateNetworks(List<TakNetwork> networks){
 		TakNetwork net0 = networks.get(0);
 		
 		//generate a blank network for the mutation. 
