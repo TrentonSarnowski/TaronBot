@@ -1,11 +1,12 @@
 package com.company.TaronBot.Network;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
 import tech.deef.Tools.Tools;
 
-public class NetworkLayer {
+public class NetworkLayer implements Serializable{
 	int[] previousLayerDimensions, outputLayerDimensions;
 	nonLinearFunction function;
 
