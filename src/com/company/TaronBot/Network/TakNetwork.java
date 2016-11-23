@@ -1,5 +1,6 @@
 package com.company.TaronBot.Network;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,7 +12,7 @@ import com.company.TaronBot.Game.Move;
 import com.company.TaronBot.Game.Moves.DeStack;
 import com.company.TaronBot.Game.Moves.Placement;
 
-public class TakNetwork {
+public class TakNetwork implements Serializable{
 	private int width;
 	private int height;
 	private int depth;
