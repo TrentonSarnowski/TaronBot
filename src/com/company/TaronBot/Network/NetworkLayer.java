@@ -9,6 +9,18 @@ import tech.deef.Tools.Tools;
 public class NetworkLayer implements Serializable{
 	int[] previousLayerDimensions, outputLayerDimensions;
 	nonLinearFunction function;
+	
+	public int[] getPreviousLayerDimensions() {
+		return previousLayerDimensions;
+	}
+
+	public int[] getOutputLayerDimensions() {
+		return outputLayerDimensions;
+	}
+
+	public nonLinearFunction getFunction() {
+		return function;
+	}
 
 	double[][][][] inputLayer, outputLayer;
 	ArrayList<ArrayList<ArrayList<ArrayList<double[][][][]>>>> mutators;

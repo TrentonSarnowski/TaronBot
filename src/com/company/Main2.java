@@ -12,22 +12,71 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.commons.math3.distribution.NormalDistribution;
+import org.apache.commons.math3.random.AbstractRandomGenerator;
+import org.apache.commons.math3.random.BitsStreamGenerator;
+import org.apache.commons.math3.random.ISAACRandom;
+import org.apache.commons.math3.random.RandomGenerator;
+import org.apache.commons.math3.stat.descriptive.moment.Mean;
+import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
+
 import com.company.TaronBot.Game.Move;
 import com.company.TaronBot.Network.MateNetworks;
 import com.company.TaronBot.Network.TakNetwork;
 
 public class Main2 {
 
-	public static void main2(String[] args) {
-		networkGenerationCalculationTest();
-		saveTesting();
-		loadTesting();
+	public static void main(String[] args) {
+		//networkGenerationCalculationTest();
+		//saveTesting();
+		//loadTesting();
 		networkmutatorsTest();
-
+		//testing();
 		
 	}
 
 	
+	private static void testing() {
+
+		/*
+		//mean 10, std dev 1
+		//Random rand = new Random(1);
+		Random rand = new Random(); //
+		double[] vals = {-3,-2.5,-2,-1.5,-1,-.5,0,.5,1,1.5,2,2.5,3}; //
+		double fromCurve = 0; //
+		
+		
+		//at the beginning
+		Mean mean = new Mean();
+		StandardDeviation std = new StandardDeviation();
+		
+		RandomGenerator random = new ISAACRandom();
+		random.setSeed(rand.nextInt());
+		NormalDistribution n = new NormalDistribution(random, mean.evaluate(vals), std.evaluate(vals));
+		
+		fromCurve = n.sample();
+		System.out.println( n.sample());
+		System.out.println( n.sample());
+		System.out.println( n.sample());
+		System.out.println( n.sample());
+		System.out.println( n.sample());
+		System.out.println( n.sample());
+		System.out.println( n.sample());
+		System.out.println( n.sample());
+		
+		
+		double total = 0;
+		
+		for(int i = 0; i < 100000000; i++){
+			total += n.sample();
+		}
+		System.out.println("average: " + total/(100000000));
+		*/
+		//setCurve
+		
+	}
+
+
 	private static void loadTesting() {
 		FileInputStream fin;
 		try {
@@ -96,7 +145,8 @@ public class Main2 {
 			testNetwork.randomize(random);
 		}
 		
-		TakNetwork mate = MateNetworks.MateNetworks(takNetworks);
+		
+		TakNetwork mate = MateNetworks.MateNetworks(takNetworks, rand);
 		
 	}
 

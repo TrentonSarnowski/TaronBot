@@ -97,7 +97,7 @@ public class TakNetwork implements Serializable{
 	}
 	
 	
-	private void setLayer(int i, NetworkLayer changePercentageSingleLayerMutate) {
+	public void setLayer(int i, NetworkLayer changePercentageSingleLayerMutate) {
 		// TODO set the layer at i with the given layer
 		network.set(i, changePercentageSingleLayerMutate);
 	}
