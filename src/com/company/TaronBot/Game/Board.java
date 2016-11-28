@@ -6,12 +6,52 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.company.TaronBot.Game.Moves.*;
+import com.company.TaronBot.Network.Network;
 
 /**
  * Created by sarnowskit on 10/21/2016.
  */
 public class Board {
     private List<Integer> map[][];
+    
+    public static int playGame(Network Player1, Network Player2, int sideLength){
+        Board game=new Board(sideLength, new LinkedList<>(), true);
+        boolean check1=false;
+        boolean check2=false;
+        List<Move> moves;
+        do{
+            moves =Player1.calculate(game.getAIMap(true));
+            for (Move m: moves) {
+                if(m.checkFeasible(game.getMap())){
+                    m.performMove(game.getMap(),true);
+                    break;
+                }
+            }
+            check1=game.checkVictory(game.topLevel(true));
+            check2 = game.checkVictory(game.topLevel(false));
+            if(check1){
+                return 1;
+            }else if(check2){
+                return -1;
+            }
+            moves =Player2.calculate(game.getAIMap(true));
+            for (Move m: moves) {
+                if(m.checkFeasible(game.getMap())){
+                    m.performMove(game.getMap(),true);
+                    break;
+                }
+            }
+            check2= game.checkVictory(game.topLevel(true));
+            check1= game.checkVictory(game.topLevel(false));
+            if(check1){
+                return -1;
+            }else if(check2){
+                return 1;
+            }
+        }while(true);
+
+
+    }
 
     public Board(int sideLength, List<Move> boardState, boolean start){
         map=new List[sideLength][sideLength];
@@ -105,7 +145,7 @@ public class Board {
         return false;
     }
     public Move checkForVictory(){
-        boolean topLevel[][]=topLevel();
+        boolean topLevel[][]=topLevel(true);
         Move m=null;
         for (int i = 0; i < topLevel.length ; i++) {
             //// TODO: 10/28/2016
@@ -685,13 +725,17 @@ public class Board {
 
 
 
-    public boolean[][] topLevel(){
+    public boolean[][] topLevel(boolean control){
         boolean topLevel[][]=new boolean[map.length][map.length];
+        int sign=-1;
+        if(control){
+            sign=1;
+        }
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map.length; j++) {
                 if(!map[i][j].isEmpty()){
                     int temp = map[i][j].get(map[i][j].size() - 1);
-                    topLevel[i][j] = temp == 1 || temp == 3;
+                    topLevel[i][j] = sign*temp == sign*1 || sign*temp == sign*3;
                 }
             }
         }
