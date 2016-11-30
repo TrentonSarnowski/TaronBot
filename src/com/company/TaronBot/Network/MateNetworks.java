@@ -19,6 +19,14 @@ public class MateNetworks {
 	
 	//mutates EVERY value to be along the same lines as the other values.
 	public static TakNetwork MateNetworks(List<TakNetwork> networks, Random rand){
+		
+		//TODO NOT FUNCTIONING. DO NOT USE
+		
+		int zzz = 0;
+		zzz = 2/ zzz;
+		// kill switch
+		
+		
 		TakNetwork net0 = networks.get(0);
 		ArrayList<Double> workingArray = new ArrayList<>(networks.size());
 		double fromCurve = 0;
@@ -38,9 +46,9 @@ public class MateNetworks {
 			
 			//for each output of the network layer
 			for(int q = 0; q < layer.getOutputLayerDimensions()[0]; q++){
-				for(int w = 0; q < layer.getOutputLayerDimensions()[1]; w++){
-					for(int e = 0; q < layer.getOutputLayerDimensions()[2]; e++){
-						for(int r = 0; q < layer.getOutputLayerDimensions()[3]; r++){
+				for(int w = 0; w < layer.getOutputLayerDimensions()[1]; w++){
+					for(int e = 0; e < layer.getOutputLayerDimensions()[2]; e++){
+						for(int r = 0; r < layer.getOutputLayerDimensions()[3]; r++){
 							
 							//go through each input for that output
 							for(int i = 0; i < layer.getPreviousLayerDimensions()[0]; i++){
@@ -56,7 +64,7 @@ public class MateNetworks {
 												//TODO FIGURE OUT WHY THE PROGRAM IS CRASHING
 												
 												
-												System.out.println(a+":"+q+":"+w+":"+e+":"+r+":"+i+":"+j+":"+k+":"+l);
+												//System.out.println(a+":"+q+":"+w+":"+e+":"+r+":"+i+":"+j+":"+k+":"+l);
 												workingArray.add(currentNet.getLayer(a).getMutatorArray(q, w, e, r)[i][j][k][l]);
 											}
 											
