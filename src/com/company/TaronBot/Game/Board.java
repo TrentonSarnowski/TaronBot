@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.company.TaronBot.Game.Moves.*;
-import com.company.TaronBot.Network.Network;
+import com.company.TaronBot.Network.TakNetwork;
 
 /**
  * Created by sarnowskit on 10/21/2016.
@@ -14,7 +14,7 @@ import com.company.TaronBot.Network.Network;
 public class Board {
     private List<Integer> map[][];
     
-    public static int playGame(Network Player1, Network Player2, int sideLength){
+    public static int playGame(TakNetwork Player1, TakNetwork Player2, int sideLength){
         Board game=new Board(sideLength, new LinkedList<>(), true);
         boolean check1=false;
         boolean check2=false;
