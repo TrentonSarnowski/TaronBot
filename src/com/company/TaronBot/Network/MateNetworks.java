@@ -61,9 +61,7 @@ public class MateNetworks {
 											workingArray.clear();
 											for(TakNetwork currentNet: networks){
 												//add the values in the other networks to the list of numbers in the array
-												//TODO FIGURE OUT WHY THE PROGRAM IS CRASHING
-												
-												
+												//TODO FIGURE OUT WHY THE PROGRAM IS CRASHING					
 												//System.out.println(a+":"+q+":"+w+":"+e+":"+r+":"+i+":"+j+":"+k+":"+l);
 												workingArray.add(currentNet.getLayer(a).getMutatorArray(q, w, e, r)[i][j][k][l]);
 											}

@@ -20,6 +20,7 @@ public class Board {
         boolean check2=false;
         List<Move> moves;
         do{
+        	//input data needs to be 9x8x8
             moves =Player1.calculate(game.getAIMap(true));
             for (Move m: moves) {
                 if(m.checkFeasible(game.getMap())){
