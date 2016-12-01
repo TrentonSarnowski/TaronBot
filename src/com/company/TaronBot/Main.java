@@ -27,7 +27,7 @@ import com.company.TaronBot.Network.TakNetwork;
 public class Main {
 
 	
-	private static boolean LOGGING_ENABLED = true;
+	private static boolean LOGGING_ENABLED = false;
 	private static int numPerGeneration = 20;
 	
 	public static void main(String[] args){
@@ -71,11 +71,11 @@ public class Main {
 		}
 		
 		//gen networks
-		/*
+		
 		new File("networks\\gen0").mkdirs();
 		int RandomNunber = 0;
 		for(int i = 0; i < numPerGeneration; i++){
-			TakNetwork testNetwork = new TakNetwork(8, 8, 9, 8);
+			TakNetwork testNetwork = new TakNetwork(9, 8, 8, 8);
 			RandomNunber = random.nextInt();
 			Random rand = new Random(RandomNunber);
 			testNetwork.randomize(rand);
@@ -97,7 +97,7 @@ public class Main {
 			}
 			
 		}
-		*/
+		
 		
 		
 		//create win loss 
