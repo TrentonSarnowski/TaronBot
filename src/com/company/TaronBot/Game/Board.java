@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.company.TaronBot.Game.Moves.*;
 import com.company.TaronBot.Network.Network;
+import sun.security.krb5.internal.crypto.Des;
 
 /**
  * Created by sarnowskit on 10/21/2016.
@@ -143,6 +144,11 @@ public class Board {
         e.performMove(map, positive);
 
         return false;
+    }
+    public List<Move> generateAllMoves(List<Integer> i){
+        List<Move> moves=new LinkedList<>();
+        
+        return null;
     }
     public Move checkForVictory(){
         boolean topLevel[][]=topLevel(true);
