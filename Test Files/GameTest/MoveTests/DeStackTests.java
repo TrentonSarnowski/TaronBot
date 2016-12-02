@@ -18,13 +18,13 @@ public class DeStackTests extends TestCase {
         Board testBoard=new Board(5,new LinkedList<>(),true);
         Integer[] array2={1,1,1,1};
 
-        assertFalse(test.checkFeasible(testBoard.getMap()));
+        assertFalse(test.checkFeasible(testBoard,true));
 
         for (Integer e: array2) {
             testBoard.getMap()[0][0].add(e);
 
         }
-        assertTrue(test.checkFeasible(testBoard.getMap()));
+        assertTrue(test.checkFeasible(testBoard,true));
 
     }
     public void testUnEncumberedMoveNorth(){
@@ -38,7 +38,7 @@ public class DeStackTests extends TestCase {
 
         }
 
-        if(null==test.performMove(testBoard.getMap(),true)){
+        if(null==test.performMove(testBoard,true)){
             assertTrue(false);
         };
         assertTrue(testBoard.getMap()[0][0].isEmpty());
@@ -64,7 +64,7 @@ public class DeStackTests extends TestCase {
 
         }
 
-        if(null==test.performMove(testBoard.getMap(),true)){
+        if(null==test.performMove(testBoard,true)){
             assertTrue(false);
         };
         assertTrue(testBoard.getMap()[0][0].isEmpty());
@@ -91,7 +91,7 @@ public class DeStackTests extends TestCase {
 
         }
 
-        if(null==test.performMove(testBoard.getMap(),true)){
+        if(null==test.performMove(testBoard,true)){
             assertTrue(false);
         };
         assertTrue(testBoard.getMap()[7][0].isEmpty());
@@ -117,7 +117,7 @@ public class DeStackTests extends TestCase {
 
         }
 
-        if(null==test.performMove(testBoard.getMap(),true)){
+        if(null==test.performMove(testBoard,true)){
             assertTrue(false);
         };
         //theroeticly should add testing to other areas as well but that is alot of asserts
@@ -145,7 +145,7 @@ public class DeStackTests extends TestCase {
         }
         testBoard.getMap()[0][3].add(2);
 
-        if(null==test.performMove(testBoard.getMap(),true)){
+        if(null==test.performMove(testBoard,true)){
             assertTrue(false);
         };
 
@@ -164,7 +164,7 @@ public class DeStackTests extends TestCase {
 
 
 
-        if(null==test.performMove(testBoard.getMap(),true)){
+        if(null==test.performMove(testBoard,true)){
             assertTrue(true);
         };
 
@@ -186,7 +186,7 @@ public class DeStackTests extends TestCase {
         testBoard.getMap()[0][2].add(2);
 
 
-        if(null==test.performMove(testBoard.getMap(),true)){
+        if(null==test.performMove(testBoard,true)){
             assertTrue(true);
         };
 
@@ -208,7 +208,7 @@ public class DeStackTests extends TestCase {
         testBoard.getMap()[0][3].add(3);
 
 
-        if(null==test.performMove(testBoard.getMap(),true)){
+        if(null==test.performMove(testBoard,true)){
             assertTrue(true);
         };
 

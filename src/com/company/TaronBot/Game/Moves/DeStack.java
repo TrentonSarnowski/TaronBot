@@ -1,5 +1,6 @@
 package com.company.TaronBot.Game.Moves;
 
+import com.company.TaronBot.Game.Board;
 import com.company.TaronBot.Game.Move;
 
 import java.util.ArrayList;
@@ -185,10 +186,15 @@ public class DeStack implements Move {
         return ret;
     }
 
-    
+    @Override
+    public int getType() {
+        return 0;
+    }
+
     @Override
     //Map should be a square array
-    public List<Integer>[][] performMove(List<Integer>[][] map, boolean control) {
+    public List<Integer>[][] performMove(Board board, boolean control) {
+        List<Integer>[][] map=board.getMap();
         List<Integer> pickUp=map[x][y];
         int sum=pickUp.size()-pickUpC;
         int yChange;
@@ -206,7 +212,8 @@ public class DeStack implements Move {
         }else{
             sign=-1;
         }
-        if(!checkFeasible(map)){
+
+        if(!checkFeasible(board,control)){
             return null;
         }
 
@@ -229,7 +236,8 @@ public class DeStack implements Move {
     }
     
     
-    public boolean checkFeasible(List<Integer>[][] map){
+    public boolean checkFeasible(Board board, boolean control){
+        List<Integer>[][] map = board.getMap();
         List<Integer> pickUp=map[x][y];
         int xChange;
         int yChange;
@@ -261,7 +269,7 @@ public class DeStack implements Move {
             return false;
         };
             if(sign*(sign*leftBehind.size()+y*yChange+x*xChange)>map.length*((1+sign)/2)){
-                System.err.println("3");
+                //System.err.println("3");
 
                 return false;
                 //edge check
@@ -269,11 +277,11 @@ public class DeStack implements Move {
             //wall/cap check
             for (int i = 1; i < leftBehind.size()-1; i++) {
                 if(map[x+i*xChange*sign][y+i*yChange*sign].size()!=0&&Math.abs(map[x+i*xChange*sign][y+i*yChange*sign].get(map[x+i*xChange*sign][y+i*yChange*sign].size()-1))==3){
-                    System.err.println("3");
+                    //System.err.println("3");
 
                     return false;
                 }else if(map[x+i*xChange*sign][y+i*yChange*sign].size()!=0&&Math.abs(map[x+i*xChange*sign][y+i*yChange*sign].get(map[x+i*xChange*sign][y+i*yChange*sign].size()-1))==2){
-
+                    System.err.println(leftBehind.size()+" "+pickUp.size());
                     if(Math.abs(pickUp.get(pickUp.size()-1))==3 && leftBehind.get(leftBehind.size()-1)==1){
 
                     }else{

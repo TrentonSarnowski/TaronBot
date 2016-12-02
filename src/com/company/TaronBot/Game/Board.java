@@ -13,31 +13,50 @@ import com.company.TaronBot.Network.TakNetwork;
  */
 public class Board {
     private List<Integer> map[][];
-    
+    int positivePieceRemain=0;
+    int negativePieceRemain=0;
+    int positiveCapRemain=0;
+    int negativeCapRemain=0;
     public static int playGame(TakNetwork Player1, TakNetwork Player2, int sideLength){
         Board game=new Board(sideLength, new LinkedList<>(), true);
         boolean check1=false;
         boolean check2=false;
         List<Move> moves;
+        moves = Player1.calculate(game.getAIMap(false));
+        for (Move m: moves) {
+            if(m.checkFeasible(game,false)&&m.getType()==1){
+                m.performMove(game,false);
+                System.err.println(m.toString());
+                break;
+            }
+        }
+        moves = Player2.calculate(game.getAIMap(false));
+        for (Move m: moves) {
+            if(m.checkFeasible(game,true)&&m.getType()==1){
+                m.performMove(game,true);
+                System.err.println(m.toString());
+                break;
+            }
+        }
         do{
         	//input data needs to be 9x8x8
             moves =Player1.calculate(game.getAIMap(true));
             for (Move m: moves) {
-                if(m.checkFeasible(game.getMap())){
-                    m.performMove(game.getMap(),true);
+                if(m.checkFeasible(game,true)){
+                    m.performMove(game,true);
+                    System.err.println(m.toString());
                     break;
                 }
             }
-            check1=game.checkVictory(game.topLevel(true));
-            check2 = game.checkVictory(game.topLevel(false));
+            check1=game.checkVictory(game,true);
+            check2 = game.checkVictory(game, false);
             
-            System.out.println("Passed Checks");
-            try {
-				Thread.sleep(20);
-			} catch (InterruptedException e) {
+            //System.out.println("Passed Checks");
+            //try {Thread.sleep(20);
+			//} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			//	e.printStackTrace();
+			//}
             if(check1){
                 return 1;
             }else if(check2){
@@ -45,13 +64,14 @@ public class Board {
             }
             moves =Player2.calculate(game.getAIMap(true));
             for (Move m: moves) {
-                if(m.checkFeasible(game.getMap())){
-                    m.performMove(game.getMap(),true);
+                if(m.checkFeasible(game,false)){
+                    m.performMove(game,false);
+                    System.err.println(m.toString());
                     break;
                 }
             }
-            check2= game.checkVictory(game.topLevel(true));
-            check1= game.checkVictory(game.topLevel(false));
+            check2= game.checkVictory(game, true);
+            check1= game.checkVictory(game, false);
             if(check1){
                 return -1;
             }else if(check2){
@@ -63,6 +83,40 @@ public class Board {
     }
 
     public Board(int sideLength, List<Move> boardState, boolean start){
+        switch (sideLength){
+            case 3:
+                positivePieceRemain=10;
+                negativePieceRemain=10;
+                break;
+            case 4:
+                positivePieceRemain=15;
+                negativePieceRemain=15;
+                break;
+            case 5:
+                positivePieceRemain=21;
+                negativePieceRemain=21;
+                positiveCapRemain=1;
+                negativeCapRemain=1;
+                break;
+            case 6:
+                positivePieceRemain=30;
+                negativePieceRemain=30;
+                positiveCapRemain=1;
+                negativeCapRemain=1;
+                break;
+            case 7:
+                positivePieceRemain=40;
+                negativePieceRemain=40;
+                positiveCapRemain=2;
+                negativeCapRemain=2;
+                break;
+            case 8:
+                positivePieceRemain=50;
+                negativePieceRemain=50;
+                positiveCapRemain=2;
+                negativeCapRemain=2;
+                break;
+        }
         map=new List[sideLength][sideLength];
         for (List[] e:map) {
             for (List here:e) {
@@ -77,11 +131,12 @@ public class Board {
         }
         boolean ready=start;
         for (Move e:boardState) {
-            System.err.println(tryMove(e, ready));
+            //System.err.println(tryMove(e, ready));
             ready=!ready;
         }
     }
-    public boolean checkVictory(boolean topLevel[][]){
+    public boolean checkVictory(Board b, boolean cont){
+        boolean topLevel[][]=b.topLevel(cont);
         for (int i = 0; i <topLevel.length ; i++) {
             if(checkVictory(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
                 return true;
@@ -90,18 +145,23 @@ public class Board {
                 return true;
             };
         }
+        int positive=1;
+        if(cont==false){
+            positive*=-1;
+        }
+        //todo
         return false;
     }
     private boolean checkVictory( int x, int y, boolean topLevel[][], boolean saidNo[][], boolean vertical ){
-    	System.err.println(x+" "+y);
+    	/**System.err.println(x+" "+y);
     	for( boolean[] b:saidNo){
     		for(boolean b2:b){
     	    	System.err.print(b2+" ");
-
     		}
     		System.err.println();
     	}
     	System.err.println();
+         **/
         int xActive=0;
         int yActive=0;
         if(vertical){
@@ -109,8 +169,8 @@ public class Board {
         }else{
             xActive=1;
         }
-        if(x<=topLevel.length&&y<=topLevel.length&&x>=0&&y>=0) {
-            if (!topLevel[x][y]) {
+        if(x<topLevel.length&&y<topLevel.length&&x>=0&&y>=0) {
+            if (!topLevel[x][y]||saidNo[x][y]) {
                 return false;
             } else if (topLevel.length == x * xActive + y * yActive) {
                 return true;
@@ -125,15 +185,16 @@ public class Board {
                 if (x > 0) {
                     saidNoSendDown[x - 1][y] = true;
                 }
-                if (x < saidNo.length) {
+                if (x < saidNo.length-1) {
                     saidNoSendDown[x + 1][y] = true;
                 }
                 if (y > 0) {
                     saidNoSendDown[x][y - 1] = true;
                 }
-                if (y < saidNo.length) {
+                if (y < saidNo.length-1) {
                     saidNoSendDown[x][y + 1] = true;
                 }
+
                 if (checkVictory(x+1,y,topLevel, saidNoSendDown,vertical)){
                     return true;
                 }
@@ -151,6 +212,7 @@ public class Board {
 
             }
         }
+
         return false;
     }
     public List<Integer>[][] getMap() {
@@ -158,7 +220,7 @@ public class Board {
     }
 
     public boolean tryMove(Move e, boolean positive){
-        e.performMove(map, positive);
+        e.performMove(this, positive);
 
         return false;
     }
@@ -786,6 +848,12 @@ public class Board {
             }
         }
         return AIMap;
+    }
+    public int getPositiveCapRemain(){
+        return positiveCapRemain;
+    }
+    public int getNegativeCapRemain(){
+        return positiveCapRemain;
     }
 
 }

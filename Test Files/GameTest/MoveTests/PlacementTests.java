@@ -18,42 +18,42 @@ public class PlacementTests extends TestCase{
         Integer[] array={1,1,3,2,0};
         Placement test = new Placement(0,0,2,0);
         Board testBoard=new Board(8,new LinkedList<>(),true);
-        test.performMove(testBoard.getMap(),true);
+        test.performMove(testBoard,true);
         assertTrue(testBoard.getMap()[0][0].get(0)==2);
     }
     public void testUnEncumberedPlacementFlat(){
         Integer[] array={1,1,3,2,0};
         Placement test = new Placement(0,0,1,0);
         Board testBoard=new Board(8,new LinkedList<>(),true);
-        test.performMove(testBoard.getMap(),true);
+        test.performMove(testBoard,true);
         assertTrue(testBoard.getMap()[0][0].get(0)==1);
     }
     public void testUnEncumberedPlacementCap(){
         Integer[] array={1,1,3,2,0};
         Placement test = new Placement(0,0,3,0);
         Board testBoard=new Board(8,new LinkedList<>(),true);
-        test.performMove(testBoard.getMap(),true);
+        test.performMove(testBoard,true);
         assertTrue(testBoard.getMap()[0][0].get(0)==3);
     }
     public void testUnEncumberedPlacementEnemyWall(){
         Integer[] array={1,1,3,2,0};
         Placement test = new Placement(0,0,2,0);
         Board testBoard=new Board(8,new LinkedList<>(),true);
-        test.performMove(testBoard.getMap(),false);
+        test.performMove(testBoard,false);
         assertTrue(testBoard.getMap()[0][0].get(0)==-2);
     }
     public void testUnEncumberedPlacementEnemyFlat(){
         Integer[] array={1,1,3,2,0};
         Placement test = new Placement(0,0,1,0);
         Board testBoard=new Board(8,new LinkedList<>(),true);
-        test.performMove(testBoard.getMap(),false);
+        test.performMove(testBoard,false);
         assertTrue(testBoard.getMap()[0][0].get(0)==-1);
     }
     public void testUnEncumberedPlacementEnemyCap(){
         Integer[] array={1,1,3,2,0};
         Placement test = new Placement(0,0,3,0);
         Board testBoard=new Board(8,new LinkedList<>(),true);
-        test.performMove(testBoard.getMap(),false);
+        test.performMove(testBoard,false);
         assertTrue(testBoard.getMap()[0][0].get(0)==-3);
     }
 }

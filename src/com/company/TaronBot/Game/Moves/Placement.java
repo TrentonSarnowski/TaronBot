@@ -1,5 +1,6 @@
 package com.company.TaronBot.Game.Moves;
 
+import com.company.TaronBot.Game.Board;
 import com.company.TaronBot.Game.Move;
 
 import java.util.List;
@@ -21,9 +22,16 @@ public class Placement implements Move {
         this.y=y;
         this.type=type;
     }
+
     @Override
-    public List<Integer>[][] performMove(List<Integer>[][] map, boolean control) {
-        if (map[x][y].isEmpty()==true) {
+    public int getType() {
+        return type;
+    }
+
+    @Override
+    public List<Integer>[][] performMove(Board board, boolean control) {
+        List<Integer>[][] map=board.getMap();
+        if (checkFeasible(board, control)) {
             if(control){
 
                 map[x][y].add(type);
@@ -38,8 +46,18 @@ public class Placement implements Move {
     }
 
     @Override
-    public boolean checkFeasible(List<Integer>[][] map) {
-        return map[x][y].isEmpty();
+    public boolean checkFeasible(Board map, boolean cont) {
+        if(Math.abs(type)!=3){
+            return map.getMap()[x][y].isEmpty();
+
+        }
+        if( type==3&&(cont && (map.getPositiveCapRemain()>0)||(!cont&&map.getNegativeCapRemain()>0))){
+            return map.getMap()[x][y].isEmpty();
+        }
+
+
+        return false;
+        //return map.getMap()[x][y].isEmpty();
     }
 
     public String toString(){
