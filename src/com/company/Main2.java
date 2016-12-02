@@ -26,7 +26,7 @@ import com.company.TaronBot.Network.TakNetwork;
 
 public class Main2 {
 
-	public static void main2(String[] args) {
+	public static void main(String[] args) {
 		networkGenerationCalculationTest();
 		//saveTesting();
 		//loadTesting();

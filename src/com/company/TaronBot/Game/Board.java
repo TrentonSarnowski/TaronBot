@@ -30,6 +30,14 @@ public class Board {
             }
             check1=game.checkVictory(game.topLevel(true));
             check2 = game.checkVictory(game.topLevel(false));
+            
+            System.out.println("Passed Checks");
+            try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             if(check1){
                 return 1;
             }else if(check2){
@@ -85,6 +93,15 @@ public class Board {
         return false;
     }
     private boolean checkVictory( int x, int y, boolean topLevel[][], boolean saidNo[][], boolean vertical ){
+    	System.err.println(x+" "+y);
+    	for( boolean[] b:saidNo){
+    		for(boolean b2:b){
+    	    	System.err.print(b2+" ");
+
+    		}
+    		System.err.println();
+    	}
+    	System.err.println();
         int xActive=0;
         int yActive=0;
         if(vertical){

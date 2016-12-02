@@ -18,12 +18,18 @@ public class DeStack implements Move {
     int xend;
     int yend;
     double weight;
+    
+    
     public double getWeight(){
         return weight;
     }
+    
+    
     public DeStack(String move){
 
     }
+    
+    
     public static DeStack DeStack(int x, int y, Integer[] left, int pickup, boolean verticalAxis, boolean positiveDirection,double weight) {
         ArrayList<Integer> leftbehind=new ArrayList<>();
         for (Integer i:left) {
@@ -32,6 +38,8 @@ public class DeStack implements Move {
         DeStack temp=new DeStack(x,y,leftbehind, pickup,verticalAxis,positiveDirection,weight);
         return temp;
     }
+    
+    
     public DeStack(int x, int y, List<Integer> left, int pickup, boolean verticalAxis, boolean positiveDirection,double weight){
         this.weight=weight;
         this.x=x;
@@ -56,6 +64,8 @@ public class DeStack implements Move {
         }
 
     }
+    
+    
     public String toPlayTakString(){
         String ret="M ";
         switch (x){
@@ -121,6 +131,8 @@ public class DeStack implements Move {
         }
         return ret;
     }
+    
+    
     @Override
     public String toString() {
         String ret=""+pickUpC;
@@ -173,6 +185,7 @@ public class DeStack implements Move {
         return ret;
     }
 
+    
     @Override
     //Map should be a square array
     public List<Integer>[][] performMove(List<Integer>[][] map, boolean control) {
@@ -212,11 +225,10 @@ public class DeStack implements Move {
             for (int i = 0; i < pickUpC; i++) {
                 map[x][y].remove(map[x][y].size()-1);
             }
-
-
-
         return map;
     }
+    
+    
     public boolean checkFeasible(List<Integer>[][] map){
         List<Integer> pickUp=map[x][y];
         int xChange;
@@ -238,7 +250,7 @@ public class DeStack implements Move {
         int sum2=0;
         int sum3=0;
         for (Integer left:leftBehind) {
-            sum2+=left;
+            sum2+=(left!=null?left:0);
         }
         for (Integer left:pickUp) {
             sum3+=1;
