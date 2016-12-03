@@ -9,15 +9,17 @@ import java.util.List;
 import com.company.TaronBot.Game.Moves.*;
 import com.company.TaronBot.Network.TakNetwork;
 
-/**
+/**TakNetwork
  * Created by sarnowskit on 10/21/2016.
  */
 public class Board {
+    private static boolean print=false;
     private List<Integer> map[][];
     int positivePieceRemain=0;
     int negativePieceRemain=0;
     int positiveCapRemain=0;
     int negativeCapRemain=0;
+    private static Move firstPlayer,SecondPlayer=null;
     public static int playGame(TakNetwork Player1, TakNetwork Player2, int sideLength){
 
         Board game=new Board(sideLength, new LinkedList<>(), true);
@@ -27,7 +29,9 @@ public class Board {
         moves = Player1.calculate(game.getAIMap(false));
         for (Move m: moves) {
             if(m.checkFeasible(game,false)&&m.getType()==1){
+
                 m.performMove(game,false);
+                firstPlayer=m;
                 //System.out.println(m.toString());
                 break;
             }
@@ -36,28 +40,49 @@ public class Board {
         for (Move m: moves) {
             if(m.checkFeasible(game,true)&&m.getType()==1){
                 m.performMove(game,true);
+                SecondPlayer=m;
                 //System.out.println(m.toString());
                 break;
             }
         }
+        int i=1;
         do{
         	//input data needs to be 9x8x8
-
+            System.out.println(i+": "+firstPlayer+" "+SecondPlayer);
+            i++;
             moves =Player1.calculate(game.getAIMap(true));
             for (Move m: moves) {
                 if(m.checkFeasible(game,true)){
-                    System.out.println(m.toString());
-                    for (List<Integer> l[]:game.getMap()) {
-                        for (List<Integer>li:l) {
-                            if(li.isEmpty()){
-                                System.out.print(0+" ");
-                            }else{
-                                System.out.print(li.get(li.size()-1)+" ");
+                    if(print) {
+                        for (List<Integer> l[] : game.getMap()) {
+                            for (List<Integer> li : l) {
+                                if (li.isEmpty()) {
+                                    System.out.print(0 + " ");
+                                } else {
+                                    System.out.print(li.get(li.size() - 1) + " ");
 
+                                }
                             }
+                            System.out.println();
                         }
-                        System.out.println();
                     }
+
+                    if(firstPlayer!=null&&firstPlayer.toString().equals(m.toString())){
+                        for (List<Integer> l[] : game.getMap()) {
+                            for (List<Integer> li : l) {
+                                if (li.isEmpty()) {
+                                    System.out.print(0 + " ");
+                                } else {
+                                    System.out.print(li.get(li.size() - 1) + " ");
+
+                                }
+                            }
+                            System.out.println();
+                        }
+                        System.out.println("loop");
+
+                    }
+                    firstPlayer=m;
                     m.performMove(game,true);
                     break;
                 }
@@ -79,18 +104,35 @@ public class Board {
             moves =Player2.calculate(game.getAIMap(true));
             for (Move m: moves) {
                 if(m.checkFeasible(game,false)){
-                    System.out.println(m.toString());
-                    for (List<Integer> l[]:game.getMap()) {
-                        for (List<Integer>li:l) {
-                            if(li.isEmpty()){
-                                System.out.print(0+" ");
-                            }else{
-                                System.out.print(li.get(li.size()-1)+" ");
+                    if(print) {
+                        for (List<Integer> l[] : game.getMap()) {
+                            for (List<Integer> li : l) {
+                                if (li.isEmpty()) {
+                                    System.out.print(0 + " ");
+                                } else {
+                                    System.out.print(li.get(li.size() - 1) + " ");
 
+                                }
                             }
+                            System.out.println();
                         }
-                        System.out.println();
                     }
+                    if(SecondPlayer!=null&&SecondPlayer.toString().equals(m.toString())){
+                        for (List<Integer> l[] : game.getMap()) {
+                            for (List<Integer> li : l) {
+                                if (li.isEmpty()) {
+                                    System.out.print(0 + " ");
+                                } else {
+                                    System.out.print(li.get(li.size() - 1) + " ");
+
+                                }
+                            }
+                            System.out.println();
+                        }
+                        System.out.println("loop");
+
+                    }
+                    SecondPlayer=m;
                     m.performMove(game,false);
                     break;
                 }

@@ -13,6 +13,7 @@ public class Placement implements Move {
     protected int y;
     protected int type;
     protected double weight;
+    boolean checkFeasible;
     public Placement(String move){
 
     }
@@ -45,30 +46,33 @@ public class Placement implements Move {
                 if(type==3){
                     board.reduceNegativeCapRemain();
                 }else{
-                    board.reducePositiveFlatRemain();
+                    board.reduceNegativeFlatRemain();
                 }
-                map[x][y].add(type*-1);
+                map[x][y].add(-1*type);
                 return map;
             }
         }
+        System.out.print("Failed Check");
         return null;
     }
 
     @Override
     public boolean checkFeasible(Board map, boolean cont) {
-        if(Math.abs(type)!=3){
-            if(map.getMap()[x][y].isEmpty()){
 
-            };
-            return map.getMap()[x][y].isEmpty();
+        if(type!=3){
+            checkFeasible=map.getMap()[x][y].isEmpty();
+            return checkFeasible;
 
+        }else if( type==3&&(cont && (map.getPositiveCapRemain()>0)||(!cont&&map.getNegativeCapRemain()>0))){
+            checkFeasible=map.getMap()[x][y].isEmpty();
+            return checkFeasible;
+        }else{
+            checkFeasible=false;
+            return false;
         }
-        if( type==3&&(cont && (map.getPositiveCapRemain()>0)||(!cont&&map.getNegativeCapRemain()>0))){
-            return map.getMap()[x][y].isEmpty();
-        }
 
 
-        return false;
+
         //return map.getMap()[x][y].isEmpty();
     }
 
@@ -79,7 +83,7 @@ public class Placement implements Move {
                 ret+="F";
                 break;
             case 2:
-                ret+="W";
+                ret+="S";
                 break;
             case 3:
                 ret+="C";
