@@ -68,17 +68,7 @@ public class Board {
                     }
 
                     if(firstPlayer!=null&&firstPlayer.toString().equals(m.toString())){
-                        for (List<Integer> l[] : game.getMap()) {
-                            for (List<Integer> li : l) {
-                                if (li.isEmpty()) {
-                                    System.out.print(0 + " ");
-                                } else {
-                                    System.out.print(li.get(li.size() - 1) + " ");
 
-                                }
-                            }
-                            System.out.println();
-                        }
                         System.out.println("loop");
 
                     }
@@ -118,17 +108,7 @@ public class Board {
                         }
                     }
                     if(SecondPlayer!=null&&SecondPlayer.toString().equals(m.toString())){
-                        for (List<Integer> l[] : game.getMap()) {
-                            for (List<Integer> li : l) {
-                                if (li.isEmpty()) {
-                                    System.out.print(0 + " ");
-                                } else {
-                                    System.out.print(li.get(li.size() - 1) + " ");
 
-                                }
-                            }
-                            System.out.println();
-                        }
                         System.out.println("loop");
 
                     }

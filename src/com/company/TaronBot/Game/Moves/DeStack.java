@@ -254,7 +254,12 @@ public class DeStack implements Move {
         if(board.getMap()[x][y].isEmpty()){
             return false;
         }
-
+        if(board.getMap()[x][y].get(board.getMap()[x][y].size()-1)>0&&!control){
+            return false;
+        }
+        if(board.getMap()[x][y].get(board.getMap()[x][y].size()-1)<0&&control){
+            return false;
+        }
         List<Integer>[][] map = board.getMap();
         List<Integer> pickUp=map[x][y];
         int xChange;
@@ -272,9 +277,7 @@ public class DeStack implements Move {
         }else{
             sign=-1;
         }
-        if((board.getMap()[x][y].get(board.getMap()[x][y].size()-1)>0&&control)||board.getMap()[x][y].get(board.getMap()[x][y].size()-1)<0&&!control){
-            return false;
-        }
+
         int sum=pickUp.size()-pickUpC;
         int sum2=0;
         int sum3=0;

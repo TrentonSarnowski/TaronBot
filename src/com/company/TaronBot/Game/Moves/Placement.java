@@ -58,7 +58,8 @@ public class Placement implements Move {
 
     @Override
     public boolean checkFeasible(Board map, boolean cont) {
-        if(!map.getMap()[x][y].isEmpty()){
+        if(map.getMap()[x][y].size()!=0){
+            checkFeasible=false;
             return false;
         };
         if(type!=3){
