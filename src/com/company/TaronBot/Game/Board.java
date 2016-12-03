@@ -855,5 +855,11 @@ public class Board {
     public int getNegativeCapRemain(){
         return positiveCapRemain;
     }
+    public void reducePositiveCapRemain(){
+        positiveCapRemain--;
+    }
+    public void reduceNegativeCapRemain(){
+        negativeCapRemain--;
+    }
 
 }

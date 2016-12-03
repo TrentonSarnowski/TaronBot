@@ -33,11 +33,16 @@ public class Placement implements Move {
         List<Integer>[][] map=board.getMap();
         if (checkFeasible(board, control)) {
             if(control){
-
+                if(type==3){
+                    board.reducePositiveCapRemain();
+                }
                 map[x][y].add(type);
 
                 return map;
             }else{
+                if(type==3){
+                    board.reduceNegativeCapRemain();
+                }
                 map[x][y].add(type*-1);
                 return map;
             }

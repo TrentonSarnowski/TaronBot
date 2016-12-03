@@ -281,11 +281,11 @@ public class DeStack implements Move {
 
                     return false;
                 }else if(map[x+i*xChange*sign][y+i*yChange*sign].size()!=0&&Math.abs(map[x+i*xChange*sign][y+i*yChange*sign].get(map[x+i*xChange*sign][y+i*yChange*sign].size()-1))==2){
-                    System.err.println(leftBehind.size()+" "+pickUp.size());
+                    System.err.println(toString());
                     if(Math.abs(pickUp.get(pickUp.size()-1))==3 && leftBehind.get(leftBehind.size()-1)==1){
 
                     }else{
-                        System.err.println("4");
+
 
                         return false;
                     }
