@@ -1,19 +1,22 @@
 package com.company.TaronBot;
 
-import static tech.deef.Tools.Tools.PrintColor;
-
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -21,7 +24,6 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import com.company.TaronBot.Game.Board;
-import com.company.TaronBot.Game.Move;
 import com.company.TaronBot.Network.TakNetwork;
 
 public class Main {
@@ -31,6 +33,64 @@ public class Main {
 	private static int numPerGeneration = 20;
 	
 	public static void main(String[] args){
+		NetTesting();
+		TestSingleGame();
+		//TestGeneration();
+		
+	}
+	
+	private static void NetTesting() {
+		
+		/*URL url;
+		InputStream inputStream = null;
+		BufferedReader bufferedReader;
+		String data = null;
+		
+		try {
+			url = new URL("playtak.com");
+			URLConnection c = url.openConnection();
+			c.setRequestProperty("Client-ID", "login guest");
+			c.
+			
+			inputStream = c.getInputStream(); // throws an IOException
+			bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+			
+			data = bufferedReader.readLine();
+			
+		} catch (MalformedURLException mue) {
+			mue.printStackTrace();
+		} catch (IOException ioe) {
+			//ioe.printStackTrace();
+			System.out.println("ERROR: IO Exception in Data Puller");
+		} finally {
+			try {
+				if (inputStream != null)
+					inputStream.close();
+			} catch (IOException ioe) {
+				// nothing to see here
+			}
+		}
+		
+		*/
+	}
+
+	private static void TestSingleGame() {
+		
+		TakNetwork net1 = new TakNetwork(9, 8, 8, 8);
+		TakNetwork net2 = new TakNetwork(9, 8, 8, 8);
+		Random rand = null;
+		
+		rand = new Random(1);
+		net1.randomize(rand);
+		rand = new Random(2);
+		net2.randomize(rand);
+		
+		System.out.println("game 1:2 " +  Board.playGame(net1, net2, 8));
+
+	}
+
+	public static void TestGeneration(){
 		Random random = new Random();
 		int generation = 0;
 		
@@ -109,7 +169,7 @@ public class Main {
 				TakNetwork net1 = load("networks\\gen" + generation + "\\Network"+ i + ".takNetwork");
 				TakNetwork net2 = load("networks\\gen" + generation + "\\Network"+ j + ".takNetwork");
 				
-				System.out.println("game " + i + ":" + j + " " +  play(net1, net2, 8));
+				System.out.println("game " + i + ":" + j + " " +  Board.playGame(net1, net2, 8));
 				
 			}
 		}
@@ -117,10 +177,7 @@ public class Main {
 		
 	}
 	
-	private static int play(TakNetwork net1, TakNetwork net2, int sideLegth){
-		
-		return Board.playGame(net1, net2, sideLegth);
-	}
+	
 	
 	private static TakNetwork load(String location){
 		
