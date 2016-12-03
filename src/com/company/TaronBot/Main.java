@@ -16,6 +16,7 @@ import java.net.URLConnection;
 import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 import java.util.logging.FileHandler;
@@ -34,8 +35,8 @@ public class Main {
 	
 	public static void main(String[] args){
 		NetTesting();
-		TestSingleGame();
-		//TestGeneration();
+		//TestSingleGame();
+		TestGeneration();
 		
 	}
 	
@@ -81,7 +82,7 @@ public class Main {
 		TakNetwork net2 = new TakNetwork(9, 8, 8, 8);
 		Random rand = null;
 		
-		rand = new Random(1);
+		rand = new Random(154);
 		net1.randomize(rand);
 		rand = new Random(2);
 		net2.randomize(rand);
@@ -95,7 +96,7 @@ public class Main {
 		int generation = 0;
 		
 		Logger logger = Logger.getLogger("MyLog");
-		
+
 		if(LOGGING_ENABLED)
 		{
 	    	FileHandler fh;  
@@ -163,14 +164,21 @@ public class Main {
 		//create win loss 
 		int[] wins = new int[numPerGeneration];
 		int[] losses = new int[numPerGeneration];
-		
+		ArrayList<TakNetwork> networks=new ArrayList<>();
+		for (int i = 0; i < numPerGeneration; i++) {
+			System.err.println(i);
+			networks.add(load("networks\\gen" + generation + "\\Network"+ i + ".takNetwork"));
+		}
 		for(int i = 0; i < numPerGeneration; i++){
 			for(int j = 0; j < numPerGeneration; j++){
-				TakNetwork net1 = load("networks\\gen" + generation + "\\Network"+ i + ".takNetwork");
-				TakNetwork net2 = load("networks\\gen" + generation + "\\Network"+ j + ".takNetwork");
-				
-				System.out.println("game " + i + ":" + j + " " +  Board.playGame(net1, net2, 8));
-				
+				long start=System.currentTimeMillis();
+				TakNetwork net1 = networks.get(i);
+				TakNetwork net2 = networks.get(j);
+				long generate=System.currentTimeMillis();
+
+				System.out.println("game " + i + ":" + j + " " +  Board.playGame(net1, net2, 8)+(System.currentTimeMillis()-start)/1000.0);
+
+
 			}
 		}
 		

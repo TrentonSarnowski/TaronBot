@@ -1,6 +1,7 @@
 package com.company.TaronBot.Game;
 
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,6 +19,7 @@ public class Board {
     int positiveCapRemain=0;
     int negativeCapRemain=0;
     public static int playGame(TakNetwork Player1, TakNetwork Player2, int sideLength){
+
         Board game=new Board(sideLength, new LinkedList<>(), true);
         boolean check1=false;
         boolean check2=false;
@@ -26,7 +28,7 @@ public class Board {
         for (Move m: moves) {
             if(m.checkFeasible(game,false)&&m.getType()==1){
                 m.performMove(game,false);
-                System.err.println(m.toString());
+                //System.out.println(m.toString());
                 break;
             }
         }
@@ -34,17 +36,29 @@ public class Board {
         for (Move m: moves) {
             if(m.checkFeasible(game,true)&&m.getType()==1){
                 m.performMove(game,true);
-                System.err.println(m.toString());
+                //System.out.println(m.toString());
                 break;
             }
         }
         do{
         	//input data needs to be 9x8x8
+
             moves =Player1.calculate(game.getAIMap(true));
             for (Move m: moves) {
                 if(m.checkFeasible(game,true)){
+                    System.out.println(m.toString());
+                    for (List<Integer> l[]:game.getMap()) {
+                        for (List<Integer>li:l) {
+                            if(li.isEmpty()){
+                                System.out.print(0+" ");
+                            }else{
+                                System.out.print(li.get(li.size()-1)+" ");
+
+                            }
+                        }
+                        System.out.println();
+                    }
                     m.performMove(game,true);
-                    System.err.println(m.toString());
                     break;
                 }
             }
@@ -65,8 +79,19 @@ public class Board {
             moves =Player2.calculate(game.getAIMap(true));
             for (Move m: moves) {
                 if(m.checkFeasible(game,false)){
+                    System.out.println(m.toString());
+                    for (List<Integer> l[]:game.getMap()) {
+                        for (List<Integer>li:l) {
+                            if(li.isEmpty()){
+                                System.out.print(0+" ");
+                            }else{
+                                System.out.print(li.get(li.size()-1)+" ");
+
+                            }
+                        }
+                        System.out.println();
+                    }
                     m.performMove(game,false);
-                    System.err.println(m.toString());
                     break;
                 }
             }
@@ -150,8 +175,39 @@ public class Board {
             positive*=-1;
         }
         //todo
+        //todo add check for full board
+        boolean full=true;
+        for(List<Integer> l[]:b.getMap()){
+            for(List<Integer> m:l){
+                if(m.isEmpty()){
+                    full=false;
+                }
+            }
+        }
+        if(positivePieceRemain<=0||negativePieceRemain<=0||full){
+            int positiveSum=0;
+            int negativeSum=0;
+            for(List<Integer> l[]:b.getMap()){
+                for(List<Integer> m:l){
+                    if(m.size()>0) {
+                        if (m.get(m.size() - 1) == 1) {
+                            positiveSum++;
+                        } else if (m.get(m.size() - 1) == -1) {
+                            negativeSum++;
+                        }
+                    }
+                }
+            }
+            if(cont){
+                return positiveSum>negativeSum;
+            }else{
+                return negativeSum>positiveSum;
+            }
+        }
+
         return false;
     }
+
     private boolean checkVictory( int x, int y, boolean topLevel[][], boolean saidNo[][], boolean vertical ){
     	/**System.err.println(x+" "+y);
     	for( boolean[] b:saidNo){
@@ -849,6 +905,14 @@ public class Board {
         }
         return AIMap;
     }
+
+    public int getNegativePieceRemain() {
+        return negativePieceRemain;
+    }
+    public int getPositivePieceRemain(){
+        return positivePieceRemain;
+    }
+
     public int getPositiveCapRemain(){
         return positiveCapRemain;
     }
@@ -860,6 +924,12 @@ public class Board {
     }
     public void reduceNegativeCapRemain(){
         negativeCapRemain--;
+    }
+    public void reducePositiveFlatRemain(){
+        positivePieceRemain--;
+    }
+    public void reduceNegativeFlatRemain(){
+        negativePieceRemain--;
     }
 
 }

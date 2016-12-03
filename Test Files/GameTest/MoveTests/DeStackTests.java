@@ -12,7 +12,7 @@ import java.util.LinkedList;
 public class DeStackTests extends TestCase {
 
 
-    public void testCreate(){
+    public void testCreate()throws Exception{
         Integer[] array={1,1,1,1,0};
         DeStack test = DeStack.DeStack(0,0,array, 4,true,true,1);
         Board testBoard=new Board(5,new LinkedList<>(),true);
@@ -27,7 +27,7 @@ public class DeStackTests extends TestCase {
         assertTrue(test.checkFeasible(testBoard,true));
 
     }
-    public void testUnEncumberedMoveNorth(){
+    public void testUnEncumberedMoveNorth()throws Exception{
         Integer[] array={1,1,3,2,0};
         DeStack test = DeStack.DeStack(0,0,array, 7,true,true,1);
         Board testBoard=new Board(8,new LinkedList<>(),true);
@@ -53,7 +53,7 @@ public class DeStackTests extends TestCase {
 
 
     }
-    public void testUnEncumberedMoveEast(){
+    public void testUnEncumberedMoveEast()throws Exception{
         Integer[] array={1,1,3,2,0};
         DeStack test = DeStack.DeStack(0,0,array, 7,false,true,1);
         Board testBoard=new Board(8,new LinkedList<>(),true);
@@ -80,7 +80,7 @@ public class DeStackTests extends TestCase {
 
 
     }
-    public void testUnEncumberedMoveWest(){
+    public void testUnEncumberedMoveWest()throws Exception{
         Integer[] array={1,1,3,2,0};
         DeStack test = DeStack.DeStack(7,0,array, 7,false,false,1);
         Board testBoard=new Board(8,new LinkedList<>(),true);
@@ -106,7 +106,7 @@ public class DeStackTests extends TestCase {
 
 
     }
-    public void testUnEncumberedSouth(){
+    public void testUnEncumberedSouth()throws Exception{
         Integer[] array={1,1,3,2,0};
         DeStack test = DeStack.DeStack(0,7,array, 7,true,false,1);
         Board testBoard=new Board(8,new LinkedList<>(),true);
@@ -133,7 +133,7 @@ public class DeStackTests extends TestCase {
 
 
     }
-    public void testWallOnEndCapMoveNorth(){
+    public void testWallOnEndCapMoveNorth()throws Exception{
         Integer[] array={1,2,1};
         DeStack test = DeStack.DeStack(0,0,array, 4,true,true,1);
         Board testBoard=new Board(8,new LinkedList<>(),true);
@@ -150,7 +150,7 @@ public class DeStackTests extends TestCase {
         };
 
     }
-    public void testWallOnEndMoveNorth(){
+    public void testWallOnEndMoveNorth()throws Exception{
         Integer[] array={1,2,1};
         DeStack test = DeStack.DeStack(0,0,array, 4,true,true,1);
         Board testBoard=new Board(8,new LinkedList<>(),true);
@@ -173,7 +173,7 @@ public class DeStackTests extends TestCase {
 
 
     }
-    public void testWallOnNotEndCapMoveNorth(){
+    public void testWallOnNotEndCapMoveNorth()throws Exception{
         Integer[] array={1,2,1};
         DeStack test = DeStack.DeStack(0,0,array, 4,true,true,1);
         Board testBoard=new Board(8,new LinkedList<>(),true);
@@ -195,7 +195,7 @@ public class DeStackTests extends TestCase {
 
 
     }
-    public void testCapOnCapMoveNorth(){
+    public void testCapOnCapMoveNorth()throws Exception{
         Integer[] array={1,2,1};
         DeStack test = DeStack.DeStack(0,0,array, 4,true,true,1);
         Board testBoard=new Board(8,new LinkedList<>(),true);

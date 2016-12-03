@@ -31,11 +31,19 @@ public class DeStack implements Move {
     }
     
     
-    public static DeStack DeStack(int x, int y, Integer[] left, int pickup, boolean verticalAxis, boolean positiveDirection,double weight) {
+    public static DeStack  DeStack (int x, int y, Integer[] left, int pickup, boolean verticalAxis, boolean positiveDirection,double weight) throws Exception{
         ArrayList<Integer> leftbehind=new ArrayList<>();
+        int PickUp=0;
         for (Integer i:left) {
-            leftbehind.add(i);
+            if(i!=null) {
+                PickUp+=i;
+                leftbehind.add(i);
+            }
         }
+        if(pickup!=PickUp){
+            throw new Exception();
+        }
+
         DeStack temp=new DeStack(x,y,leftbehind, pickup,verticalAxis,positiveDirection,weight);
         return temp;
     }
@@ -181,7 +189,9 @@ public class DeStack implements Move {
         }
         for (Integer i:
              leftBehind) {
-            ret+=i;
+            if(i!=null) {
+                ret += i;
+            }
         }
         return ret;
     }
@@ -217,14 +227,17 @@ public class DeStack implements Move {
             return null;
         }
 
-            for (int i = 1; i <=leftBehind.size() ; i++) {
+            for (int i = 1; i <leftBehind.size() ; i++) {
 
                 if(!map[x + i * xChange * sign][y + i * yChange * sign].isEmpty()&&Math.abs(map[x + i * xChange * sign][y + i * yChange * sign].get(map[x + i * xChange * sign][y + i * yChange * sign].size()-1))==2) {
                     map[x + i * xChange * sign][y + i * yChange * sign].set(
                             map[x + i * xChange * sign][y + i * yChange * sign].size() - 1,
                             map[x + i * xChange * sign][y + i * yChange * sign].get(map[x + i * xChange * sign][y + i * yChange * sign].size() - 1) / 2);
                 }
+
                 for (int j = 0; j <leftBehind.get(i-1) ; j++) {
+
+
                     map[x+i*(sign*xChange)][y+i*(sign*yChange)].add(pickUp.get(sum));
                     sum++;
                 }
@@ -237,6 +250,8 @@ public class DeStack implements Move {
     
     
     public boolean checkFeasible(Board board, boolean control){
+        //System.err.println(toString());
+
         List<Integer>[][] map = board.getMap();
         List<Integer> pickUp=map[x][y];
         int xChange;
@@ -257,6 +272,7 @@ public class DeStack implements Move {
         int sum=pickUp.size()-pickUpC;
         int sum2=0;
         int sum3=0;
+
         for (Integer left:leftBehind) {
             sum2+=(left!=null?left:0);
         }
@@ -276,13 +292,14 @@ public class DeStack implements Move {
             }
             //wall/cap check
             for (int i = 1; i < leftBehind.size()-1; i++) {
+
+
                 if(map[x+i*xChange*sign][y+i*yChange*sign].size()!=0&&Math.abs(map[x+i*xChange*sign][y+i*yChange*sign].get(map[x+i*xChange*sign][y+i*yChange*sign].size()-1))==3){
                     //System.err.println("3");
 
                     return false;
                 }else if(map[x+i*xChange*sign][y+i*yChange*sign].size()!=0&&Math.abs(map[x+i*xChange*sign][y+i*yChange*sign].get(map[x+i*xChange*sign][y+i*yChange*sign].size()-1))==2){
-                    System.err.println(toString());
-                    if(Math.abs(pickUp.get(pickUp.size()-1))==3 && leftBehind.get(leftBehind.size()-1)==1){
+                    if(pickUp.size()>0&&leftBehind.size()>0&&Math.abs(pickUp.get(pickUp.size()-1))==3 && leftBehind.get(leftBehind.size()-1)==1){
 
                     }else{
 

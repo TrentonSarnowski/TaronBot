@@ -35,6 +35,8 @@ public class Placement implements Move {
             if(control){
                 if(type==3){
                     board.reducePositiveCapRemain();
+                }else{
+                    board.reducePositiveFlatRemain();
                 }
                 map[x][y].add(type);
 
@@ -42,6 +44,8 @@ public class Placement implements Move {
             }else{
                 if(type==3){
                     board.reduceNegativeCapRemain();
+                }else{
+                    board.reducePositiveFlatRemain();
                 }
                 map[x][y].add(type*-1);
                 return map;
@@ -53,6 +57,9 @@ public class Placement implements Move {
     @Override
     public boolean checkFeasible(Board map, boolean cont) {
         if(Math.abs(type)!=3){
+            if(map.getMap()[x][y].isEmpty()){
+
+            };
             return map.getMap()[x][y].isEmpty();
 
         }

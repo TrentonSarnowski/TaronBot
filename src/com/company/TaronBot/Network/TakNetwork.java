@@ -160,7 +160,10 @@ public class TakNetwork implements Serializable{
 		
 		for(int i = 0; i < width; i++){
 			for(int j = 0; j < depth; j++){
-				moves.add(createPlacement(i,j, Arrays.copyOfRange(placements[0][i][j], 4, placements[0][i][j].length), placements[0][i][j][3]));
+				Move m=createPlacement(i,j, Arrays.copyOfRange(placements[0][i][j], 4, placements[0][i][j].length), placements[0][i][j][3]);
+				if(m!=null) {
+					moves.add(m);
+				}
 				// todo, figure out how the move output is created. set it up so that I can pass an array 3 times. 
 			}
 		}
@@ -216,9 +219,13 @@ public class TakNetwork implements Serializable{
 				break;
 			}
 		} 
-				
-		movement = DeStack.DeStack(XInput, YInput, left, (int) d, (moveOutput[0] > 0?true:false), (moveOutput[1] > 0?true:false), weight );
-		
+		try {
+
+
+			movement = DeStack.DeStack(XInput, YInput, left, (int) d, (moveOutput[0] > 0 ? true : false), (moveOutput[1] > 0 ? true : false), weight);
+		}catch (Exception e){
+			movement =null;
+		}
 		return movement;
 	}
 	
