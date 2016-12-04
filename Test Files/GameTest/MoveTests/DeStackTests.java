@@ -5,6 +5,7 @@ import junit.framework.*;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by sarnowskit on 11/1/2016.
@@ -145,9 +146,7 @@ public class DeStackTests extends TestCase {
         }
         testBoard.getMap()[0][3].add(2);
 
-        if(null==test.performMove(testBoard,true)){
-            assertTrue(false);
-        };
+
 
     }
     public void testWallOnEndMoveNorth()throws Exception{
@@ -211,6 +210,69 @@ public class DeStackTests extends TestCase {
         if(null==test.performMove(testBoard,true)){
             assertTrue(true);
         };
+
+
+
+
+
+    }
+    public void testMoveOntoCap()throws Exception{
+        Integer[] array={1};
+        DeStack test = DeStack.DeStack(0,0,array, 1,true,true,1);
+        Board testBoard=new Board(8,new LinkedList<>(),true);
+        Integer[] array2={1};
+
+        for (Integer e: array2) {
+            testBoard.getMap()[0][0].add(e);
+
+        }
+        testBoard.getMap()[0][1].add(3);
+
+
+        assertFalse(test.checkFeasible(testBoard,true));
+
+
+
+
+
+    }
+    public void testMoveOccur()throws Exception{
+        Integer[] array={1,2,1,2};
+        DeStack test = DeStack.DeStack(0,0,array, 6,true,true,1);
+        Board testBoard=new Board(8,new LinkedList<>(),true);
+        Integer[] array2={1,-1,1,1,1,3};
+
+        for (Integer e: array2) {
+            testBoard.getMap()[0][0].add(e);
+
+        }
+        //testBoard.getMap()[0][1].add(3);
+
+        test.performMove(testBoard,true);
+        System.out.println();
+
+        for (List<Integer> l[]:testBoard.getMap()) {
+            for (List<Integer> list:l) {
+                if(list.isEmpty()){
+                    System.out.print("0 ");
+                }else{
+                    System.out.print(list.get(list.size()-1)+" ");
+
+                }
+            }
+            System.out.println();
+
+        }
+        assertEquals(testBoard.getMap()[0][1].get(0).intValue(),1);
+        assertEquals(testBoard.getMap()[0][2].get(0).intValue(),-1);
+        assertEquals(testBoard.getMap()[0][2].get(1).intValue(),1);
+        assertEquals(testBoard.getMap()[0][3].get(0).intValue(),1);
+        assertEquals(testBoard.getMap()[0][4].get(0).intValue(),1);
+        assertEquals(testBoard.getMap()[0][4].get(1).intValue(),3);
+
+
+
+
 
 
 

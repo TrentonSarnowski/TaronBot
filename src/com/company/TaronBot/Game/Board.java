@@ -53,25 +53,7 @@ public class Board {
             moves =Player1.calculate(game.getAIMap(true));
             for (Move m: moves) {
                 if(m.checkFeasible(game,true)){
-                    if(print) {
-                        for (List<Integer> l[] : game.getMap()) {
-                            for (List<Integer> li : l) {
-                                if (li.isEmpty()) {
-                                    System.out.print(0 + " ");
-                                } else {
-                                    System.out.print(li.get(li.size() - 1) + " ");
 
-                                }
-                            }
-                            System.out.println();
-                        }
-                    }
-
-                    if(firstPlayer!=null&&firstPlayer.toString().equals(m.toString())){
-
-                        System.out.println("loop");
-
-                    }
                     firstPlayer=m;
                     m.performMove(game,true);
                     break;
@@ -80,12 +62,7 @@ public class Board {
             check1=game.checkVictory(game,true);
             check2 = game.checkVictory(game, false);
             
-            //System.out.println("Passed Checks");
-            //try {Thread.sleep(20);
-			//} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-			//	e.printStackTrace();
-			//}
+
             if(check1){
                 System.out.println(i+": "+firstPlayer);
                 return 1;
@@ -96,24 +73,6 @@ public class Board {
             moves =Player2.calculate(game.getAIMap(true));
             for (Move m: moves) {
                 if(m.checkFeasible(game,false)){
-                    if(print) {
-                        for (List<Integer> l[] : game.getMap()) {
-                            for (List<Integer> li : l) {
-                                if (li.isEmpty()) {
-                                    System.out.print(0 + " ");
-                                } else {
-                                    System.out.print(li.get(li.size() - 1) + " ");
-
-                                }
-                            }
-                            System.out.println();
-                        }
-                    }
-                    if(SecondPlayer!=null&&SecondPlayer.toString().equals(m.toString())){
-
-                        System.out.println("loop");
-
-                    }
                     SecondPlayer=m;
                     m.performMove(game,false);
                     break;
