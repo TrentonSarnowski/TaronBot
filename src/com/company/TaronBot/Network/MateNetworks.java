@@ -18,7 +18,7 @@ public class MateNetworks {
 
 	
 	//mutates EVERY value to be along the same lines as the other values.
-	public static TakNetwork MateNetworks(List<TakNetwork> networks, Random rand){
+	public static TakNetwork GroupMateNetworks(List<TakNetwork> networks, Random rand){
 		
 		//TODO NOT FUNCTIONING. DO NOT USE
 		

@@ -37,8 +37,12 @@ import com.company.TaronBot.Network.TakNetwork;
 public class TestingMain {
 
 	private static boolean LOGGING_ENABLED = false;
-	private static int numPerGeneration = 20;
+	private static int numPerGeneration = 5;
 	
+	/**
+	 * main testing method. runs through all testing algorithims for funcionalitly. 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		NetTesting();
 		//TestSingleGame();
@@ -52,7 +56,11 @@ public class TestingMain {
 		
 	}
 
-private static void NetTesting() {
+	/**
+	 * Tests network access. 
+	 * 
+	 */
+	private static void NetTesting() {
 		
 		/*URL url;
 		InputStream inputStream = null;
@@ -83,26 +91,32 @@ private static void NetTesting() {
 			} catch (IOException ioe) {
 				// nothing to see here
 			}
-		}
-		
-		*/
+		}*/
 	}
 
+	/**
+	 * tests a single game created from two randomly generated networks.
+	 * 
+	 */
 	private static void TestSingleGame() {
 		
 		TakNetwork net1 = new TakNetwork(9, 8, 8, 8);
 		TakNetwork net2 = new TakNetwork(9, 8, 8, 8);
 		Random rand = null;
 		
-		rand = new Random(154);
+		rand = new Random();
 		net1.randomize(rand);
-		rand = new Random(2);
+		rand = new Random();
 		net2.randomize(rand);
 		
 		System.out.println("game 1:2 " +  Board.playGame(net1, net2, 8));
 
 	}
 
+	/**
+	 * tests the generation of numPerGeneration networks
+	 * has each network saved, loaded, and fight against itself and every other network
+	 */
 	public static void TestGeneration(){
 		Random random = new Random();
 		int generation = 0;
@@ -198,7 +212,11 @@ private static void NetTesting() {
 	}
 	
 	
-	
+	/**
+	 * 
+	 * @param location String File location to load the network from. 
+	 * @return TakNetwork network that exists at file location, or null
+	 */
 	private static TakNetwork load(String location){
 		
 		FileInputStream fin;
@@ -217,8 +235,11 @@ private static void NetTesting() {
 		return testNetwork;
 	}
 	
-	
-	private static void testing() {
+	/**
+	 * tests a series of statistics methods and classes for other parts of the program
+	 * specifically the mutation method that accepts a list of networks. 
+	 */
+	private static void StatsTesting() {
 
 		/*
 		//mean 10, std dev 1
@@ -259,6 +280,10 @@ private static void NetTesting() {
 	}
 
 
+	/**
+	 * tests the load Network Function. 
+	 * May error if saveTesting is not used directally prior. 
+	 */
 	private static void loadTesting() {
 		FileInputStream fin;
 		try {
@@ -281,6 +306,9 @@ private static void NetTesting() {
 		}
 	}
 
+	/**
+	 * tests the saving of networks
+	 */
 	private static void saveTesting() {
 				
 		TakNetwork testNetwork = new TakNetwork(8, 8, 9, 8);
@@ -297,15 +325,14 @@ private static void NetTesting() {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-
-		
-		
-		
 	}
-
-	public static void networkmutatorsTest() {
+	
+	
+	/**
+	 * tests the mutation of multiple networks at the same time. 
+	 * tests with 20 networks. 
+	 */
+	public static void networkGroupMutatorsTest() {
 		int[][][] blank = createTestBlank();
 		//generate a blank network to use as the calculation network
 		
@@ -328,10 +355,25 @@ private static void NetTesting() {
 		}
 		
 		
-		TakNetwork mate = MateNetworks.MateNetworks(takNetworks, rand);
+		TakNetwork mate = MateNetworks.GroupMateNetworks(takNetworks, rand);
 		
 	}
 
+	/**
+	 * tests the generation of a series of networks,
+	 * it prints the ammount of ram before and after a network is generated
+	 * the time it took to build said network
+	 * the time it took for the network to calculate with that output
+	 * and then data for a series of other networks
+	 * 		current data
+	 * 		gen time
+	 * 		gen data
+	 * 		calc time. 
+	 * 
+	 * finally prints total calc time
+	 * total calc data
+	 * and a list of output moves from the last generated network.
+	 */
 	public static void networkGenerationCalculationTest() {
 		// write your code here
 		// Tools.PrintColor("This is a triumph", "green");
@@ -408,7 +450,11 @@ private static void NetTesting() {
 
 	}
 
-	private static int[][][] createTestBlank2(){
+	/**
+	 * creates a [8][8][9] integer network to use for testing
+	 * @return double[][][] to be used for basic testing. 
+	 */
+	private static int[][][] createTestBlank889(){
 		int[][][] data ={{{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0}},
 				{{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0}},
 				{{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0}},
@@ -425,6 +471,10 @@ private static void NetTesting() {
 	}
 	
 	
+	/**
+	 * creates a [9][8][8] integer network to use for testing
+	 * @return double[][][] to be used for basic testing. 
+	 */
 	private static int[][][] createTestBlank() {
 
 		int[][][] data = { { { 0, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0 } },
