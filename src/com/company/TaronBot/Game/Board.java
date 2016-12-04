@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.company.TaronBot.Game.Moves.*;
-import com.company.TaronBot.Network.TakNetwork;
+import com.company.TaronBot.Network.Network;
 
 import tech.deef.Tools.StaticGlobals;
 
@@ -65,7 +65,7 @@ public class Board {
             }
             check1=game.checkVictory(game,true);
             check2 = game.checkVictory(game, false);
-            
+
 
             if(check1){
             	if(StaticGlobals.PRINT_GAME_MOVES){
@@ -276,6 +276,11 @@ public class Board {
         e.performMove(this, positive);
 
         return false;
+    }
+    public List<Move> generateAllMoves(List<Integer> i){
+        List<Move> moves=new LinkedList<>();
+
+        return null;
     }
     public Move checkForVictory(){
         boolean topLevel[][]=topLevel(true);
