@@ -9,7 +9,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,14 +21,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import org.apache.commons.math3.distribution.NormalDistribution;
-import org.apache.commons.math3.random.AbstractRandomGenerator;
-import org.apache.commons.math3.random.BitsStreamGenerator;
-import org.apache.commons.math3.random.ISAACRandom;
-import org.apache.commons.math3.random.RandomGenerator;
-import org.apache.commons.math3.stat.descriptive.moment.Mean;
-import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
-
 import com.company.TaronBot.Game.Board;
 import com.company.TaronBot.Game.Move;
 import com.company.TaronBot.Network.MateNetworks;
@@ -38,7 +29,7 @@ import com.company.TaronBot.Network.TakNetwork;
 public class TestingMain {
 
 	private static boolean LOGGING_ENABLED = false;
-	private static int numPerGeneration = 20;
+	private static int numPerGeneration = 3;
 	
 	/**
 	 * main testing method. runs through all testing algorithims for funcionalitly. 
@@ -63,7 +54,78 @@ public class TestingMain {
 	 * creates a series of threads networks and tests the output of the wins loss
 	 */
 	private static void ThreadedTesting() {
-		// TODO Auto-generated method stub
+		Random random = new Random();
+		int[] wins = new int[numPerGeneration];
+		int[] losses = new int[numPerGeneration];
+		ArrayList<TakNetwork> networks=new ArrayList<>();
+		
+		//gen networks
+		
+		int RandomNunber = 0;
+		for(int i = 0; i < numPerGeneration; i++){
+			TakNetwork testNetwork = new TakNetwork(9, 8, 8, 8);
+			RandomNunber = random.nextInt();
+			Random rand = new Random(RandomNunber);
+			testNetwork.randomize(rand);
+			
+			networks.add(testNetwork);
+			
+		}
+		
+		
+		for(int i = 0; i < numPerGeneration; i++){
+			
+			RunSelectionOfGames(i,networks,wins,losses);
+			
+		}
+		
+		double[] ratio = new double[wins.length];
+		double[] percentage = new double[wins.length];
+		for(int i = 0; i < wins.length; i++){
+			ratio[i] = (double)wins[i]/(double)losses[i];
+			percentage[i] = (double) wins[i]/((double)wins[i]+(double)losses[i]);
+		}
+		
+		
+		System.out.println("Wins   : " + Arrays.toString(wins));
+		System.out.println("Losses : " + Arrays.toString(losses));
+		System.out.println("Ratio  : " + Arrays.toString(ratio));
+		System.out.println("Percent: " + Arrays.toString(percentage));
+		
+		
+	}
+	
+	/**
+	 * takes in a single int and a list of networks, along with the locations of the wins and losses arrays, and 
+	 * using that data, the network of the given int against every other network in the list. 
+	 * This can be used for threading the network running. 
+	 * 
+	 * @param i int network to run against all other networks
+	 * @param networks List<TakNetworks> the list of networks that are to be run
+	 * @param wins int[] the array for tracking wins
+	 * @param losses int[] the array for tracking losses
+	 */
+	private static void RunSelectionOfGames(int i, List<TakNetwork> networks, int[] wins, int[] losses){
+		
+		for(int j = 0; j < numPerGeneration; j++){
+			long start=System.currentTimeMillis();
+			TakNetwork net1 = networks.get(i);
+			TakNetwork net2 = networks.get(j);
+
+			int winner = Board.playGame(net1, net2, 8);
+			if(winner == 1){
+				wins[i]++;
+				losses[j]++;
+			}else{
+				wins[j]++;
+				losses[i]++;
+			}
+			System.out.println("game " + i + ":" + j + " Winner: " 
+			+  winner + " Time: "+(System.currentTimeMillis()-start)/1000.0 + " S");
+
+
+		}
+		
 		
 	}
 	
@@ -73,6 +135,7 @@ public class TestingMain {
 	 * Tests network access. 
 	 * 
 	 */
+	@SuppressWarnings("unused")
 	private static void NetTesting() {
 		
 		/*URL url;
@@ -111,6 +174,7 @@ public class TestingMain {
 	 * tests a single game created from two randomly generated networks.
 	 * 
 	 */
+	@SuppressWarnings("unused")
 	private static void TestSingleGame() {
 		
 		TakNetwork net1 = new TakNetwork(9, 8, 8, 8);
@@ -143,7 +207,7 @@ public class TestingMain {
 		    try {  
 	
 		        // This block configure the logger with handler and formatter  
-		    	Time time = new Time(System.currentTimeMillis());
+		    	//Time time = new Time(System.currentTimeMillis());
 		    	
 		    	Date date = new Date(System.currentTimeMillis());
 		    	DateFormat formattert = new SimpleDateFormat("MM-dd-YYYY HH_mm_ss");
@@ -190,9 +254,9 @@ public class TestingMain {
 				fout = new FileOutputStream("networks\\gen0\\Network" + i + ".takNetwork");
 				ObjectOutputStream oos = new ObjectOutputStream(fout);
 				oos.writeObject(testNetwork);
+				oos.close();
 				
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -203,32 +267,15 @@ public class TestingMain {
 		//create win loss 
 		int[] wins = new int[numPerGeneration];
 		int[] losses = new int[numPerGeneration];
-		int winner = 0;
 		ArrayList<TakNetwork> networks=new ArrayList<>();
 		for (int i = 0; i < numPerGeneration; i++) {
 			System.err.println(i);
 			networks.add(load("networks\\gen" + generation + "\\Network"+ i + ".takNetwork"));
 		}
 		for(int i = 0; i < numPerGeneration; i++){
-			for(int j = 0; j < numPerGeneration; j++){
-				long start=System.currentTimeMillis();
-				TakNetwork net1 = networks.get(i);
-				TakNetwork net2 = networks.get(j);
-				long generate=System.currentTimeMillis();
-
-				winner = Board.playGame(net1, net2, 8);
-				if(winner == 1){
-					wins[i]++;
-					losses[j]++;
-				}else{
-					wins[j]++;
-					losses[i]++;
-				}
-				System.out.println("game " + i + ":" + j + " Winner: " 
-				+  winner + " Time: "+(System.currentTimeMillis()-start)/1000.0 + "S");
-
-
-			}
+			
+			RunSelectionOfGames(i,networks,wins,losses);
+			
 		}
 		
 		double[] ratio = new double[wins.length];
@@ -259,6 +306,7 @@ public class TestingMain {
 			fin = new FileInputStream(location);
 			ObjectInputStream ois = new ObjectInputStream(fin);
 			testNetwork = (TakNetwork) ois.readObject();
+			ois.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -273,6 +321,7 @@ public class TestingMain {
 	 * tests a series of statistics methods and classes for other parts of the program
 	 * specifically the mutation method that accepts a list of networks. 
 	 */
+	@SuppressWarnings("unused")
 	private static void StatsTesting() {
 
 		/*
@@ -317,12 +366,14 @@ public class TestingMain {
 	 * tests the load Network Function. 
 	 * May error if saveTesting is not used directally prior. 
 	 */
+	@SuppressWarnings("unused")
 	private static void loadTesting() {
 		FileInputStream fin;
 		try {
 			fin = new FileInputStream("networks\\testNet.net");
 			ObjectInputStream ois = new ObjectInputStream(fin);
 			TakNetwork testNetwork = (TakNetwork) ois.readObject();
+			ois.close();
 			
 			int[][][] blank = createTestBlank();
 			List<Move> moves = testNetwork.calculate(blank);
@@ -342,6 +393,7 @@ public class TestingMain {
 	/**
 	 * tests the saving of networks
 	 */
+	@SuppressWarnings("unused")
 	private static void saveTesting() {
 				
 		TakNetwork testNetwork = new TakNetwork(8, 8, 9, 8);
@@ -353,9 +405,8 @@ public class TestingMain {
 			fout = new FileOutputStream("networks\\testNet.net");
 			ObjectOutputStream oos = new ObjectOutputStream(fout);
 			oos.writeObject(testNetwork);
-			
+			oos.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -365,10 +416,11 @@ public class TestingMain {
 	 * tests with 20 networks. 
 	 */
 	public static void networkGroupMutatorsTest() {
-		int[][][] blank = createTestBlank();
+		//int[][][] blank = createTestBlank();
 		//generate a blank network to use as the calculation network
 		
 		TakNetwork testNetwork = new TakNetwork(8, 8, 9, 8);
+		@SuppressWarnings("unused")
 		TakNetwork newNetwork;
 		Random rand = new Random(1);
 		testNetwork.randomize(rand);
@@ -387,6 +439,7 @@ public class TestingMain {
 		}
 		
 		
+		@SuppressWarnings("unused")
 		TakNetwork mate = MateNetworks.GroupMateNetworks(takNetworks, rand);
 		
 	}
@@ -439,8 +492,8 @@ public class TestingMain {
 
 		int[][][] blank = createTestBlank();
 
-		long startupTime = 0, genTime = 0, endTime = 0, startData = 0, startupData = 0, genData = 0, endData = 0;
-
+		long startupTime = 0, genTime = 0, endTime = 0, startData = 0 , genData = 0, endData = 0;
+		//long startupData;
 		ArrayList<TakNetwork> takNetworks = new ArrayList<TakNetwork>(20);
 		long startTime = System.nanoTime();
 		startData = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
@@ -449,7 +502,7 @@ public class TestingMain {
 			PrintColor("Network " + i + "\n", "green");
 
 			startupTime = System.nanoTime();
-			startupData = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
+			//startupData = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
 			testNetwork = new TakNetwork(8, 8, 9, 10);
 			takNetworks.add(testNetwork);
 			Random random = new Random(i);
@@ -486,6 +539,7 @@ public class TestingMain {
 	 * creates a [8][8][9] integer network to use for testing
 	 * @return double[][][] to be used for basic testing. 
 	 */
+	@SuppressWarnings("unused")
 	private static int[][][] createTestBlank889(){
 		int[][][] data ={{{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0}},
 				{{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0}},
