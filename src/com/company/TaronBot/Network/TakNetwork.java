@@ -12,27 +12,45 @@ import com.company.TaronBot.Game.Move;
 import com.company.TaronBot.Game.Moves.DeStack;
 import com.company.TaronBot.Game.Moves.Placement;
 
+/**
+ * TakNetwork class specifically designed for the creation of a square board with n layers. 
+ * @author deef0000dragon1
+ *
+ */
 public class TakNetwork implements Serializable{
 	private int width;
 	private int height;
 	private int depth;
 	private int layers;
 	
+	/**
+	 * 
+	 * @return int width of the network
+	 */
 	public int getWidth() {
 		return width;
 	}
 
-
+	/** 
+	 * 
+	 * @return int height of the network
+	 */
 	public int getHeight() {
 		return height;
 	}
 
-
+	/**
+	 * 
+	 * @return int depth of the network
+	 */
 	public int getDepth() {
 		return depth;
 	}
 
-
+	/**
+	 * 
+	 * @return int number of middle layers in the network
+	 */
 	public int getLayers() {
 		return layers;
 	}
@@ -44,8 +62,14 @@ public class TakNetwork implements Serializable{
 	//function is slightly modified version of tanh
 	//-3 to 3, and the input range is ~-10 to ~10
 	
-	
-	//this constructor creates a fully blank network of the given size. 
+	/**
+	 * constructs a blank network with the given dimensions and middle layers of 1,1
+	 * 
+	 * @param height int
+	 * @param width int
+	 * @param depth int 
+	 * @param layers int
+	 */
 	public TakNetwork(int height, int width, int depth, int layers){
 		int[] inputDimensions = {depth,width,height,1};
 		int[] middleDimensions = {width,height,1,1};//depth may need to be adjusted. 
@@ -69,8 +93,10 @@ public class TakNetwork implements Serializable{
 		
 	}
 	
-	
-	//fully radomizes the entire network.
+	/**
+	 *  randomizes the entire network
+	 * @param rand Random
+	 */
 	public void randomize(Random rand){
 		for(NetworkLayer layer : network){
 			layer.randomize(rand);
@@ -79,7 +105,7 @@ public class TakNetwork implements Serializable{
 	}
 	
 	/**
-	 * 
+	 * returns a network that has been mutated from the original. 
 	 * @param rand input random generator
 	 * @param changePrecentage the percentage of nodes that should be changed. (0.0-1.0) expected
 	 */
@@ -97,12 +123,24 @@ public class TakNetwork implements Serializable{
 	}
 	
 	
+	/**
+	 * sets the specific layer of the network
+	 * @param int i
+	 * @param changePercentageSingleLayerMutate NetworkLayer
+	 */
 	public void setLayer(int i, NetworkLayer changePercentageSingleLayerMutate) {
 		// TODO set the layer at i with the given layer
 		network.set(i, changePercentageSingleLayerMutate);
 	}
 
-
+	/**
+	 * calculates a list of all placements and a single movements for each location on 
+	 * the board and orders best to worst. 
+	 * Does not correct for impossible moves or impossible placements.
+	 * Only calculates output of the network. 
+	 * @param board int[][][] input 3d board
+	 * @return list<Move> containing all possible moves ordered best to worst. 
+	 */
 	public List<Move> calculate(int[][][] board){
 				
 		double[][][][] output;
@@ -118,7 +156,12 @@ public class TakNetwork implements Serializable{
 				
 	}
 
-	//converts the array input into the calculation system into a double array of the correct size
+	/**
+	 * converts the array input into the calculation system into a double array of the correct size
+	 * converts the 3d board into a 4d calc matrix. 
+	 * @param board int[][][]
+	 * @return double[][][]
+	 */
 	private double[][][][] convertArray(int[][][] board) {
 		
 		double[][][][] output = new double[board.length][board[0].length][board[0][0].length][1];
@@ -135,8 +178,14 @@ public class TakNetwork implements Serializable{
 		return output;
 	}
 
-	//takes the output from the network and converts it into a sorted series of moves
-	//all moves are added to this list, including those that would make the bot immediately lose or win. 
+	/**
+	 * takes the output from the network and converts it into a sorted series of moves
+	 * all moves are added to this list, including those that would make the bot immediately lose or win. 
+	 * 
+	 * retuns the moves after being given an output 4d array from the calculation.
+	 * @param placements double[][][][] output from the final layer
+	 * @return ArrayList<Move>
+	 */
 	private List<Move> sortedMoves(double[][][][] placements) {		
 		List<Move> moves = new ArrayList<Move>(width * height * 4);
 		
@@ -180,7 +229,14 @@ public class TakNetwork implements Serializable{
 	}
 
 
-	//[verticle][direction][pickedUp][][][][][]
+	/**
+	 * creates a placement for a specific location
+	 * @param XInput int x location
+	 * @param YInput int y location
+	 * @param moveOutput double[] the output array of the network
+	 * @param weight double weight of the specific move. 
+	 * @return Move the movement created
+	 */
 	private Move createPlacement(int XInput, int YInput, double[] moveOutput, double weight) {
 		//x location input
 		//y location input
@@ -229,10 +285,19 @@ public class TakNetwork implements Serializable{
 		return movement;
 	}
 	
+	/**
+	 * returns a layer of a specific number in the network. 
+	 * @param i int the layer wanted
+	 * @return NetworkLayer the network layer at that layer
+	 */
 	public NetworkLayer getLayer(int i){
 		return network.get(i);
 	}
 	
+	/**
+	 * returns the total nimber of layers in the network.
+	 * @return int total number of layers in the network. 
+	 */
 	public int getTotalNumberOfLayers(){
 		return network.size();
 	}
