@@ -46,9 +46,11 @@ public class TestingMain {
 	 */
 	public static void main(String[] args) {
 		//NetTesting();
-		//TestSingleGame();
-		TestGeneration();
+		ThreadedTesting();
 		
+		
+		//TestSingleGame();
+		//TestGeneration();
 		//networkGenerationCalculationTest();
 		//saveTesting();
 		//loadTesting();
@@ -56,6 +58,16 @@ public class TestingMain {
 		//testing();
 		
 	}
+
+	/**
+	 * creates a series of threads networks and tests the output of the wins loss
+	 */
+	private static void ThreadedTesting() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
 
 	/**
 	 * Tests network access. 
