@@ -13,11 +13,16 @@ import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 
 public class MateNetworks {
 
-	// takes in a list of networks and produces a single network that has been
-	// mutated and generated from the given network
+	
 
 	
-	//mutates EVERY value to be along the same lines as the other values.
+	/**
+	 * joins the networks tegother based on a normal distribution random selection for each of the mutator weights. 
+	 * 
+	 * @param networks List<TakNetwokrs> a list of tak networks that wish to be mutated together
+	 * @param rand Random random number generator used for the mating
+	 * @return TakNetwork a single network based on the the group mating process. 
+	 */
 	public static TakNetwork GroupMateNetworks(List<TakNetwork> networks, Random rand){
 		
 		//TODO NOT FUNCTIONING. DO NOT USE
