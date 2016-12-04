@@ -17,7 +17,7 @@ public class MateNetworks {
 
 	
 	/**
-	 * joins the networks tegother based on a normal distribution random selection for each of the mutator weights. 
+	 * joins the networks together based on a normal distribution random selection for each of the mutator weights. 
 	 * 
 	 * @param networks List<TakNetwokrs> a list of tak networks that wish to be mutated together
 	 * @param rand Random random number generator used for the mating
