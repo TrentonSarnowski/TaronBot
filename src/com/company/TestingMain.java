@@ -39,8 +39,9 @@ public class TestingMain {
 	 */
 	public static void main(String[] args) {
 		//NetTesting();
-		ThreadedTesting(20);
-		ThreadTimingTesting();
+		//ThreadedTesting(20);
+		
+		//ThreadTimingTesting();
 		
 		//TestSingleGame();
 		//TestGeneration();
@@ -56,7 +57,7 @@ public class TestingMain {
 	
 	private static void ThreadTimingTesting() {
 		
-		for(int i = 3; i < 20; i++)
+		for(int i = 5; i < 100; i = i + 5)
 		{
 			ThreadedTesting(i);
 		}
@@ -138,7 +139,8 @@ public class TestingMain {
 			System.out.println("Percent: " + Arrays.toString(percentage));
 		}
 		
-		System.out.println("total Time for " + numPerGeneration +" Threads is: " + (endTime-startTime)/1000000000.0 + " S");
+		//System.out.println("total Time for " + numPerGeneration +" Threads is: " + (endTime-startTime)/1000000000.0 + " S");
+		System.out.println(numPerGeneration +" "+  (endTime-startTime)/1000000000.0);
 		return endTime-startTime;
 	}
 	
