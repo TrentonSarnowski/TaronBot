@@ -44,11 +44,11 @@ public class TestingMain {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		NetTesting();
+		//NetTesting();
 		//TestSingleGame();
 		TestGeneration();
 		
-		networkGenerationCalculationTest();
+		//networkGenerationCalculationTest();
 		//saveTesting();
 		//loadTesting();
 		//networkmutatorsTest();
@@ -210,8 +210,7 @@ public class TestingMain {
 		
 		
 	}
-	
-	
+		
 	/**
 	 * 
 	 * @param location String File location to load the network from. 
@@ -279,7 +278,6 @@ public class TestingMain {
 		
 	}
 
-
 	/**
 	 * tests the load Network Function. 
 	 * May error if saveTesting is not used directally prior. 
@@ -326,7 +324,6 @@ public class TestingMain {
 			e.printStackTrace();
 		}
 	}
-	
 	
 	/**
 	 * tests the mutation of multiple networks at the same time. 
@@ -469,7 +466,6 @@ public class TestingMain {
 				
 		return data;
 	}
-	
 	
 	/**
 	 * creates a [9][8][8] integer network to use for testing

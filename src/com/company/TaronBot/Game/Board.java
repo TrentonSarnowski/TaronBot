@@ -9,6 +9,8 @@ import java.util.List;
 import com.company.TaronBot.Game.Moves.*;
 import com.company.TaronBot.Network.TakNetwork;
 
+import tech.deef.Tools.StaticGlobals;
+
 /**TakNetwork
  * Created by sarnowskit on 10/21/2016.
  */
@@ -48,12 +50,14 @@ public class Board {
         int i=1;
         do{
         	//input data needs to be 9x8x8
-            System.out.println(i+": "+firstPlayer+" "+SecondPlayer);
-            i++;
+        	if(StaticGlobals.PRINT_GAME_MOVES){
+        		System.out.println(i+": "+firstPlayer+" "+SecondPlayer);
+        	}
+        	i++;
             moves =Player1.calculate(game.getAIMap(true));
             for (Move m: moves) {
                 if(m.checkFeasible(game,true)){
-                    if(print) {
+                    if(StaticGlobals.PRINT_GAME_BOARD) {
                         for (List<Integer> l[] : game.getMap()) {
                             for (List<Integer> li : l) {
                                 if (li.isEmpty()) {
@@ -67,7 +71,7 @@ public class Board {
                         }
                     }
 
-                    if(firstPlayer!=null&&firstPlayer.toString().equals(m.toString())){
+                    if(firstPlayer!=null&&firstPlayer.toString().equals(m.toString())&&StaticGlobals.PRINT_LOOPING){
 
                         System.out.println("loop");
 
@@ -96,7 +100,7 @@ public class Board {
             moves =Player2.calculate(game.getAIMap(true));
             for (Move m: moves) {
                 if(m.checkFeasible(game,false)){
-                    if(print) {
+                    if(StaticGlobals.PRINT_GAME_BOARD) {
                         for (List<Integer> l[] : game.getMap()) {
                             for (List<Integer> li : l) {
                                 if (li.isEmpty()) {
@@ -109,7 +113,7 @@ public class Board {
                             System.out.println();
                         }
                     }
-                    if(SecondPlayer!=null&&SecondPlayer.toString().equals(m.toString())){
+                    if(SecondPlayer!=null&&SecondPlayer.toString().equals(m.toString())&&StaticGlobals.PRINT_LOOPING){
 
                         System.out.println("loop");
 
