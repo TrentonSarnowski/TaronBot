@@ -9,6 +9,8 @@ import java.util.List;
 import com.company.TaronBot.Game.Moves.*;
 import com.company.TaronBot.Network.TakNetwork;
 
+import tech.deef.Tools.StaticGlobals;
+
 /**TakNetwork
  * Created by sarnowskit on 10/21/2016.
  */
@@ -48,7 +50,9 @@ public class Board {
         int i=1;
         do{
         	//input data needs to be 9x8x8
-            System.out.println(i+": "+firstPlayer+" "+SecondPlayer);
+        	if(StaticGlobals.PRINT_GAME_MOVES){
+        		System.out.println(i+": "+firstPlayer+" "+SecondPlayer);
+        	}
             i++;
             moves =Player1.calculate(game.getAIMap(true));
             for (Move m: moves) {
@@ -64,11 +68,15 @@ public class Board {
             
 
             if(check1){
-                System.out.println(i+": "+firstPlayer);
-                return 1;
+            	if(StaticGlobals.PRINT_GAME_MOVES){
+            		System.out.println(i+": "+firstPlayer);
+            	}
+            	return 1;
             }else if(check2){
-                System.out.println(i+": "+firstPlayer);
-                return -1;
+            	if(StaticGlobals.PRINT_GAME_MOVES){
+            		System.out.println(i+": "+firstPlayer);
+            	}
+            	return -1;
             }
             moves =Player2.calculate(game.getAIMap(true));
             for (Move m: moves) {
@@ -81,11 +89,14 @@ public class Board {
             check2= game.checkVictory(game, true);
             check1= game.checkVictory(game, false);
             if(check1){
-                System.out.println(i+": "+firstPlayer+" "+SecondPlayer);
-                return -1;
+            	if(StaticGlobals.PRINT_GAME_MOVES){
+            		System.out.println(i+": "+firstPlayer+" "+SecondPlayer);
+            	}
+            	return -1;
             }else if(check2){
-                System.out.println(i+": "+firstPlayer+" "+SecondPlayer);
-
+            	if(StaticGlobals.PRINT_GAME_MOVES){
+            		System.out.println(i+": "+firstPlayer+" "+SecondPlayer);
+            	}
                 return 1;
             }
         }while(true);

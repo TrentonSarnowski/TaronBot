@@ -13,6 +13,7 @@ import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -37,7 +38,7 @@ import com.company.TaronBot.Network.TakNetwork;
 public class TestingMain {
 
 	private static boolean LOGGING_ENABLED = false;
-	private static int numPerGeneration = 5;
+	private static int numPerGeneration = 20;
 	
 	/**
 	 * main testing method. runs through all testing algorithims for funcionalitly. 
@@ -190,6 +191,7 @@ public class TestingMain {
 		//create win loss 
 		int[] wins = new int[numPerGeneration];
 		int[] losses = new int[numPerGeneration];
+		int winner = 0;
 		ArrayList<TakNetwork> networks=new ArrayList<>();
 		for (int i = 0; i < numPerGeneration; i++) {
 			System.err.println(i);
@@ -202,12 +204,33 @@ public class TestingMain {
 				TakNetwork net2 = networks.get(j);
 				long generate=System.currentTimeMillis();
 
-				System.out.println("game " + i + ":" + j + " " +  Board.playGame(net1, net2, 8)+" "+(System.currentTimeMillis()-start)/1000.0);
+				winner = Board.playGame(net1, net2, 8);
+				if(winner == 1){
+					wins[i]++;
+					losses[j]++;
+				}else{
+					wins[j]++;
+					losses[i]++;
+				}
+				System.out.println("game " + i + ":" + j + " Winner: " 
+				+  winner + " Time: "+(System.currentTimeMillis()-start)/1000.0 + "S");
 
 
 			}
 		}
 		
+		double[] ratio = new double[wins.length];
+		double[] percentage = new double[wins.length];
+		for(int i = 0; i < wins.length; i++){
+			ratio[i] = (double)wins[i]/(double)losses[i];
+			percentage[i] = (double) wins[i]/((double)wins[i]+(double)losses[i]);
+		}
+		
+		
+		System.out.println("Wins   : " + Arrays.toString(wins));
+		System.out.println("Losses : " + Arrays.toString(losses));
+		System.out.println("Ratio  : " + Arrays.toString(ratio));
+		System.out.println("Percent: " + Arrays.toString(percentage));
 		
 	}
 		
