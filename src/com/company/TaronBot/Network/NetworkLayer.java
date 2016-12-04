@@ -6,18 +6,37 @@ import java.util.Random;
 
 import tech.deef.Tools.Tools;
 
+/**
+ * the individual layer of a network.
+ * @author deef0000dragon1
+ *
+ */
 public class NetworkLayer implements Serializable{
 	int[] previousLayerDimensions, outputLayerDimensions;
 	nonLinearFunction function;
 	
+	/**
+	 * 
+	 * @return int[] containing the dimensions for the previous layer of the network
+	 */
 	public int[] getPreviousLayerDimensions() {
 		return previousLayerDimensions;
 	}
 
+	
+	/**
+	 * 
+	 * @return int[] containing the dimensions for the output of the network
+	 */
 	public int[] getOutputLayerDimensions() {
 		return outputLayerDimensions;
 	}
 
+	/**
+	 * 
+	 * @return nonLinearFunction that this layer uses as the 
+ 	 * 					function for each sum calculation. 
+	 */
 	public nonLinearFunction getFunction() {
 		return function;
 	}
@@ -25,6 +44,12 @@ public class NetworkLayer implements Serializable{
 	double[][][][] inputLayer, outputLayer;
 	ArrayList<ArrayList<ArrayList<ArrayList<double[][][][]>>>> mutators;
 
+	/**
+	 * 
+	 * @param previousLayerDimensions int[4] expected input dimensions
+	 * @param outputLayerDimensions int[4] expected output dimensions
+	 * @param function non linear function that can be used as the sum function. 
+	 */
 	public NetworkLayer(int[] previousLayerDimensions, int[] outputLayerDimensions, nonLinearFunction function) {
 
 		this.previousLayerDimensions = previousLayerDimensions;
@@ -63,10 +88,9 @@ public class NetworkLayer implements Serializable{
 	}
 
 	/**
-	 * 
-	 * @param input
-	 *            double[][][][] the input values from the last layer.
-	 * @return
+	 * causes the layer to run through its mutators and nonlinear functions to calculate the output
+	 * @param input double[][][][] the input values from the last layer.
+	 * @return double[][][][] output of the network calculation
 	 */
 	public double[][][][] calculate(double[][][][] input) {
 		// TODO error checking to confirm that the input is the right size.
@@ -87,7 +111,7 @@ public class NetworkLayer implements Serializable{
 	}
 
 	/**
-	 * 
+	 * returns the sum of every weight multiplied by it's respective input. 
 	 * @param weights
 	 *            double [][][][] that holds the weighting numbers to be applied
 	 *            to the inputs
@@ -115,7 +139,10 @@ public class NetworkLayer implements Serializable{
 		return sum;
 	}
 
-	// randomizes fully the weights of the layer
+	/**
+	 * randomized every mutator weight in the layer.
+	 * @param rand Random random number generator used to randomize the network. 
+	 */
 	public void randomize(Random rand) {
 		// TODO Auto-generated method stub
 
@@ -141,6 +168,13 @@ public class NetworkLayer implements Serializable{
 
 	}
 
+	/**
+	 * returns a randomized network layer based on the current layer where the 
+	 * randomization is based on a give percentage 
+	 * @param rand Random random number generator for the mutation randomization
+	 * @param changePrecentage Double 0.0-1.0 that represents the percentage of weights to change
+	 * @return the network layer. 
+	 */
 	public NetworkLayer changePercentageSingleLayerMutate(Random rand, double changePrecentage) {
 		// TODO Auto-generated method stub
 		
@@ -175,6 +209,14 @@ public class NetworkLayer implements Serializable{
 		return newLayer;
 	}
 	
+	/**
+	 * given four output dimensional inputs, returns the mutator array
+	 * @param i
+	 * @param j
+	 * @param k
+	 * @param l
+	 * @return double[][][][] containing the mutator weights for that output
+	 */
 	public double[][][][] getMutatorArray(int i, int j, int k, int l){
 		
 		return mutators.get(i).get(j).get(k).get(l);
