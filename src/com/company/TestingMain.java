@@ -50,6 +50,8 @@ public class TestingMain {
 		
 	}
 
+	
+	
 	/**
 	 * creates a series of threads networks and tests the output of the wins loss
 	 */
@@ -129,8 +131,6 @@ public class TestingMain {
 		
 	}
 	
-	
-
 	/**
 	 * Tests network access. 
 	 * 
@@ -294,7 +294,7 @@ public class TestingMain {
 	}
 		
 	/**
-	 * 
+	 * Load a network
 	 * @param location String File location to load the network from. 
 	 * @return TakNetwork network that exists at file location, or null
 	 */
