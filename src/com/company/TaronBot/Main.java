@@ -176,7 +176,7 @@ public class Main {
 				TakNetwork net2 = networks.get(j);
 				long generate=System.currentTimeMillis();
 
-				System.out.println("game " + i + ":" + j + " " +  Board.playGame(net1, net2, 8)+(System.currentTimeMillis()-start)/1000.0);
+				System.out.println("game " + i + ":" + j + " " +  Board.playGame(net1, net2, 8)+" "+(System.currentTimeMillis()-start)/1000.0);
 
 
 			}

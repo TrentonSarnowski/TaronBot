@@ -87,8 +87,10 @@ public class Board {
 			//	e.printStackTrace();
 			//}
             if(check1){
+                System.out.println(i+": "+firstPlayer);
                 return 1;
             }else if(check2){
+                System.out.println(i+": "+firstPlayer);
                 return -1;
             }
             moves =Player2.calculate(game.getAIMap(true));
@@ -120,8 +122,11 @@ public class Board {
             check2= game.checkVictory(game, true);
             check1= game.checkVictory(game, false);
             if(check1){
+                System.out.println(i+": "+firstPlayer+" "+SecondPlayer);
                 return -1;
             }else if(check2){
+                System.out.println(i+": "+firstPlayer+" "+SecondPlayer);
+
                 return 1;
             }
         }while(true);
@@ -192,9 +197,9 @@ public class Board {
                 return true;
             };
         }
-        int positive=1;
+        int sign=1;
         if(cont==false){
-            positive*=-1;
+            sign*=-1;
         }
         //todo
         //todo add check for full board
@@ -223,7 +228,7 @@ public class Board {
             if(cont){
                 return positiveSum>negativeSum;
             }else{
-                return negativeSum>positiveSum;
+                return negativeSum>=positiveSum;
             }
         }
 
