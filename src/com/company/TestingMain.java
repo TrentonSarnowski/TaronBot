@@ -26,6 +26,8 @@ import com.company.TaronBot.Game.Move;
 import com.company.TaronBot.Network.MateNetworks;
 import com.company.TaronBot.Network.TakNetwork;
 
+import tech.deef.Tools.StaticGlobals;
+
 public class TestingMain {
 
 	private static boolean LOGGING_ENABLED = false;
@@ -37,8 +39,8 @@ public class TestingMain {
 	 */
 	public static void main(String[] args) {
 		//NetTesting();
-		ThreadedTesting();
-		
+		ThreadedTesting(20);
+		ThreadTimingTesting();
 		
 		//TestSingleGame();
 		//TestGeneration();
@@ -52,17 +54,28 @@ public class TestingMain {
 
 	
 	
+	private static void ThreadTimingTesting() {
+		
+		for(int i = 3; i < 20; i++)
+		{
+			ThreadedTesting(i);
+		}
+	}
+
+
+
 	/**
 	 * creates a series of threads networks and tests the output of the wins loss
 	 */
-	private static void ThreadedTesting() {
+	private static long ThreadedTesting(int numPerGeneration) {
+		
 		Random random = new Random();
 		int[] wins = new int[numPerGeneration];
 		int[] losses = new int[numPerGeneration];
 		ArrayList<TakNetwork> networks=new ArrayList<>();
 		
-		//gen networks
 		
+		//gen networks
 		int RandomNunber = 0;
 		for(int i = 0; i < numPerGeneration; i++){
 			TakNetwork testNetwork = new TakNetwork(9, 8, 8, 8);
@@ -73,13 +86,43 @@ public class TestingMain {
 			networks.add(testNetwork);
 			
 		}
+		//System.out.println("Generated Threads");
+		long startTime = System.nanoTime();
 		
-		
+		//create threads and thread arrayList
+		ArrayList<Thread> threads = new ArrayList<Thread>(numPerGeneration);
 		for(int i = 0; i < numPerGeneration; i++){
 			
-			RunSelectionOfGames(i,networks,wins,losses);
-			
+			final int start = i;
+			Thread t = new Thread(){
+
+				@Override
+				public void run() {
+					RunSelectionOfGames(start,networks,wins,losses);
+					
+				}
+				
+			};
+			threads.add(t);
 		}
+		
+		
+		//run all threads. 
+		for(Thread thread: threads){
+			thread.start();			
+		}
+		
+		
+		for(int i = 0; i < threads.size(); i++){
+			try {
+				threads.get(i).join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		long endTime = System.nanoTime();
 		
 		double[] ratio = new double[wins.length];
 		double[] percentage = new double[wins.length];
@@ -88,13 +131,15 @@ public class TestingMain {
 			percentage[i] = (double) wins[i]/((double)wins[i]+(double)losses[i]);
 		}
 		
+		if(StaticGlobals.PRINT_THREAD_OUTPUT){
+			System.out.println("Wins   : " + Arrays.toString(wins));
+			System.out.println("Losses : " + Arrays.toString(losses));
+			System.out.println("Ratio  : " + Arrays.toString(ratio));
+			System.out.println("Percent: " + Arrays.toString(percentage));
+		}
 		
-		System.out.println("Wins   : " + Arrays.toString(wins));
-		System.out.println("Losses : " + Arrays.toString(losses));
-		System.out.println("Ratio  : " + Arrays.toString(ratio));
-		System.out.println("Percent: " + Arrays.toString(percentage));
-		
-		
+		System.out.println("total Time for " + numPerGeneration +" Threads is: " + (endTime-startTime)/1000000000.0 + " S");
+		return endTime-startTime;
 	}
 	
 	/**
@@ -122,9 +167,10 @@ public class TestingMain {
 				wins[j]++;
 				losses[i]++;
 			}
-			System.out.println("game " + i + ":" + j + " Winner: " 
-			+  winner + " Time: "+(System.currentTimeMillis()-start)/1000.0 + " S");
-
+			if(StaticGlobals.PRINT_GAME_WINNER){
+				System.out.println("game " + i + ":" + j + " Winner: " 
+				+  winner + " Time: "+(System.currentTimeMillis()-start)/1000.0 + " S");
+			}
 
 		}
 		
