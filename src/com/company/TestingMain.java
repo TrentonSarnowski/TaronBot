@@ -81,43 +81,22 @@ public class TestingMain {
 		long startTime = System.nanoTime();
 		
 		
-		Kernel kernel = new Kernel(){      
-
-			@Override public void run(){
-				int i= getGlobalId();
-		        System.out.println(i);
-		    }
-		};
-		
-		kernel.run();
-		
 		  
 		//create threads and thread arrayList
-		ArrayList<Kernel> threads = new ArrayList<Kernel>(numPerGeneration);
-		for(int i = 0; i < numPerGeneration; i++){
-			
-			final int start = i;
-			Kernel t = new Kernel(){
+		
+		Kernel t = new Kernel(){
 
-				@Override
-				public void run() {
-					RunSelectionOfGames(start,networks,wins,losses);
-					
-				}
+			@Override
+			public void run() {
+				RunSelectionOfGames(getGlobalId(),networks,wins,losses);
 				
-			};
-			threads.add(t);
-		//	System.out.println(i);
-		}
+			}
+			
+		};
 		
-		
-		//run all threads. 
-		for(Kernel thread: threads){
-			//System.out.println(thread.toString());
-			Range r = new Range(null, threads.size());
-			thread.execute(r);
-			//System.out.println(thread.isAlive());
-		}
+			
+		Range r = new Range(null, 1);
+		t.execute(r);
 		
 		
 	
@@ -259,8 +238,10 @@ public class TestingMain {
 	 */
 	private static void RunSelectionOfGames(int i, List<TakNetwork> networks, int[] wins, int[] losses){
 		
-		for(int j = 0; j < networks.size(); j++){
+		//for(int j = 0; j < networks.size(); j++){
+			/*
 			long start=System.currentTimeMillis();
+			
 			TakNetwork net1 = networks.get(i);
 			TakNetwork net2 = networks.get(j);
 
@@ -275,9 +256,9 @@ public class TestingMain {
 			if(StaticGlobals.PRINT_GAME_WINNER){
 				System.out.println("game " + i + ":" + j + " Winner: " 
 				+  winner + " Time: "+(System.currentTimeMillis()-start)/1000.0 + " S");
-			}
+			}*/
 
-		}
+		//}
 		
 		
 	}
