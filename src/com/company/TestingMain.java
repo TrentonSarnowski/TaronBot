@@ -15,6 +15,8 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -46,7 +48,9 @@ public class TestingMain {
 		//ThreadTimingTesting();
 		//ThreadedTesting(100);
 		
-		ComputeGenerationTesting(15);
+		//ComputeGenerationTesting(15);
+		
+		TestGnerationalGrowth(10,10,4);
 		
 		//TestSingleGame();
 		//TestGeneration();
@@ -59,6 +63,87 @@ public class TestingMain {
 	}
 
 	
+	
+	private static void TestGnerationalGrowth(int generationSize, int generations, int cores){
+		
+		Random random = new Random();
+		ArrayList<TakNetwork> networks=new ArrayList<>();
+		NumberFormat formatter = new DecimalFormat("#0.0000");     
+
+		
+		//gen networks
+		int RandomNunber = 0;
+		for(int j = 0; j < generationSize; j++){
+			TakNetwork testNetwork = new TakNetwork(9, 8, 8, 8);
+			RandomNunber = random.nextInt();
+			Random rand = new Random(RandomNunber);
+			testNetwork.randomize(rand);
+			
+			networks.add(testNetwork);
+			
+			//all 100 networks generate
+		}
+		
+		
+		for(int i = 0; i < generationSize; i++){
+			
+			System.out.println("\n\n\nGENERATION: " + i + "\n" + networks.size());
+			ComputeGeneration.compute(networks, cores);
+			
+			
+			Collections.sort(networks, 
+					new Comparator<TakNetwork>() {
+	    				public int compare(TakNetwork m1, TakNetwork m2) {
+	    					return (m1.getWins() < m2.getWins() ? 1 : (m1.getWins() == m2.getWins() ? 0 : -1));
+	    				}
+					}
+				);
+			
+			
+			for(int j = 0; j < networks.size(); j++){
+				
+				System.out.println(networks.get(j).toString());
+				System.out.println("NET: " + j + "\t   Wins: " + networks.get(j).getWins() + "\tLosses: " 
+				+ networks.get(j).getLosses() + "\tPlayed total: " + (networks.get(j).getWins() + networks.get(j).getLosses())
+				+ "\tWin/Loss Ration: " + formatter.format((double)networks.get(j).getWins()/(double)networks.get(j).getLosses())
+				+ "  \tWin Percentage: " +  formatter.format((double)networks.get(j).getWins()/(double)(networks.get(j).getLosses() + networks.get(j).getWins())));
+				
+			}
+			
+			
+			
+			
+			
+			for(int j = generationSize/2;j < generationSize; j++){
+				networks.set(j, networks.get(j-generationSize/2).returnAnotherMutatedNetwork(random, 1));
+			}
+			
+			
+			
+		}
+		
+		
+		new File("networks\\TestGnerationalGrowth\\output").mkdirs();
+		for(int i = 0; i < networks.size(); i++){
+			
+			
+			FileOutputStream fout;
+			try {
+				fout = new FileOutputStream("networks\\TestGnerationalGrowth\\output\\Network" + i + ".takNetwork");
+				ObjectOutputStream oos = new ObjectOutputStream(fout);
+				oos.writeObject(networks.get(i));
+				oos.close();
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+		
+		
+		
+	}
 	
 	
 	private static void ComputeGenerationTesting(int numToTest) {
@@ -103,9 +188,30 @@ public class TestingMain {
 		
 		
 		
+		
+		
+		
 	}
 
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * runs a series of tests from 5-95 to test timings of the generation. 
 	 */

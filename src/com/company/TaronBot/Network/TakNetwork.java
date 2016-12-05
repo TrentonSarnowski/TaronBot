@@ -97,6 +97,7 @@ public class TakNetwork implements Serializable{
 		this.width = width;
 		this.height = height;
 		this.depth = depth;
+		this.layers = layers;
 		
 				
 		network.add(new NetworkLayer(inputDimensions, middleDimensions, function));
@@ -132,9 +133,8 @@ public class TakNetwork implements Serializable{
 		
 		TakNetwork newNetwork = new TakNetwork(getHeight(), getWidth(), getDepth(), getLayers());
 
-		for(int i = 0 ; i < layers; i++){
+		for(int i = 0 ; i < network.size(); i++){
 			newNetwork.setLayer(i, this.getLayer(i).changePercentageSingleLayerMutate(rand, changePrecentage));
-			
 			
 		}
 		
