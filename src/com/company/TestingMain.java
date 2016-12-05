@@ -21,6 +21,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import com.amd.aparapi.Kernel;
+import com.amd.aparapi.Range;
 import com.company.TaronBot.Game.Board;
 import com.company.TaronBot.Game.Move;
 import com.company.TaronBot.Network.MateNetworks;
@@ -31,7 +33,7 @@ import tech.deef.Tools.StaticGlobals;
 public class TestingMain {
 
 	private static boolean LOGGING_ENABLED = false;
-	private static int numPerGeneration = 3;
+	private static int numPerGenerationMethod = 3;
 	
 	/**
 	 * main testing method. runs through all testing algorithims for funcionalitly. 
@@ -42,8 +44,8 @@ public class TestingMain {
 		//ThreadedTesting(20);
 		//ThreadTimingTesting();
 		
-		ThreadedTesting(100);
-		
+		//ThreadedTesting(10);
+		GPUTesting(10);
 		//TestSingleGame();
 		//TestGeneration();
 		//networkGenerationCalculationTest();
@@ -55,6 +57,95 @@ public class TestingMain {
 	}
 
 	
+	private static void GPUTesting(int numPerGeneration) {
+		
+		Random random = new Random();
+		int[] wins = new int[numPerGeneration];
+		int[] losses = new int[numPerGeneration];
+		ArrayList<TakNetwork> networks=new ArrayList<>();
+		
+		
+		//gen networks
+		int RandomNunber = 0;
+		for(int i = 0; i < numPerGeneration; i++){
+			TakNetwork testNetwork = new TakNetwork(9, 8, 8, 8);
+			RandomNunber = random.nextInt();
+			Random rand = new Random(RandomNunber);
+			testNetwork.randomize(rand);
+			
+			networks.add(testNetwork);
+			
+			//all 100 networks generate
+		}
+		//System.out.println("Generated Threads");
+		long startTime = System.nanoTime();
+		
+		
+		Kernel kernel = new Kernel(){      
+
+			@Override public void run(){
+				int i= getGlobalId();
+		        System.out.println(i);
+		    }
+		};
+		
+		kernel.run();
+		
+		  
+		//create threads and thread arrayList
+		ArrayList<Kernel> threads = new ArrayList<Kernel>(numPerGeneration);
+		for(int i = 0; i < numPerGeneration; i++){
+			
+			final int start = i;
+			Kernel t = new Kernel(){
+
+				@Override
+				public void run() {
+					RunSelectionOfGames(start,networks,wins,losses);
+					
+				}
+				
+			};
+			threads.add(t);
+		//	System.out.println(i);
+		}
+		
+		
+		//run all threads. 
+		for(Kernel thread: threads){
+			//System.out.println(thread.toString());
+			Range r = new Range(null, threads.size());
+			thread.execute(r);
+			//System.out.println(thread.isAlive());
+		}
+		
+		
+	
+		
+		long endTime = System.nanoTime();
+		
+		
+		//deprecated for wins and losses in network.
+		double[] ratio = new double[wins.length];
+		double[] percentage = new double[wins.length];
+		for(int i = 0; i < wins.length; i++){
+			ratio[i] = (double)wins[i]/(double)losses[i];
+			percentage[i] = (double) wins[i]/((double)wins[i]+(double)losses[i]);
+		}
+		
+		if(StaticGlobals.PRINT_THREAD_WINNER_OUTPUT){
+			System.out.println("Wins   : " + Arrays.toString(wins));
+			System.out.println("Losses : " + Arrays.toString(losses));
+			System.out.println("Ratio  : " + Arrays.toString(ratio));
+			System.out.println("Percent: " + Arrays.toString(percentage));
+		}
+		
+		System.out.println("total Time for " + numPerGeneration +" Threads is: " + (endTime-startTime)/1000000000.0 + " S");
+		//System.out.println(numPerGeneration +" "+  (endTime-startTime)/1000000000.0);
+		
+	}
+
+
 	/**
 	 * runs a series of tests from 5-95 to test timings of the generation. 
 	 */
@@ -298,7 +389,7 @@ public class TestingMain {
 		
 		new File("networks\\gen0").mkdirs();
 		int RandomNunber = 0;
-		for(int i = 0; i < numPerGeneration; i++){
+		for(int i = 0; i < numPerGenerationMethod; i++){
 			TakNetwork testNetwork = new TakNetwork(9, 8, 8, 8);
 			RandomNunber = random.nextInt();
 			Random rand = new Random(RandomNunber);
@@ -325,14 +416,14 @@ public class TestingMain {
 		
 		
 		//create win loss 
-		int[] wins = new int[numPerGeneration];
-		int[] losses = new int[numPerGeneration];
+		int[] wins = new int[numPerGenerationMethod];
+		int[] losses = new int[numPerGenerationMethod];
 		ArrayList<TakNetwork> networks=new ArrayList<>();
-		for (int i = 0; i < numPerGeneration; i++) {
+		for (int i = 0; i < numPerGenerationMethod; i++) {
 			System.err.println(i);
 			networks.add(load("networks\\gen" + generation + "\\Network"+ i + ".takNetwork"));
 		}
-		for(int i = 0; i < numPerGeneration; i++){
+		for(int i = 0; i < numPerGenerationMethod; i++){
 			
 			RunSelectionOfGames(i,networks,wins,losses);
 			
