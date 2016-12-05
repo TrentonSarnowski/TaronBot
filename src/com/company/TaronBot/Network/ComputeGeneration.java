@@ -87,6 +87,7 @@ public class ComputeGeneration {
 				return;
 			}
 			int winner = Board.playGame(net1, net2, 8);
+			
 			if(winner == 1){
 				net1.setWins(net1.getWins() + 1);
 				net2.setLosses(net2.getLosses() + 1);
@@ -94,6 +95,7 @@ public class ComputeGeneration {
 				net2.setWins(net2.getWins() + 1);
 				net1.setLosses(net1.getLosses() + 1);
 			}
+			
 			if(StaticGlobals.PRINT_GAME_WINNER){
 				System.out.println("game " + net1num + ":" + net1num + " Winner: " 
 				+  winner + " Time: "+(System.currentTimeMillis()-start)/1000.0 + " S");

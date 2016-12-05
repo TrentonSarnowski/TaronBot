@@ -50,7 +50,7 @@ public class TestingMain {
 		
 		//ComputeGenerationTesting(15);
 		
-		TestGnerationalGrowth(10,20,3);
+		TestGnerationalGrowth(5,100,1);
 		
 		//TestSingleGame();
 		//TestGeneration();
@@ -68,7 +68,7 @@ public class TestingMain {
 		
 		Random random = new Random();
 		ArrayList<TakNetwork> networks=new ArrayList<>();
-		NumberFormat formatter = new DecimalFormat("#0.0000");     
+		NumberFormat formatter = new DecimalFormat("#0.0000");
 
 		
 		//gen networks
@@ -89,14 +89,24 @@ public class TestingMain {
 		
 		for(int i = 0; i < generations; i++){
 			
-			System.out.println("\n\n\nGENERATION: " + i + "\n");
+			System.out.println("\n\nGENERATION: " + i + "\n");
 			ComputeGeneration.compute(networks, cores);
 			
 			
 			Collections.sort(networks, 
 					new Comparator<TakNetwork>() {
 	    				public int compare(TakNetwork m1, TakNetwork m2) {
-	    					return (m1.getWins() < m2.getWins() ? 1 : (m1.getWins() == m2.getWins() ? 0 : -1));
+	    					int out = 0;
+	    					if((double)m1.getWins()/(double)m1.getLosses() < (double)m2.getWins()/(double)m2.getLosses()){
+	    						//1 is winner
+	    						return 1;
+	    					}
+	    					if((double)m1.getWins()/(double)m1.getLosses() > (double)m2.getWins()/(double)m2.getLosses()){
+	    						//2 is winner
+	    						return -1;
+	    					}
+	    					return 0;
+	    					
 	    				}
 					}
 				);
@@ -107,7 +117,7 @@ public class TestingMain {
 				System.out.println("NET: " + networks.get(j).toString().substring((networks.get(j).toString().indexOf("@")+1), networks.get(j).toString().length())
 				+ "\t   Wins: " + networks.get(j).getWins() + "\tLosses: " 
 				+ networks.get(j).getLosses() + "\tPlayed total: " + (networks.get(j).getWins() + networks.get(j).getLosses())
-				+ "\tWin/Loss Ration: " + formatter.format((double)networks.get(j).getWins()/(double)networks.get(j).getLosses())
+				+ " \tWin/Loss Ration: " + formatter.format((double)networks.get(j).getWins()/(double)networks.get(j).getLosses())
 				+ "  \tWin Percentage: " +  formatter.format((double)networks.get(j).getWins()/(double)(networks.get(j).getLosses() + networks.get(j).getWins())));
 				
 			}
@@ -115,9 +125,13 @@ public class TestingMain {
 			
 			
 			
-			
-			for(int j = generationSize/2;j < generationSize; j++){
-				networks.set(j, networks.get(j-generationSize/2).returnAnotherMutatedNetwork(random, 0.001));
+			try{
+				for(int j = 1; j < (generationSize+1)/2; j++){
+					networks.set(generationSize/2+j, networks.get(j).returnAnotherMutatedNetwork(random, 0.0001));
+					System.out.println(generationSize/2+j);
+				}
+			}catch(IndexOutOfBoundsException e){
+				System.out.println("ExpectedIndexOutOfBoudsError");
 			}
 			
 			
@@ -149,7 +163,7 @@ public class TestingMain {
 
 		
 		for(int j = 0; j < 100; j++){
-			TakNetwork testNetwork = new TakNetwork(9, 8, 8, 8);
+			TakNetwork testNetwork = new TakNetwork(9, 8, 8, 3);
 			RandomNunber = random.nextInt();
 			Random rand = new Random(RandomNunber);
 			testNetwork.randomize(rand);
@@ -162,22 +176,32 @@ public class TestingMain {
 		networks.get(0).setWins(0);
 		networks.get(0).setLosses(0);
 		
-		for(int i = 0; i < 100; i++){
-			if(Board.playGame(networks.get(0), randNets.get(i), 8) == 1){
-				networks.get(0).setWins(networks.get(0).getWins()+1);
-				System.out.println("Win: " + i);
+		int win = 0;
+		for(int j = 0; j < networks.size(); j++){
+			networks.get(j).setWins(0);
+			networks.get(j).setLosses(0);
+			
+			for(int i = 0; i < 100; i++){
+				win = Board.playGame(networks.get(j), randNets.get(i), 8);
+				//System.out.println("Win: " + win);
+				if(win == 1){
+					networks.get(j).setWins(networks.get(j).getWins()+1);
+					//System.out.println("Win: " + i);
+					
+				}else{
+					networks.get(j).setLosses(networks.get(j).getLosses()+1);
+					//System.out.println("Loss: " + i);
+				}
 				
-			}else{
-				networks.get(0).setLosses(networks.get(0).getLosses()+1);
-				System.out.println("Loss: " + i);
+				
+				
 			}
-			
-			
-			
+			System.out.println("NET: " + networks.get(j).toString().substring((networks.get(j).toString().indexOf("@")+1), networks.get(j).toString().length())
+					+ "\t   Wins: " + networks.get(j).getWins() + "\tLosses: " 
+					+ networks.get(j).getLosses() + "\tPlayed total: " + (networks.get(j).getWins() + networks.get(j).getLosses())
+					+ " \tWin/Loss Ration: " + formatter.format((double)networks.get(j).getWins()/(double)networks.get(j).getLosses())
+					+ "  \tWin Percentage: " +  formatter.format((double)networks.get(j).getWins()/(double)(networks.get(j).getLosses() + networks.get(j).getWins())));
 		}
-		
-		System.out.println("Wins:   " + networks.get(0).getWins());
-		System.out.println("Losses: " + networks.get(0).getLosses());
 		
 	}
 	
@@ -230,18 +254,6 @@ public class TestingMain {
 	}
 
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	
