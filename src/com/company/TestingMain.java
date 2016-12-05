@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +46,7 @@ public class TestingMain {
 		//ThreadTimingTesting();
 		//ThreadedTesting(100);
 		
-		ComputeGenerationTesting(10);
+		ComputeGenerationTesting(15);
 		
 		//TestSingleGame();
 		//TestGeneration();
@@ -84,13 +86,16 @@ public class TestingMain {
 		
 		ComputeGeneration.compute(networks, 8);
 		
-		long endTime = System.nanoTime();
+		
+		NumberFormat formatter = new DecimalFormat("#0.0000");     
 		
 		
 		for(int i = 0; i < networks.size(); i++){
 			
 			System.out.println("NET: " + i + "\t   Wins: " + networks.get(i).getWins() + "\tLosses: " 
-			+ networks.get(i).getLosses() + "\tPlayed total: " + (networks.get(i).getWins() + networks.get(i).getLosses()));
+			+ networks.get(i).getLosses() + "\tPlayed total: " + (networks.get(i).getWins() + networks.get(i).getLosses())
+			+ "\tWin/Loss Ration: " + formatter.format((double)networks.get(i).getWins()/(double)networks.get(i).getLosses())
+			+ "  \tWin Percentage: " +  formatter.format((double)networks.get(i).getWins()/(double)(networks.get(i).getLosses() + networks.get(i).getWins())));
 			
 		}
 		
