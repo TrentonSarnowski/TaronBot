@@ -46,11 +46,11 @@ public class TestingMain {
 		//NetTesting();
 		//ThreadedTesting(20);
 		//ThreadTimingTesting();
-		//ThreadedTesting(100);
+		//ThreadedTesting(1000);
 		
 		//ComputeGenerationTesting(15);
 		
-		TestGnerationalGrowth(10,10,4);
+		TestGnerationalGrowth(10,20,3);
 		
 		//TestSingleGame();
 		//TestGeneration();
@@ -74,10 +74,11 @@ public class TestingMain {
 		//gen networks
 		int RandomNunber = 0;
 		for(int j = 0; j < generationSize; j++){
-			TakNetwork testNetwork = new TakNetwork(9, 8, 8, 8);
+			TakNetwork testNetwork = new TakNetwork(9, 8, 8, 3);
 			RandomNunber = random.nextInt();
 			Random rand = new Random(RandomNunber);
 			testNetwork.randomize(rand);
+			//System.out.println((testNetwork.toString()));
 			
 			networks.add(testNetwork);
 			
@@ -85,9 +86,10 @@ public class TestingMain {
 		}
 		
 		
-		for(int i = 0; i < generationSize; i++){
+		
+		for(int i = 0; i < generations; i++){
 			
-			System.out.println("\n\n\nGENERATION: " + i + "\n" + networks.size());
+			System.out.println("\n\n\nGENERATION: " + i + "\n");
 			ComputeGeneration.compute(networks, cores);
 			
 			
@@ -102,8 +104,8 @@ public class TestingMain {
 			
 			for(int j = 0; j < networks.size(); j++){
 				
-				System.out.println(networks.get(j).toString());
-				System.out.println("NET: " + j + "\t   Wins: " + networks.get(j).getWins() + "\tLosses: " 
+				System.out.println("NET: " + networks.get(j).toString().substring((networks.get(j).toString().indexOf("@")+1), networks.get(j).toString().length())
+				+ "\t   Wins: " + networks.get(j).getWins() + "\tLosses: " 
 				+ networks.get(j).getLosses() + "\tPlayed total: " + (networks.get(j).getWins() + networks.get(j).getLosses())
 				+ "\tWin/Loss Ration: " + formatter.format((double)networks.get(j).getWins()/(double)networks.get(j).getLosses())
 				+ "  \tWin Percentage: " +  formatter.format((double)networks.get(j).getWins()/(double)(networks.get(j).getLosses() + networks.get(j).getWins())));
@@ -115,12 +117,15 @@ public class TestingMain {
 			
 			
 			for(int j = generationSize/2;j < generationSize; j++){
-				networks.set(j, networks.get(j-generationSize/2).returnAnotherMutatedNetwork(random, 1));
+				networks.set(j, networks.get(j-generationSize/2).returnAnotherMutatedNetwork(random, 0.001));
 			}
 			
 			
 			
 		}
+		
+		
+		
 		
 		
 		new File("networks\\TestGnerationalGrowth\\output").mkdirs();
@@ -140,8 +145,39 @@ public class TestingMain {
 			
 		}
 		
+		ArrayList<TakNetwork> randNets=new ArrayList<>();
+
 		
+		for(int j = 0; j < 100; j++){
+			TakNetwork testNetwork = new TakNetwork(9, 8, 8, 8);
+			RandomNunber = random.nextInt();
+			Random rand = new Random(RandomNunber);
+			testNetwork.randomize(rand);
+			
+			randNets.add(testNetwork);
+			
+			//all 100 networks generate
+		}
+
+		networks.get(0).setWins(0);
+		networks.get(0).setLosses(0);
 		
+		for(int i = 0; i < 100; i++){
+			if(Board.playGame(networks.get(0), randNets.get(i), 8) == 1){
+				networks.get(0).setWins(networks.get(0).getWins()+1);
+				System.out.println("Win: " + i);
+				
+			}else{
+				networks.get(0).setLosses(networks.get(0).getLosses()+1);
+				System.out.println("Loss: " + i);
+			}
+			
+			
+			
+		}
+		
+		System.out.println("Wins:   " + networks.get(0).getWins());
+		System.out.println("Losses: " + networks.get(0).getLosses());
 		
 	}
 	
