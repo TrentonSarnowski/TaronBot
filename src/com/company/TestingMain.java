@@ -40,8 +40,9 @@ public class TestingMain {
 	public static void main(String[] args) {
 		//NetTesting();
 		//ThreadedTesting(20);
-		
 		//ThreadTimingTesting();
+		
+		ThreadedTesting(100);
 		
 		//TestSingleGame();
 		//TestGeneration();
@@ -54,7 +55,9 @@ public class TestingMain {
 	}
 
 	
-	
+	/**
+	 * runs a series of tests from 5-95 to test timings of the generation. 
+	 */
 	private static void ThreadTimingTesting() {
 		
 		for(int i = 5; i < 100; i = i + 5)
@@ -86,9 +89,12 @@ public class TestingMain {
 			
 			networks.add(testNetwork);
 			
+			//all 100 networks generate
 		}
 		//System.out.println("Generated Threads");
 		long startTime = System.nanoTime();
+		
+		
 		
 		//create threads and thread arrayList
 		ArrayList<Thread> threads = new ArrayList<Thread>(numPerGeneration);
@@ -105,17 +111,21 @@ public class TestingMain {
 				
 			};
 			threads.add(t);
+		//	System.out.println(i);
 		}
 		
 		
 		//run all threads. 
 		for(Thread thread: threads){
-			thread.start();			
+			//System.out.println(thread.toString());
+			thread.start();	
+			//System.out.println(thread.isAlive());
 		}
 		
 		
 		for(int i = 0; i < threads.size(); i++){
 			try {
+				//System.out.println(i);
 				threads.get(i).join();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -125,6 +135,8 @@ public class TestingMain {
 		
 		long endTime = System.nanoTime();
 		
+		
+		//deprecated for wins and losses in network.
 		double[] ratio = new double[wins.length];
 		double[] percentage = new double[wins.length];
 		for(int i = 0; i < wins.length; i++){
@@ -132,15 +144,15 @@ public class TestingMain {
 			percentage[i] = (double) wins[i]/((double)wins[i]+(double)losses[i]);
 		}
 		
-		if(StaticGlobals.PRINT_THREAD_OUTPUT){
+		if(StaticGlobals.PRINT_THREAD_WINNER_OUTPUT){
 			System.out.println("Wins   : " + Arrays.toString(wins));
 			System.out.println("Losses : " + Arrays.toString(losses));
 			System.out.println("Ratio  : " + Arrays.toString(ratio));
 			System.out.println("Percent: " + Arrays.toString(percentage));
 		}
 		
-		//System.out.println("total Time for " + numPerGeneration +" Threads is: " + (endTime-startTime)/1000000000.0 + " S");
-		System.out.println(numPerGeneration +" "+  (endTime-startTime)/1000000000.0);
+		System.out.println("total Time for " + numPerGeneration +" Threads is: " + (endTime-startTime)/1000000000.0 + " S");
+		//System.out.println(numPerGeneration +" "+  (endTime-startTime)/1000000000.0);
 		return endTime-startTime;
 	}
 	
@@ -156,18 +168,18 @@ public class TestingMain {
 	 */
 	private static void RunSelectionOfGames(int i, List<TakNetwork> networks, int[] wins, int[] losses){
 		
-		for(int j = 0; j < numPerGeneration; j++){
+		for(int j = 0; j < networks.size(); j++){
 			long start=System.currentTimeMillis();
 			TakNetwork net1 = networks.get(i);
 			TakNetwork net2 = networks.get(j);
 
 			int winner = Board.playGame(net1, net2, 8);
 			if(winner == 1){
-				wins[i]++;
-				losses[j]++;
+				net1.setWins(net1.getWins() + 1);
+				net2.setLosses(net1.getLosses() + 1);
 			}else{
-				wins[j]++;
-				losses[i]++;
+				net2.setWins(net2.getWins() + 1);
+				net1.setLosses(net1.getLosses() + 1);
 			}
 			if(StaticGlobals.PRINT_GAME_WINNER){
 				System.out.println("game " + i + ":" + j + " Winner: " 
