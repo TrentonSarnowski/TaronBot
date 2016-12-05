@@ -23,6 +23,7 @@ import java.util.logging.SimpleFormatter;
 
 import com.company.TaronBot.Game.Board;
 import com.company.TaronBot.Game.Move;
+import com.company.TaronBot.Network.ComputeGeneration;
 import com.company.TaronBot.Network.MateNetworks;
 import com.company.TaronBot.Network.TakNetwork;
 
@@ -41,8 +42,9 @@ public class TestingMain {
 		//NetTesting();
 		//ThreadedTesting(20);
 		//ThreadTimingTesting();
+		//ThreadedTesting(100);
 		
-		ThreadedTesting(100);
+		ComputeGenerationTesting(10);
 		
 		//TestSingleGame();
 		//TestGeneration();
@@ -55,6 +57,50 @@ public class TestingMain {
 	}
 
 	
+	
+	
+	private static void ComputeGenerationTesting(int numToTest) {
+		// TODO Auto-generated method stub
+		
+		
+		Random random = new Random();
+		ArrayList<TakNetwork> networks=new ArrayList<>();
+		
+		
+		//gen networks
+		int RandomNunber = 0;
+		for(int i = 0; i < numToTest; i++){
+			TakNetwork testNetwork = new TakNetwork(9, 8, 8, 8);
+			RandomNunber = random.nextInt();
+			Random rand = new Random(RandomNunber);
+			testNetwork.randomize(rand);
+			
+			networks.add(testNetwork);
+			
+			//all 100 networks generate
+		}
+		//System.out.println("Generated Threads");
+		long startTime = System.nanoTime();
+		
+		ComputeGeneration.compute(networks, 8);
+		
+		long endTime = System.nanoTime();
+		
+		
+		for(int i = 0; i < networks.size(); i++){
+			
+			System.out.println("NET: " + i + "\t   Wins: " + networks.get(i).getWins() + "\tLosses: " 
+			+ networks.get(i).getLosses() + "\tPlayed total: " + (networks.get(i).getWins() + networks.get(i).getLosses()));
+			
+		}
+		
+		
+		
+		
+		
+	}
+
+
 	/**
 	 * runs a series of tests from 5-95 to test timings of the generation. 
 	 */
