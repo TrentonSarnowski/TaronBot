@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import com.company.TaronBot.ControllClass;
 import com.company.TaronBot.Game.Board;
 import com.company.TaronBot.Game.Move;
 import com.company.TaronBot.Network.ComputeGeneration;
@@ -43,6 +44,8 @@ public class TestingMain {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		startControllThread();
+		
 		//NetTesting();
 		//ThreadedTesting(20);
 		//ThreadTimingTesting();
@@ -50,7 +53,7 @@ public class TestingMain {
 		
 		//ComputeGenerationTesting(15);
 		
-		TestGnerationalGrowth(10,15,2);
+		TestGnerationalGrowth(64,100,8);
 		
 		//TestSingleGame();
 		//TestGeneration();
@@ -64,7 +67,24 @@ public class TestingMain {
 
 	
 	
+	private static void startControllThread() {
+		Thread t = new Thread(){
+
+			@Override
+			public void run() {
+				ControllClass.StartControll();
+				
+			}
+			
+		};
+		t.start();
+	}
+
+
+
 	private static void TestGnerationalGrowth(int generationSize, int generations, int cores){
+		
+		
 		
 		Random random = new Random();
 		ArrayList<TakNetwork> networks=new ArrayList<>();
@@ -88,6 +108,7 @@ public class TestingMain {
 		
 		
 		for(int i = 0; i < generations; i++){
+			
 			
 			System.out.println("\n\nGENERATION: " + i + "\n");
 			ComputeGeneration.compute(networks, cores);
@@ -163,15 +184,15 @@ public class TestingMain {
 		
 		
 		
+		String output = "networks\\TestGnerationalGrowth\\output"; 
 		
-		
-		new File("networks\\TestGnerationalGrowth\\output").mkdirs();
+		new File(output).mkdirs();
 		for(int i = 0; i < networks.size(); i++){
 			
 			
 			FileOutputStream fout;
 			try {
-				fout = new FileOutputStream("networks\\TestGnerationalGrowth\\output\\Network" + i + ".takNetwork");
+				fout = new FileOutputStream(output + "\\Network" + i + ".takNetwork");
 				ObjectOutputStream oos = new ObjectOutputStream(fout);
 				oos.writeObject(networks.get(i));
 				oos.close();

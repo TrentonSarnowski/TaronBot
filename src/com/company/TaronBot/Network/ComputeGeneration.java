@@ -74,6 +74,15 @@ public class ComputeGeneration {
 		
 		for(int i = 0; i < GamesPerThread; i++){
 			
+			while(StaticGlobals.PAUSED){
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
 			atGame = threadNum * GamesPerThread + i;
 			net1num = atGame/networks.size();
 			net2num = atGame%networks.size();
