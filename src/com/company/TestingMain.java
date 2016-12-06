@@ -53,7 +53,7 @@ public class TestingMain {
 		
 		//ComputeGenerationTesting(15);
 		
-		TestGnerationalGrowth(64,100,8);
+		TestGnerationalGrowth(10,10,8);
 		
 		//TestSingleGame();
 		//TestGeneration();

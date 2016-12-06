@@ -112,7 +112,7 @@ public class ComputeGeneration {
 				net1.setLosses(net1.getLosses() + 1);
 			}
 			
-			if(StaticGlobals.PRINT_GAME_WINNER && i%50 == 0){
+			if(StaticGlobals.PRINT_GAME_WINNER && i%1 == 0){
 				System.out.println("game " + net1num + ":" + net2num + " Winner: " 
 				+  winner + " Time: "+(System.currentTimeMillis()-start)/1000.0 + " S");
 			}
