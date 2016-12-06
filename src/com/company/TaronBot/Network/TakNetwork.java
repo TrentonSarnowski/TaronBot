@@ -91,7 +91,7 @@ public class TakNetwork implements Serializable{
 	 */
 	public TakNetwork(int height, int width, int depth, int layers){
 		int[] inputDimensions = {depth,width,height,1};
-		int[] middleDimensions = {width,height,1,1};//depth may need to be adjusted. 
+		int[] middleDimensions = {width,height,4,1};//depth may need to be adjusted.
 		int[] outputDimensions = {1,width,depth,width+7};
 		 //make the move output dimenstions the last 2d array
 		this.width = width;
@@ -185,7 +185,7 @@ public class TakNetwork implements Serializable{
 		
 		double[][][][] output = new double[board.length][board[0].length][board[0][0].length][1];
 		//create an array of the correct size to house the input values.
-		
+
 		for(int i = 0; i < board.length; i++){
 			for(int j = 0; j < board[0].length; j++){
 				for(int k = 0; k < board[0][0].length; k++){

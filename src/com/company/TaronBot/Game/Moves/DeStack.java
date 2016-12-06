@@ -238,15 +238,17 @@ public class DeStack implements Move {
                         map[x + i * xChange * sign][y + i * yChange * sign].get(map[x + i * xChange * sign][y + i * yChange * sign].size() - 1) / 2);
             }
 
-            for (int j = 0; j < leftBehind.get(i - 1); j++) {
 
 
-                map[x + i * (sign * xChange)][y + i * (sign * yChange)].add(pickUp.get(sum));
+            for (int j = 0; j < leftBehind.get(i-1); j++) {
 
+                try {
+                    map[x + i * (sign * xChange)][y + i * (sign * yChange)].add(pickUp.get(sum));
 
-
-
-                sum++;
+                    sum++;
+                }catch (Exception e){
+                    System.err.println("Errr");
+                }
             }
         }
         for (int i = 0; i < pickUpC; i++) {

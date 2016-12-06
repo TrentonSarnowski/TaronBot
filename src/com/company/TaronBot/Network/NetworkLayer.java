@@ -129,7 +129,7 @@ public class NetworkLayer implements Serializable{
 			for (int j = 0; j < previousLayerDimensions[1]; j++) {
 				for (int k = 0; k < previousLayerDimensions[2]; k++) {
 					for (int l = 0; l < previousLayerDimensions[3]; l++) {
-
+						//System.err.println(i+" "+j+" "+k+" "+l);
 						sum += weights[i][j][k][l] * input[i][j][k][l];
 					}
 				}

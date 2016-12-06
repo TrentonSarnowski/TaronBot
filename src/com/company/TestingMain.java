@@ -50,8 +50,9 @@ public class TestingMain {
 		
 		//ComputeGenerationTesting(15);
 		
-		TestGnerationalGrowth(5,100,1);
-		
+		//TestGnerationalGrowth(64,100,3);
+		Board.playGame(loadTesting("C:\\Users\\sarnowskit\\Downloads\\TaronBot\\networks\\TestGnerationalGrowth\\output\\Network2.takNetwork"),
+		loadTesting("C:\\Users\\sarnowskit\\Downloads\\TaronBot\\networks\\TestGnerationalGrowth\\output\\Network15.takNetwork"),8);
 		//TestSingleGame();
 		//TestGeneration();
 		//networkGenerationCalculationTest();
@@ -74,7 +75,7 @@ public class TestingMain {
 		//gen networks
 		int RandomNunber = 0;
 		for(int j = 0; j < generationSize; j++){
-			TakNetwork testNetwork = new TakNetwork(9, 8, 8, 3);
+			TakNetwork testNetwork = new TakNetwork(9, 8, 8, 8);
 			RandomNunber = random.nextInt();
 			Random rand = new Random(RandomNunber);
 			testNetwork.randomize(rand);
@@ -97,7 +98,7 @@ public class TestingMain {
 					new Comparator<TakNetwork>() {
 	    				public int compare(TakNetwork m1, TakNetwork m2) {
 	    					int out = 0;
-	    					if((double)m1.getWins()/(double)m1.getLosses() < (double)m2.getWins()/(double)m2.getLosses()){
+	    					if((double)m1.getWins()/(double)(m1.getLosses()) < (double)m2.getWins()/(double)(m2.getLosses())){
 	    						//1 is winner
 	    						return 1;
 	    					}
@@ -106,7 +107,7 @@ public class TestingMain {
 	    						return -1;
 	    					}
 	    					return 0;
-	    					
+
 	    				}
 					}
 				);
@@ -128,7 +129,7 @@ public class TestingMain {
 			try{
 				for(int j = 1; j < (generationSize+1)/2; j++){
 					networks.set(generationSize/2+j, networks.get(j).returnAnotherMutatedNetwork(random, 0.0001));
-					System.out.println(generationSize/2+j);
+					//System.out.println(generationSize/2+j);
 				}
 			}catch(IndexOutOfBoundsException e){
 				System.out.println("ExpectedIndexOutOfBoudsError");
@@ -173,6 +174,7 @@ public class TestingMain {
 			//all 100 networks generate
 		}
 
+
 		networks.get(0).setWins(0);
 		networks.get(0).setLosses(0);
 		
@@ -180,24 +182,25 @@ public class TestingMain {
 		for(int j = 0; j < networks.size(); j++){
 			networks.get(j).setWins(0);
 			networks.get(j).setLosses(0);
-			
+
 			for(int i = 0; i < 100; i++){
 				win = Board.playGame(networks.get(j), randNets.get(i), 8);
 				//System.out.println("Win: " + win);
 				if(win == 1){
 					networks.get(j).setWins(networks.get(j).getWins()+1);
 					//System.out.println("Win: " + i);
-					
+
 				}else{
 					networks.get(j).setLosses(networks.get(j).getLosses()+1);
 					//System.out.println("Loss: " + i);
 				}
-				
-				
-				
+
+
+
 			}
+
 			System.out.println("NET: " + networks.get(j).toString().substring((networks.get(j).toString().indexOf("@")+1), networks.get(j).toString().length())
-					+ "\t   Wins: " + networks.get(j).getWins() + "\tLosses: " 
+					+ "\t   Wins: " + networks.get(j).getWins() + "\tLosses: "
 					+ networks.get(j).getLosses() + "\tPlayed total: " + (networks.get(j).getWins() + networks.get(j).getLosses())
 					+ " \tWin/Loss Ration: " + formatter.format((double)networks.get(j).getWins()/(double)networks.get(j).getLosses())
 					+ "  \tWin Percentage: " +  formatter.format((double)networks.get(j).getWins()/(double)(networks.get(j).getLosses() + networks.get(j).getWins())));
@@ -259,7 +262,7 @@ public class TestingMain {
 	
 	
 	
-	
+
 	/**
 	 * runs a series of tests from 5-95 to test timings of the generation. 
 	 */
@@ -632,20 +635,20 @@ public class TestingMain {
 	 * May error if saveTesting is not used directally prior. 
 	 */
 	@SuppressWarnings("unused")
-	private static void loadTesting() {
+	private static TakNetwork loadTesting(String s) {
 		FileInputStream fin;
 		try {
-			fin = new FileInputStream("networks\\testNet.net");
+			fin = new FileInputStream(s);
 			ObjectInputStream ois = new ObjectInputStream(fin);
 			TakNetwork testNetwork = (TakNetwork) ois.readObject();
 			ois.close();
 			
 			int[][][] blank = createTestBlank();
-			List<Move> moves = testNetwork.calculate(blank);
-			for (Move move : moves) {
-				PrintColor("   " + move.toString() + "\n", "blue");
-			}
-		
+			//List<Move> moves = testNetwork.calculate(blank);
+			//for (Move move : moves) {
+			//	PrintColor("   " + move.toString() + "\n", "blue");
+			//}
+		return testNetwork;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -653,6 +656,7 @@ public class TestingMain {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
 
 	/**

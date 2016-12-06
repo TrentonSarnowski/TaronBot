@@ -254,13 +254,13 @@ public class DeStackTests extends TestCase {
         for (List<Integer> l[]:testBoard.getMap()) {
             for (List<Integer> list:l) {
                 if(list.isEmpty()){
-                    System.out.print("0 ");
+                    System.err.print("0 ");
                 }else{
-                    System.out.print(list.get(list.size()-1)+" ");
+                    System.err.print(list.get(list.size()-1)+" ");
 
                 }
             }
-            System.out.println();
+            System.err.println();
 
         }
         assertEquals(testBoard.getMap()[0][1].get(0).intValue(),1);

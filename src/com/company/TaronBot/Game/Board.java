@@ -7,8 +7,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.company.TaronBot.Game.Moves.*;
-import com.company.TaronBot.Network.TakNetwork;
 
+
+import com.company.TaronBot.Network.TakNetwork;
 import tech.deef.Tools.StaticGlobals;
 
 /**TakNetwork
