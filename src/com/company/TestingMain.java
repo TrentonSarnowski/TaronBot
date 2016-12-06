@@ -50,7 +50,7 @@ public class TestingMain {
 		
 		//ComputeGenerationTesting(15);
 		
-		TestGnerationalGrowth(5,100,1);
+		TestGnerationalGrowth(10,15,2);
 		
 		//TestSingleGame();
 		//TestGeneration();
@@ -123,13 +123,36 @@ public class TestingMain {
 			}
 			
 			
-			
+			ArrayList<TakNetwork> remove = new ArrayList<TakNetwork>();
 			
 			try{
-				for(int j = 1; j < (generationSize+1)/2; j++){
-					networks.set(generationSize/2+j, networks.get(j).returnAnotherMutatedNetwork(random, 0.0001));
-					System.out.println(generationSize/2+j);
+				
+				for(int j = 0; j < (generationSize); j++){
+					if(random.nextDouble() > Math.cos(j*Math.PI/2/generationSize)){
+						System.out.println("removed " + j + " "+ Math.cos(j*Math.PI/2.0/generationSize));
+						remove.add(networks.get(j));
+					}
 				}
+				
+				for(TakNetwork net: remove){
+					
+					networks.remove(net);
+				}
+				remove.clear();
+				
+				//direct dupe top net
+				
+				
+				 	
+				while(networks.size() < generationSize){
+					int toDupe = (int)Math.floor(Math.cos(random.nextDouble()*Math.PI/2.0)*networks.size());
+			  		networks.add(networks.get(toDupe).returnAnotherMutatedNetwork(random, 0.00001));
+			  		System.out.println("Duped: " + toDupe);
+				}
+				
+				
+				
+				networks.set(generationSize, networks.get(0).returnAnotherMutatedNetwork(random, 0.00001));
 			}catch(IndexOutOfBoundsException e){
 				System.out.println("ExpectedIndexOutOfBoudsError");
 			}

@@ -70,6 +70,7 @@ public class ComputeGeneration {
 		int atGame = 0;
 		TakNetwork net1 = null;
 		TakNetwork net2 = null;
+		int winner = 0;
 		
 		for(int i = 0; i < GamesPerThread; i++){
 			
@@ -86,7 +87,13 @@ public class ComputeGeneration {
 				//last network run. exit. 
 				return;
 			}
-			int winner = Board.playGame(net1, net2, 8);
+			
+			try{
+				winner = Board.playGame(net1, net2, 8);
+			}catch(ArrayIndexOutOfBoundsException e){
+				e.printStackTrace();
+				System.out.println("Error caught in game " +net1num+ " : " + net2num);
+			}
 			
 			if(winner == 1){
 				net1.setWins(net1.getWins() + 1);
@@ -96,8 +103,8 @@ public class ComputeGeneration {
 				net1.setLosses(net1.getLosses() + 1);
 			}
 			
-			if(StaticGlobals.PRINT_GAME_WINNER){
-				System.out.println("game " + net1num + ":" + net1num + " Winner: " 
+			if(StaticGlobals.PRINT_GAME_WINNER && i%50 == 0){
+				System.out.println("game " + net1num + ":" + net2num + " Winner: " 
 				+  winner + " Time: "+(System.currentTimeMillis()-start)/1000.0 + " S");
 			}
 
