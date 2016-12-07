@@ -66,7 +66,7 @@ public class ServerCommunication {
 /*
  * 
 	Thanks to Zach C. for creating this list for interaction with the API and PlatTak
-	
+	API Located Here: https://github.com/chaitu236/TakServer
 	# Example connection to tak server.
 	
 	# Connect to server
