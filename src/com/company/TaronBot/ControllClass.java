@@ -6,6 +6,20 @@ import tech.deef.Tools.StaticGlobals;
 
 public class ControllClass {
 
+	/**
+	 * TODO read in networks
+	 * mutate a list of networks
+	 * adjust verbosity of output
+	 * generate a series of networks
+	 * select mutation method
+	 * select mutation percentage
+	 * help files
+	 * log into playtak
+	 * automate games on playtak
+	 * 
+	 */
+	
+	
 	public static void StartControll() {
 		
 		String input = "";
