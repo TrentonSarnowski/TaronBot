@@ -44,7 +44,7 @@ public class TestingMain {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		startControllThread();
+		//startControllThread();
 
 		//NetTesting();
 		//ThreadedTesting(20);
@@ -52,9 +52,12 @@ public class TestingMain {
 		//ThreadedTesting(1000);
 		
 		//ComputeGenerationTesting(15);
-		
-		TestGnerationalGrowth(64,100,8);
-		
+
+		//TestGnerationalGrowth(64,64,3);
+        System.out.print(Board.playGame(
+                loadTesting("C:\\Users\\sarnowskit\\Downloads\\TaronBot\\networks\\TestGnerationalGrowth\\output\\Network2.takNetwork"),
+                loadTesting("C:\\Users\\sarnowskit\\Desktop\\64 gened networks\\Network0.takNetwork"),8));
+
 		//TestSingleGame();
 		//TestGeneration();
 		//networkGenerationCalculationTest();
@@ -118,11 +121,11 @@ public class TestingMain {
 					new Comparator<TakNetwork>() {
 	    				public int compare(TakNetwork m1, TakNetwork m2) {
 	    					int out = 0;
-	    					if((double)m1.getWins()/(double)(m1.getLosses()) < (double)m2.getWins()/(double)(m2.getLosses())){
+	    					if((double)m1.getWins() < (double)m2.getWins()){
 	    						//1 is winner
 	    						return 1;
 	    					}
-	    					if((double)m1.getWins()/(double)m1.getLosses() > (double)m2.getWins()/(double)m2.getLosses()){
+	    					if((double)m1.getWins() > (double)m2.getWins()){
 	    						//2 is winner
 	    						return -1;
 	    					}
@@ -148,13 +151,12 @@ public class TestingMain {
 			
 			try{
 
-				for(int j = 0; j < (generationSize); j++){
-					if(random.nextDouble() > Math.cos(j*Math.PI/2/generationSize)){
-						System.out.println("removed " + j + " "+ Math.cos(j*Math.PI/2.0/generationSize));
-						remove.add(networks.get(j));	
-					}
-				}
-					
+				for(int j = 0; j < (generationSize); j++) {
+                    if (random.nextDouble() > Math.cos(j * Math.PI / 2 / generationSize)) {
+                        System.out.println("removed " + j + " " + Math.cos(j * Math.PI / 2.0 / generationSize));
+                        remove.add(networks.get(j));
+                    }
+                }
 				for(int j = 1; j < (generationSize+1)/2; j++){
 					networks.set(generationSize/2+j, networks.get(j).returnAnotherMutatedNetwork(random, 0.0001));
 					//System.out.println(generationSize/2+j);
@@ -234,7 +236,7 @@ public class TestingMain {
 			for(int i = 0; i < 100; i++){
 				win = Board.playGame(networks.get(j), randNets.get(i), 8);
 				//System.out.println("Win: " + win);
-				if(win == 1){
+				if(win > 0){
 					networks.get(j).setWins(networks.get(j).getWins()+1);
 					//System.out.println("Win: " + i);
 

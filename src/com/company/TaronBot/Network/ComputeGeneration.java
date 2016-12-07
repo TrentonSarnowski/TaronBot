@@ -125,22 +125,20 @@ public class ComputeGeneration {
 				System.out.println("Error caught in game " +net1num+ " : " + net2num);
 			}
 			
-			if(winner == 1){
-				net1.setWins(net1.getWins() + 1);
-				net2.setLosses(net2.getLosses() + 1);
-			}else{
-				net2.setWins(net2.getWins() + 1);
-				net1.setLosses(net1.getLosses() + 1);
+			if(Math.abs(winner)==32){
+				System.err.println("Road");
 			}
+			net1.setWins(net1.getWins() + winner);
+			net2.setWins(net2.getWins() + (-1*winner));
+
 			 winner = Board.playGame(net1, net3, 8);
 
-			if(winner == 1){
-				net1.setWins(net1.getWins() + 1);
-				net3.setLosses(net3.getLosses() + 1);
-			}else{
-				net3.setWins(net3.getWins() + 1);
-				net1.setLosses(net1.getLosses() + 1);
+			if(Math.abs(winner)==32){
+				System.err.println("Road");
 			}
+				net1.setWins(net1.getWins() + winner);
+				//net3.setLosses(net3.getLosses() + -1*winner);
+
 
 			if(StaticGlobals.PRINT_GAME_WINNER && i%50 == 0){
 				System.out.println("game " + net1num + ":" + net2num + " Winner: "

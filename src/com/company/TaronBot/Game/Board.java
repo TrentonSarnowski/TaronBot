@@ -26,8 +26,8 @@ public class Board {
     public static int playGame(TakNetwork Player1, TakNetwork Player2, int sideLength){
 
         Board game=new Board(sideLength, new LinkedList<>(), true);
-        boolean check1=false;
-        boolean check2=false;
+        int check1=500;
+        //boolean check2=false;
         List<Move> moves;
         moves = Player1.calculate(game.getAIMap(false));
         for (Move m: moves) {
@@ -65,19 +65,14 @@ public class Board {
                 }
             }
             check1=game.checkVictory(game,true);
-            check2 = game.checkVictory(game, false);
 
 
-            if(check1){
+
+            if(check1 != 500){
             	if(StaticGlobals.PRINT_GAME_MOVES){
             		System.out.println(i+": "+firstPlayer);
             	}
-            	return 1;
-            }else if(check2){
-            	if(StaticGlobals.PRINT_GAME_MOVES){
-            		System.out.println(i+": "+firstPlayer);
-            	}
-            	return -1;
+            	return check1;
             }
             moves =Player2.calculate(game.getAIMap(true));
             for (Move m: moves) {
@@ -87,18 +82,12 @@ public class Board {
                     break;
                 }
             }
-            check2= game.checkVictory(game, true);
-            check1= game.checkVictory(game, false);
-            if(check1){
-            	if(StaticGlobals.PRINT_GAME_MOVES){
-            		System.out.println(i+": "+firstPlayer+" "+SecondPlayer);
-            	}
-            	return -1;
-            }else if(check2){
-            	if(StaticGlobals.PRINT_GAME_MOVES){
-            		System.out.println(i+": "+firstPlayer+" "+SecondPlayer);
-            	}
-                return 1;
+            check1=game.checkVictory(game,true);
+            if(check1 != 500){
+                if(StaticGlobals.PRINT_GAME_MOVES){
+                    System.out.println(i+": "+firstPlayer);
+                }
+                return check1;
             }
         }while(true);
 
@@ -158,14 +147,21 @@ public class Board {
             ready=!ready;
         }
     }
-    public boolean checkVictory(Board b, boolean cont){
+    public int checkVictory(Board b, boolean cont){
         boolean topLevel[][]=b.topLevel(cont);
         for (int i = 0; i <topLevel.length ; i++) {
             if(checkVictory(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
-                return true;
+                return 32;
             };
             if(checkVictory(i,0,topLevel,new boolean[topLevel.length][topLevel.length], true)){
-                return true;
+                return 32;
+            };
+            topLevel=b.topLevel(!cont);
+            if(checkVictory(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
+                return -32;
+            };
+            if(checkVictory(i,0,topLevel,new boolean[topLevel.length][topLevel.length], true)){
+                return -32;
             };
         }
         int sign=1;
@@ -197,13 +193,13 @@ public class Board {
                 }
             }
             if(cont){
-                return positiveSum>negativeSum;
+                return positiveSum-negativeSum;
             }else{
-                return negativeSum>=positiveSum;
+
             }
         }
 
-        return false;
+        return 500;
     }
 
     private boolean checkVictory( int x, int y, boolean topLevel[][], boolean saidNo[][], boolean vertical ){
