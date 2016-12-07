@@ -23,6 +23,9 @@ import java.util.logging.SimpleFormatter;
 
 import com.amd.aparapi.Kernel;
 import com.amd.aparapi.Range;
+import com.amd.aparapi.device.Device;
+import com.amd.aparapi.device.OpenCLDevice;
+import com.amd.aparapi.internal.opencl.OpenCLPlatform;
 import com.company.TaronBot.Game.Board;
 import com.company.TaronBot.Game.Move;
 import com.company.TaronBot.Network.MateNetworks;
@@ -40,12 +43,16 @@ public class TestingMain {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		
+		//test();
+		OUTPUT();
+		
 		//NetTesting();
 		//ThreadedTesting(20);
 		//ThreadTimingTesting();
 		
 		//ThreadedTesting(10);
-		GPUTesting(10);
+		//GPUTesting(10);
 		//TestSingleGame();
 		//TestGeneration();
 		//networkGenerationCalculationTest();
@@ -57,6 +64,146 @@ public class TestingMain {
 	}
 
 	
+	private static void test() {
+		// TODO Auto-generated method stub
+		
+		int num = 100;
+		
+		double[] input = new double[num];
+		
+		double[][] mutators = new double[num][num];
+		
+		double[] output = new double[num];
+
+		double[] output2 = new double[num];
+		Random rand = new Random(1);
+		
+		for(int i = 0; i < num; i++)
+		{
+			input[i] = rand.nextDouble();
+			for(int j = 0; j < num; j++){
+				mutators[i][j] = rand.nextDouble();
+			}
+		}
+		
+		long singleThreadedStart = System.nanoTime();
+		
+		int sum = 0;;
+		for(int i = 0; i < num; i++)
+		{
+			sum = 0;
+			for(int j = 0; j < num; j++){
+				sum += mutators[i][j] * input[j];
+			}
+			output[i] = Math.tanh(sum);
+		}
+		
+		long singleThreadedEnd = System.nanoTime();
+
+		
+		long multiThreadedStart = System.nanoTime();
+
+		
+		Kernel t = new Kernel(){
+
+			@Override
+			public void run() {
+				int i= getGlobalId(); 
+				int sum = 0;
+				for(int j = 0; j < num; j++){
+					sum += mutators[i][j] * input[j];
+				}
+				output2[i] = Math.tanh(sum);
+			}
+			
+		};
+		
+		Range range = Range.create(output.length); 
+		t.execute(range);
+		
+		long multiThreadedEnd = System.nanoTime();
+		
+		
+		System.out.println("Thread: " + (multiThreadedEnd-multiThreadedStart));
+		System.out.println("Single: " + (singleThreadedEnd-singleThreadedStart));
+		
+		
+	}
+
+
+	private static void OUTPUT() {
+
+		 System.out.println("com.amd.aparapi.sample.info.Main");
+	      List<OpenCLPlatform> platforms = (new OpenCLPlatform()).getOpenCLPlatforms();
+	      System.out.println("Machine contains " + platforms.size() + " OpenCL platforms");
+	      int platformc = 0;
+	      for (OpenCLPlatform platform : platforms) {
+	         System.out.println("Platform " + platformc + "{");
+	         System.out.println("   Name    : \"" + platform.getName() + "\"");
+	         System.out.println("   Vendor  : \"" + platform.getVendor() + "\"");
+	         System.out.println("   Version : \"" + platform.getVersion() + "\"");
+	         List<OpenCLDevice> devices = platform.getOpenCLDevices();
+	         System.out.println("   Platform contains " + devices.size() + " OpenCL devices");
+	         int devicec = 0;
+	         for (OpenCLDevice device : devices) {
+	            System.out.println("   Device " + devicec + "{");
+	            System.out.println("       Type                  : " + device.getType());
+	            System.out.println("       GlobalMemSize         : " + device.getGlobalMemSize());
+	            System.out.println("       LocalMemSize          : " + device.getLocalMemSize());
+	            System.out.println("       MaxComputeUnits       : " + device.getMaxComputeUnits());
+	            System.out.println("       MaxWorkGroupSizes     : " + device.getMaxWorkGroupSize());
+	            System.out.println("       MaxWorkItemDimensions : " + device.getMaxWorkItemDimensions());
+	            System.out.println("   }");
+	            devicec++;
+	         }
+	         System.out.println("}");
+	         platformc++;
+	      }
+
+	      Device bestDevice = OpenCLDevice.best();
+	      if (bestDevice == null) {
+	         System.out.println("OpenCLDevice.best() returned null!");
+	      } else {
+	         System.out.println("OpenCLDevice.best() returned { ");
+	         System.out.println("   Type                  : " + bestDevice.getType());
+	         System.out.println("   GlobalMemSize         : " + ((OpenCLDevice) bestDevice).getGlobalMemSize());
+	         System.out.println("   LocalMemSize          : " + ((OpenCLDevice) bestDevice).getLocalMemSize());
+	         System.out.println("   MaxComputeUnits       : " + ((OpenCLDevice) bestDevice).getMaxComputeUnits());
+	         System.out.println("   MaxWorkGroupSizes     : " + ((OpenCLDevice) bestDevice).getMaxWorkGroupSize());
+	         System.out.println("   MaxWorkItemDimensions : " + ((OpenCLDevice) bestDevice).getMaxWorkItemDimensions());
+	         System.out.println("}");
+	      }
+
+	      Device firstCPU = OpenCLDevice.firstCPU();
+	      if (firstCPU == null) {
+	         System.out.println("OpenCLDevice.firstCPU() returned null!");
+	      } else {
+	         System.out.println("OpenCLDevice.firstCPU() returned { ");
+	         System.out.println("   Type                  : " + firstCPU.getType());
+	         System.out.println("   GlobalMemSize         : " + ((OpenCLDevice) firstCPU).getGlobalMemSize());
+	         System.out.println("   LocalMemSize          : " + ((OpenCLDevice) firstCPU).getLocalMemSize());
+	         System.out.println("   MaxComputeUnits       : " + ((OpenCLDevice) firstCPU).getMaxComputeUnits());
+	         System.out.println("   MaxWorkGroupSizes     : " + ((OpenCLDevice) firstCPU).getMaxWorkGroupSize());
+	         System.out.println("   MaxWorkItemDimensions : " + ((OpenCLDevice) firstCPU).getMaxWorkItemDimensions());
+	         System.out.println("}");
+	      }
+
+	      Device firstGPU = OpenCLDevice.firstGPU();
+	      if (firstGPU == null) {
+	         System.out.println("OpenCLDevice.firstGPU() returned null!");
+	      } else {
+	         System.out.println("OpenCLDevice.firstGPU() returned { ");
+	         System.out.println("   Type                  : " + firstGPU.getType());
+	         System.out.println("   GlobalMemSize         : " + ((OpenCLDevice) firstGPU).getGlobalMemSize());
+	         System.out.println("   LocalMemSize          : " + ((OpenCLDevice) firstGPU).getLocalMemSize());
+	         System.out.println("   MaxComputeUnits       : " + ((OpenCLDevice) firstGPU).getMaxComputeUnits());
+	         System.out.println("   MaxWorkGroupSizes     : " + ((OpenCLDevice) firstGPU).getMaxWorkGroupSize());
+	         System.out.println("   MaxWorkItemDimensions : " + ((OpenCLDevice) firstGPU).getMaxWorkItemDimensions());
+	         System.out.println("}");
+	      }
+	}
+
+
 	private static void GPUTesting(int numPerGeneration) {
 		
 		Random random = new Random();
