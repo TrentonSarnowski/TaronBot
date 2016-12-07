@@ -151,8 +151,10 @@ public class TestingMain {
 				for(int j = 0; j < (generationSize); j++){
 					if(random.nextDouble() > Math.cos(j*Math.PI/2/generationSize)){
 						System.out.println("removed " + j + " "+ Math.cos(j*Math.PI/2.0/generationSize));
-						remove.add(networks.get(j));
+						remove.add(networks.get(j));	
 					}
+				}
+					
 				for(int j = 1; j < (generationSize+1)/2; j++){
 					networks.set(generationSize/2+j, networks.get(j).returnAnotherMutatedNetwork(random, 0.0001));
 					//System.out.println(generationSize/2+j);
