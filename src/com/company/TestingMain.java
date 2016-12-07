@@ -44,8 +44,8 @@ public class TestingMain {
 	 */
 	public static void main(String[] args) {
 		
-		//test();
-		OUTPUT();
+		test();
+		//OUTPUT();
 		
 		//NetTesting();
 		//ThreadedTesting(20);
@@ -67,9 +67,9 @@ public class TestingMain {
 	private static void test() {
 		// TODO Auto-generated method stub
 		
-		int num = 100;
+		int num = 3;
 		
-		double[] input = new double[num];
+		double[] input = {1.0,2.0,3.0};
 		
 		double[][] mutators = new double[num][num];
 		
@@ -80,11 +80,17 @@ public class TestingMain {
 		
 		for(int i = 0; i < num; i++)
 		{
-			input[i] = rand.nextDouble();
+			//input[i] = rand.nextDouble();
 			for(int j = 0; j < num; j++){
 				mutators[i][j] = rand.nextDouble();
 			}
 		}
+		
+		final double[] inputT = input;
+		
+		final double[][] mutatorsT = mutators;
+		
+		final double[] outputT = output;
 		
 		long singleThreadedStart = System.nanoTime();
 		
@@ -95,7 +101,8 @@ public class TestingMain {
 			for(int j = 0; j < num; j++){
 				sum += mutators[i][j] * input[j];
 			}
-			output[i] = Math.tanh(sum);
+			output[i] = 2/(1+Math.exp(-2*sum))-1;
+			System.out.println(i + ":" + output[i] );
 		}
 		
 		long singleThreadedEnd = System.nanoTime();
@@ -104,6 +111,8 @@ public class TestingMain {
 		long multiThreadedStart = System.nanoTime();
 
 		
+		
+		
 		Kernel t = new Kernel(){
 
 			@Override
@@ -111,18 +120,37 @@ public class TestingMain {
 				int i= getGlobalId(); 
 				int sum = 0;
 				for(int j = 0; j < num; j++){
-					sum += mutators[i][j] * input[j];
+					sum += mutatorsT[i][j] * inputT[j];
 				}
-				output2[i] = Math.tanh(sum);
+				outputT[i] = 2/(1+Math.exp(-2*sum))-1;
 			}
 			
 		};
 		
+		
+		
+		
 		Range range = Range.create(output.length); 
 		t.execute(range);
 		
+		for(int i = 0;i < num; i++){
+			System.out.println(i + ":" + output[i] );
+		}
+		
 		long multiThreadedEnd = System.nanoTime();
 		
+		input[0] = 2.0;
+		
+		input[1] = 4.0;
+		input[2] = 3.0;
+		
+		System.out.println("thuing");
+		t.execute(range);
+		System.out.println("thuing");
+		
+		for(int i = 0;i < num; i++){
+			System.out.println(i + ":" + output[i] );
+		}
 		
 		System.out.println("Thread: " + (multiThreadedEnd-multiThreadedStart));
 		System.out.println("Single: " + (singleThreadedEnd-singleThreadedStart));
