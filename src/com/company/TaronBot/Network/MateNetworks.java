@@ -18,24 +18,27 @@ public class MateNetworks {
 	
 	/**
 	 * joins the networks together based on a normal distribution random selection for each of the mutator weights. 
-	 * 
+	 * @param numNetworks int number of new networks to generate. 
 	 * @param networks List<TakNetwokrs> a list of tak networks that wish to be mutated together
 	 * @param rand Random random number generator used for the mating
 	 * @return TakNetwork a single network based on the the group mating process. 
 	 */
-	public static TakNetwork GroupMateNetworks(List<TakNetwork> networks, Random rand){
+	public static ArrayList<TakNetwork> GroupMateNetworks(List<TakNetwork> networks, Random rand, int numNetworks){
 		
-		//TODO NOT FUNCTIONING. DO NOT USE
-		
+		RandomGenerator random = null;
 		
 		TakNetwork net0 = networks.get(0);
 		ArrayList<Double> workingArray = new ArrayList<>(networks.size());
 		double fromCurve = 0;
 		double[] statsArray = null;
-		TakNetwork newNetwork = new TakNetwork(net0.getHeight(), net0.getWidth(), net0.getDepth(), net0.getLayers());
+		
+		ArrayList<TakNetwork> outputNetworks = new ArrayList<TakNetwork>(numNetworks);
+		for(int i = 0; i < numNetworks; i++){
+			
+			outputNetworks.add( new TakNetwork(net0.getHeight(), net0.getWidth(), net0.getDepth(), net0.getLayers()));
+		}
 		Mean mean = new Mean();
 		StandardDeviation std = new StandardDeviation();
-		RandomGenerator random = null;
 		//generate a blank network for the mutation. 
 		//TODO fix this section of code to mutate properly
 		
@@ -43,19 +46,21 @@ public class MateNetworks {
 		for(int a = 0; a < net0.getTotalNumberOfLayers(); a++){
 			
 			//loop through every dimension of the mutator for this specific dimension
-			NetworkLayer layer = new NetworkLayer(net0.getLayer(a).getPreviousLayerDimensions(), net0.getLayer(a).getOutputLayerDimensions(), net0.getLayer(a).getFunction());
-			
+			ArrayList<NetworkLayer> layers = new ArrayList<NetworkLayer>(numNetworks);
+			for(int i = 0; i < numNetworks; i++){
+				layers.set(i, new NetworkLayer(net0.getLayer(a).getPreviousLayerDimensions(), net0.getLayer(a).getOutputLayerDimensions(), net0.getLayer(a).getFunction()));
+			}
 			//for each output of the network layer
-			for(int q = 0; q < layer.getOutputLayerDimensions()[0]; q++){
-				for(int w = 0; w < layer.getOutputLayerDimensions()[1]; w++){
-					for(int e = 0; e < layer.getOutputLayerDimensions()[2]; e++){
-						for(int r = 0; r < layer.getOutputLayerDimensions()[3]; r++){
+			for(int q = 0; q < layers.get(0).getOutputLayerDimensions()[0]; q++){
+				for(int w = 0; w < layers.get(0).getOutputLayerDimensions()[1]; w++){
+					for(int e = 0; e < layers.get(0).getOutputLayerDimensions()[2]; e++){
+						for(int r = 0; r < layers.get(0).getOutputLayerDimensions()[3]; r++){
 							
 							//go through each input for that output
-							for(int i = 0; i < layer.getPreviousLayerDimensions()[0]; i++){
-								for(int j = 0; j < layer.getPreviousLayerDimensions()[1]; j++){
-									for(int k = 0; k < layer.getPreviousLayerDimensions()[2]; k++){
-										for(int l = 0; l < layer.getPreviousLayerDimensions()[3]; l++){
+							for(int i = 0; i < layers.get(0).getPreviousLayerDimensions()[0]; i++){
+								for(int j = 0; j < layers.get(0).getPreviousLayerDimensions()[1]; j++){
+									for(int k = 0; k < layers.get(0).getPreviousLayerDimensions()[2]; k++){
+										for(int l = 0; l < layers.get(0).getPreviousLayerDimensions()[3]; l++){
 											//a = layer in question
 											//qwer = output of layer (arrayList)
 											//ijkl = input from previous layer (mutator array)
@@ -77,10 +82,9 @@ public class MateNetworks {
 											random.setSeed(rand.nextInt());
 											NormalDistribution n = new NormalDistribution(random, mean.evaluate(statsArray), std.evaluate(statsArray));
 											
-											fromCurve = n.sample();
-											System.out.println(fromCurve);
-											
-											layer.getMutatorArray(q,w,e,r)[i][j][k][l] = fromCurve;
+											for(int layer = 0; layer < numNetworks; layer++){
+												layers.get(layer).getMutatorArray(q,w,e,r)[i][j][k][l] = n.sample();
+											}
 										}
 									}
 								}
@@ -93,11 +97,15 @@ public class MateNetworks {
 			}
 			
 			
-			newNetwork.setLayer(a, layer);
+			for(int i = 0; i < numNetworks; i++){
+				outputNetworks.get(i).setLayer(a, layers.get(i));
+			}
+			
+			//newNetwork.setLayer(a, layer);
 		}
 		
 		
-		return newNetwork;
+		return outputNetworks;
 	}
 	
 	/**
