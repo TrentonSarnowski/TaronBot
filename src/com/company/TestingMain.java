@@ -710,6 +710,7 @@ public class TestingMain {
 		System.out.println("Beginning Generation");
 		@SuppressWarnings("unused")
 		TakNetwork mate = MateNetworks.GroupMateNetworks(takNetworks, rand);
+		System.out.println("Ended Generation");
 
 	}
 

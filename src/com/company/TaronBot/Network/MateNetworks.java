@@ -78,7 +78,7 @@ public class MateNetworks {
 											NormalDistribution n = new NormalDistribution(random, mean.evaluate(statsArray), std.evaluate(statsArray));
 											
 											fromCurve = n.sample();
-											
+											System.out.println(fromCurve);
 											
 											layer.getMutatorArray(q,w,e,r)[i][j][k][l] = fromCurve;
 										}
