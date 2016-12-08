@@ -27,10 +27,6 @@ public class MateNetworks {
 		
 		//TODO NOT FUNCTIONING. DO NOT USE
 		
-		int zzz = 0;
-		zzz = 2/ zzz;
-		// kill switch
-		
 		
 		TakNetwork net0 = networks.get(0);
 		ArrayList<Double> workingArray = new ArrayList<>(networks.size());
