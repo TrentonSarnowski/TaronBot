@@ -103,4 +103,15 @@ public class MateNetworks {
 		
 		return newNetwork;
 	}
+	
+	/**
+	 * 
+	 * @param net TakNetwork base network to return from
+	 * @param rand Random Random number generator 
+	 * @param changePercentage Double percentage to change each single random mutator value
+	 * @return TakNetwork the network that is being returned. 
+	 */
+	public TakNetwork SingleNetworkMutate(TakNetwork net, Random rand, double changePercentage){
+		return net.returnAnotherMutatedNetwork(rand, changePercentage);
+	}
 }
