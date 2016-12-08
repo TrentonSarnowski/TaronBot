@@ -46,7 +46,7 @@ public class TestingMain {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		networkGroupMutatorsTest();
+		//networkGroupMutatorsTest();
 		// startControllThread();
 
 		// NetTesting();
@@ -56,7 +56,7 @@ public class TestingMain {
 
 		// ComputeGenerationTesting(15);
 
-		// TestGnerationalGrowth(64,64,3);
+		TestGnerationalGrowth(10,25,3);
 		
 		/*System.out.print(Board.playGame(
 				loadTesting(
@@ -128,52 +128,52 @@ public class TestingMain {
 			});
 
 			for (int j = 0; j < networks.size(); j++) {
-
-				System.out.println("NET: "
-						+ networks.get(j).toString().substring((networks.get(j).toString().indexOf("@") + 1),
-								networks.get(j).toString().length())
-						+ "\t   Wins: " + networks.get(j).getWins() + "\tLosses: " + networks.get(j).getLosses()
-						+ "\tPlayed total: " + (networks.get(j).getWins() + networks.get(j).getLosses())
-						+ " \tWin/Loss Ration: "
-						+ formatter.format((double) networks.get(j).getWins() / (double) networks.get(j).getLosses())
-						+ "  \tWin Percentage: " + formatter.format((double) networks.get(j).getWins()
-								/ (double) (networks.get(j).getLosses() + networks.get(j).getWins())));
-
+				if(StaticGlobals.PRINT_NETWORK_STATS){
+					System.out.println("NET: "
+							+ networks.get(j).toString().substring((networks.get(j).toString().indexOf("@") + 1), networks.get(j).toString().length())
+							+ "\t   Wins: " + networks.get(j).getWins());
+				}
 			}
 
 			ArrayList<TakNetwork> remove = new ArrayList<TakNetwork>();
 
 			try {
-
+				remove.clear();
 				for (int j = 0; j < (generationSize); j++) {
-					if (random.nextDouble() > Math.cos(j * Math.PI / 2 / generationSize)) {
-						System.out.println("removed " + j + " " + Math.cos(j * Math.PI / 2.0 / generationSize));
+					if (networks.get(j).getWins() < 0) {
+						//System.out.println("removed " + j + " " + Math.cos(j * Math.PI / 2.0 / generationSize));
 						remove.add(networks.get(j));
 					}
 				}
-				for (int j = 1; j < (generationSize + 1) / 2; j++) {
-					networks.set(generationSize / 2 + j, networks.get(j).returnAnotherMutatedNetwork(random, 0.0001));
-					// System.out.println(generationSize/2+j);
-				}
-
-				for (TakNetwork net : remove) {
-
-					networks.remove(net);
-				}
-				remove.clear();
-
-				// direct dupe top net
-
-				while (networks.size() < generationSize) {
-					int toDupe = (int) Math.floor(Math.cos(random.nextDouble() * Math.PI / 2.0) * networks.size());
-					networks.add(networks.get(toDupe).returnAnotherMutatedNetwork(random, 0.00001));
-					System.out.println("Duped: " + toDupe);
-				}
-
-				networks.set(generationSize, networks.get(0).returnAnotherMutatedNetwork(random, 0.00001));
+				
 			} catch (IndexOutOfBoundsException e) {
 				System.out.println("ExpectedIndexOutOfBoudsError");
 			}
+				
+				
+				for (TakNetwork net : remove) {
+					networks.remove(net);
+				}
+				
+				if(StaticGlobals.GENERATIONAL_NOTIFIERS){
+					System.out.println("Starting new network generation");
+				}
+				networks.addAll(MateNetworks.GroupMateNetworks(networks, random, generationSize-networks.size()));
+
+				
+				
+
+				// direct dupe top net
+
+			/*
+			 * while (networks.size() < generationSize) {
+					int toDupe = (int) Math.floor(Math.cos(random.nextDouble() * Math.PI / 2.0) * networks.size());
+					networks.add(networks.get(toDupe).returnAnotherMutatedNetwork(random, 0.00001));
+					System.out.println("Duped: " + toDupe);
+				}*/
+
+				//networks.set(generationSize, networks.get(0).returnAnotherMutatedNetwork(random, 0.00001));
+			
 
 		}
 

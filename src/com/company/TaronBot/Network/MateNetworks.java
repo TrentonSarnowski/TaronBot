@@ -48,7 +48,7 @@ public class MateNetworks {
 			//loop through every dimension of the mutator for this specific dimension
 			ArrayList<NetworkLayer> layers = new ArrayList<NetworkLayer>(numNetworks);
 			for(int i = 0; i < numNetworks; i++){
-				layers.set(i, new NetworkLayer(net0.getLayer(a).getPreviousLayerDimensions(), net0.getLayer(a).getOutputLayerDimensions(), net0.getLayer(a).getFunction()));
+				layers.add(new NetworkLayer(net0.getLayer(a).getPreviousLayerDimensions(), net0.getLayer(a).getOutputLayerDimensions(), net0.getLayer(a).getFunction()));
 			}
 			//for each output of the network layer
 			for(int q = 0; q < layers.get(0).getOutputLayerDimensions()[0]; q++){
