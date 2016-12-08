@@ -709,7 +709,7 @@ public class TestingMain {
 		
 		System.out.println("Beginning Generation");
 		@SuppressWarnings("unused")
-		TakNetwork mate = MateNetworks.GroupMateNetworks(takNetworks, rand);
+		TakNetwork mate = MateNetworks.GroupMateNetworks(takNetworks, rand,1).get(0);
 		System.out.println("Ended Generation");
 
 	}
