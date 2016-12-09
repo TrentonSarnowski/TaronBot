@@ -36,7 +36,7 @@ import tech.deef.Tools.StaticGlobals;
 
 public class TestingMain {
 
-	private static boolean LOGGING_ENABLED = false;
+	private static final boolean LOGGING_ENABLED = StaticGlobals.LOGGING_ENABLED; //work around to avoid having to rename 20+ lines. 
 	private static int numPerGeneration = 3;
 
 	/**
@@ -47,7 +47,7 @@ public class TestingMain {
 	 */
 	public static void main(String[] args) {
 		//networkGroupMutatorsTest();
-		// startControllThread();
+		startControllThread();
 
 		// NetTesting();
 		// ThreadedTesting(20);
@@ -56,104 +56,7 @@ public class TestingMain {
 
 		// ComputeGenerationTesting(15);
 
-		TestGnerationalGrowth(10,25,3);
-		/*TakNetwork network1;
-		TakNetwork network2;
-		List<TakNetwork> newNetworks=new ArrayList<>();
-		List<TakNetwork> oldNetworks=new ArrayList<>();
-
-		for (int i = 0; i <64 ; i++) {
-			network2=loadTesting("C:\\Users\\sarnowskit\\Desktop\\Network Storage\\64Size64genRankedWinLoss"+"\\Network"+i+".takNetwork");
-			network2.setWins(0);
-			oldNetworks.add(network2);
-
-		}
-		for (int i = 0; i <10 ; i++) {
-
-			network1=loadTesting("C:\\Users\\sarnowskit\\Desktop\\Network Storage\\10Size25genTwomemberbreed\\Network" + i + ".takNetwork");
-			network1.setWins(0);
-			newNetworks.add(network1);
-		}
-		int winner=0;
-		for (int i = 0; i <10 ; i++) {
-			network1=newNetworks.get(i);
-			for (int j = 0; j <64 ; j++) {
-				network2= oldNetworks.get(j);
-				winner=Board.playGame(network1,network2,8);
-				if(winner>0){
-					network1.setWins(network1.getWins()+1);
-					network2.setLosses(network2.getLosses()+1);
-
-				}else{
-					network2.setWins(network2.getWins()+1);
-					network1.setLosses(network1.getLosses()+1);
-				}
-				winner=Board.playGame(network1,network2,8);
-				if(winner<0){
-					network1.setWins(network1.getWins()+1);
-					network2.setLosses(network2.getLosses()+1);
-
-				}else{
-					network2.setWins(network2.getWins()+1);
-					network1.setLosses(network1.getLosses()+1);
-				}
-
-			}
-		}
-		Collections.sort(newNetworks,new Comparator<TakNetwork>() {
-					public int compare(TakNetwork m1, TakNetwork m2) {
-						int out = 0;
-						if ((double) m1.getWins() < (double) m2.getWins()) {
-							// 1 is winner
-							return 1;
-						}
-						if ((double) m1.getWins() > (double) m2.getWins()) {
-							// 2 is winner
-							return -1;
-						}
-						return 0;
-
-					}
-				}
-			);
-		Collections.sort(oldNetworks,new Comparator<TakNetwork>() {
-					public int compare(TakNetwork m1, TakNetwork m2) {
-						int out = 0;
-						if ((double) m1.getWins() < (double) m2.getWins()) {
-							// 1 is winner
-							return 1;
-						}
-						if ((double) m1.getWins() > (double) m2.getWins()) {
-							// 2 is winner
-							return -1;
-						}
-						return 0;
-
-					}
-				}
-		);
-		System.out.println(" old set");
-		int oldwins=0;
-		for (int i = 0; i <64 ; i++) {
-			System.out.println(oldNetworks.get(i).toString()+" wins:" +oldNetworks.get(i).getWins()+" winRatio: "+oldNetworks.get(i).getWins()/oldNetworks.get(i).getLosses());
-			oldwins+=oldNetworks.get(i).getWins();
-		}
-		System.out.println();
-		System.out.println(" new set");
-		int newwins=0;
-		for (int i = 0; i <64 ; i++) {
-			System.out.println(newNetworks.get(i).toString()+" wins:" +newNetworks.get(i).getWins()+" winRatio: "+newNetworks.get(i).getWins()/newNetworks.get(i).getLosses());
-			newwins+=newNetworks.get(i).getWins();
-		}
-
-		System.out.println();
-		System.out.println("old: "+oldwins+", new: "+newwins);
-
-		//*/
-		/*System.out.print(Board.playGame(
-				loadTesting(
-						"C:\\Users\\sarnowskit\\Downloads\\TaronBot\\networks\\TestGnerationalGrowth\\output\\Network2.takNetwork"),
-				loadTesting("C:\\Users\\sarnowskit\\Desktop\\64 gened networks\\Network0.takNetwork"), 8));*/
+		TestGnerationalGrowth(64,100,8);
 
 		// TestSingleGame();
 		// TestGeneration();
@@ -180,6 +83,49 @@ public class TestingMain {
 
 	private static void TestGnerationalGrowth(int generationSize, int generations, int cores) {
 
+		
+		Logger logger = Logger.getLogger("MyLog");
+
+		if (LOGGING_ENABLED) {
+			FileHandler fh;
+
+			try {
+
+				// This block configure the logger with handler and formatter
+				// Time time = new Time(System.currentTimeMillis());
+
+				Date date = new Date(System.currentTimeMillis());
+				DateFormat formattert = new SimpleDateFormat("MM-dd-YYYY HH_mm_ss");
+				String dateFormatted = formattert.format(date);
+				String location = ("logfiles\\");
+				
+				new File(location).mkdirs();
+				System.out.println(dateFormatted);
+				fh = new FileHandler(location + dateFormatted + " output.log");
+				FileHandler f = new FileHandler();
+
+				logger.addHandler(fh);
+				SimpleFormatter formatter = new SimpleFormatter();
+				fh.setFormatter(formatter);
+
+				// the following statement is used to log any messages
+				// logger.info("My first log");
+
+			} catch (SecurityException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			logger.setLevel(Level.ALL);
+			// logger.info("Hi How r u?");
+			// logger.config("Hi How r u?");
+			// logger.config("msg2");
+
+		}
+		
+		
+		
+		
 		Random random = new Random();
 		ArrayList<TakNetwork> networks = new ArrayList<>();
 		NumberFormat formatter = new DecimalFormat("#0.0000");
@@ -197,12 +143,65 @@ public class TestingMain {
 
 			// all 100 networks generate
 		}
-
+		
+		if (LOGGING_ENABLED) {
+			logger.config("Beginning Generation");
+		}
+		try{
 		for (int i = 0; i < generations; i++) {
 
-			System.out.println("\n\nGENERATION: " + i + "\n");
-			ComputeGeneration.compute(networks, cores);
+			if (LOGGING_ENABLED) {
+				logger.config("Beginning Generation: " + i);
+			}
+			
+			if(StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT){
+				
+				String output = "networks\\FORCEEXIT\\TestGnerationalGrowth\\output";
+				
+				if (LOGGING_ENABLED) {
+					logger.config("SavingNetworks to " + output);
+				}
+				
+				System.out.println("Saving Networks");
 
+				new File(output).mkdirs();
+				for (int s = 0; s < networks.size(); s++) {
+
+					FileOutputStream fout;
+					try {
+						fout = new FileOutputStream(output + "\\Network" + s + ".takNetwork");
+						ObjectOutputStream oos = new ObjectOutputStream(fout);
+						oos.writeObject(networks.get(s));
+						oos.close();
+
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					if (LOGGING_ENABLED) {
+						logger.config("Saved Network " + s);
+					}
+				}
+				
+				System.out.println("Networks Saved");
+				
+				return;
+				
+			}
+			
+			
+			
+			
+			System.out.println("\n\nGENERATION: " + i + "\n");
+			if (LOGGING_ENABLED) {
+				logger.config("Calculating Generation" + i);
+			}
+			
+			ComputeGeneration.compute(networks, cores, logger);
+
+			if (LOGGING_ENABLED) {
+				logger.config("Sorting Generation " + i);
+			}
+			
 			Collections.sort(networks, new Comparator<TakNetwork>() {
 				public int compare(TakNetwork m1, TakNetwork m2) {
 					int out = 0;
@@ -218,17 +217,29 @@ public class TestingMain {
 
 				}
 			});
-
-			for (int j = 0; j < networks.size(); j++) {
-				if(StaticGlobals.PRINT_NETWORK_STATS){
-					System.out.println("NET: "
+			
+			if(StaticGlobals.PRINT_NETWORK_STATS){
+				StringBuffer t = new StringBuffer();
+				for (int j = 0; j < networks.size(); j++) {
+					
+					
+					t.append("NET: "
 							+ networks.get(j).toString().substring((networks.get(j).toString().indexOf("@") + 1), networks.get(j).toString().length())
-							+ "\t   Wins: " + networks.get(j).getWins());
+							+ "\t   Wins: " + networks.get(j).getWins() + "\n"); //newline not appended in logging. 
+				}
+				System.out.println(t.toString());
+				
+				if(LOGGING_ENABLED){
+					logger.config(t.toString());
 				}
 			}
 
 			ArrayList<TakNetwork> remove = new ArrayList<TakNetwork>();
 
+			
+			if (LOGGING_ENABLED) {
+				logger.config("Beginning Mutation/network addition of generation  " + i);
+			}
 			try {
 				remove.clear();
 				for (int j = 0; j < (generationSize); j++) {
@@ -238,10 +249,18 @@ public class TestingMain {
 					}
 				}
 				
-			} catch (IndexOutOfBoundsException e) {
-				System.out.println("ExpectedIndexOutOfBoudsError");
-			}
+				int temp = 1;
+				while(remove.size() < generationSize/8){
+					remove.add(networks.get(networks.size()-temp));
+					temp++;
+				}
 				
+			} catch (IndexOutOfBoundsException e) {
+				//System.out.println("ExpectedIndexOutOfBoudsError");
+			}
+			if (LOGGING_ENABLED) {
+				logger.config("Removing " + remove.size() + " networks");
+			}
 				
 				for (TakNetwork net : remove) {
 					networks.remove(net);
@@ -250,10 +269,15 @@ public class TestingMain {
 				if(StaticGlobals.GENERATIONAL_NOTIFIERS){
 					System.out.println("Starting new network generation");
 				}
+				if (LOGGING_ENABLED) {
+					logger.config("Starting new network generation");
+				}
 				networks.addAll(MateNetworks.GroupMateNetworks(networks, random, generationSize-networks.size()));
 
 				
-				
+				if (LOGGING_ENABLED) {
+					logger.config("Networks Generated.");
+				}
 
 				// direct dupe top net
 
@@ -271,6 +295,11 @@ public class TestingMain {
 
 		String output = "networks\\TestGnerationalGrowth\\output";
 
+		if (LOGGING_ENABLED) {
+			logger.config("Learning complete!");
+			logger.config("Saving Networks to " + output);
+		}
+		
 		new File(output).mkdirs();
 		for (int i = 0; i < networks.size(); i++) {
 
@@ -286,6 +315,11 @@ public class TestingMain {
 			}
 
 		}
+		
+		if (LOGGING_ENABLED) {
+			logger.config("Networks Saved. ");
+			logger.config("Generating Random Testing Networks for comparison");
+		}
 
 		ArrayList<TakNetwork> randNets = new ArrayList<>();
 
@@ -299,10 +333,17 @@ public class TestingMain {
 
 			// all 100 networks generate
 		}
+		
+		if (LOGGING_ENABLED) {
+			logger.config("Random Network Generation Complete. Beginning testing");
+		}
 
 		networks.get(0).setWins(0);
 		networks.get(0).setLosses(0);
 
+		StringBuffer buffer = new StringBuffer();
+		String s = "";
+		
 		int win = 0;
 		for (int j = 0; j < networks.size(); j++) {
 			networks.get(j).setWins(0);
@@ -321,8 +362,8 @@ public class TestingMain {
 				}
 
 			}
-
-			System.out.println("NET: "
+			
+			s = ("NET: "
 					+ networks.get(j).toString().substring((networks.get(j).toString().indexOf("@") + 1),
 							networks.get(j).toString().length())
 					+ "\t   Wins: " + networks.get(j).getWins() + "\tLosses: " + networks.get(j).getLosses()
@@ -330,7 +371,51 @@ public class TestingMain {
 					+ " \tWin/Loss Ration: "
 					+ formatter.format((double) networks.get(j).getWins() / (double) networks.get(j).getLosses())
 					+ "  \tWin Percentage: " + formatter.format((double) networks.get(j).getWins()
-							/ (double) (networks.get(j).getLosses() + networks.get(j).getWins())));
+							/ (double) (networks.get(j).getLosses() + networks.get(j).getWins())) + "\n");
+			System.out.println(s);
+			buffer.append(s);
+		}
+		
+		if (LOGGING_ENABLED) {
+			logger.config("Testing Complete");
+			logger.config(buffer.toString());
+		}
+		}catch(Exception E){
+			E.printStackTrace();
+			
+			logger.severe(E.getStackTrace().toString());
+			
+			String output = "networks\\ERROREXIT\\TestGnerationalGrowth\\output";
+			
+			if (LOGGING_ENABLED) {
+				logger.config("SavingNetworks to " + output);
+			}
+			
+			System.out.println("Saving Networks");
+
+			new File(output).mkdirs();
+			for (int s = 0; s < networks.size(); s++) {
+
+				FileOutputStream fout;
+				try {
+					fout = new FileOutputStream(output + "\\Network" + s + ".takNetwork");
+					ObjectOutputStream oos = new ObjectOutputStream(fout);
+					oos.writeObject(networks.get(s));
+					oos.close();
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				if (LOGGING_ENABLED) {
+					logger.config("Saved Network " + s);
+				}
+			}
+			
+			System.out.println("Networks Saved");
+			
+			return;
+				
+			
 		}
 
 	}
@@ -356,7 +441,7 @@ public class TestingMain {
 		// System.out.println("Generated Threads");
 		long startTime = System.nanoTime();
 
-		ComputeGeneration.compute(networks, 8);
+		ComputeGeneration.compute(networks, 8, null);
 
 		NumberFormat formatter = new DecimalFormat("#0.0000");
 

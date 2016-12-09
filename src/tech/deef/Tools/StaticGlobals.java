@@ -8,5 +8,7 @@ public class StaticGlobals {
 	public static final boolean PRINT_GAME_MOVES = false;
 	public static final boolean GENERATIONAL_NOTIFIERS = true;
 	public static final boolean PRINT_NETWORK_STATS = true;
+	public static final boolean LOGGING_ENABLED = true;
+	public static boolean SAVE_NETWORKS_OUT_AND_EXIT = false;
 	public static boolean PAUSED = false;
 }

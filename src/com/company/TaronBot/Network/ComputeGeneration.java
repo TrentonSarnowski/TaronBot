@@ -3,6 +3,7 @@ package com.company.TaronBot.Network;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Logger;
 
 import com.company.TaronBot.Game.Board;
 
@@ -11,7 +12,7 @@ import tech.deef.Tools.StaticGlobals;
 
 public class ComputeGeneration {
 	private static ArrayList<TakNetwork> randNets=new ArrayList<>();
-	public static void compute(List<TakNetwork> networks, int Threads){
+	public static void compute(List<TakNetwork> networks, int Threads, Logger logger){
 		
 		int totalGames = networks.size()*networks.size();
 		int GamesPerThread = (int) Math.floor((double)totalGames/((double)Threads))+1;
@@ -44,7 +45,7 @@ public class ComputeGeneration {
 
 				@Override
 				public void run() {
-					RunSelectionOfGames(threadNum,networks,GamesPerThread);
+					RunSelectionOfGames(threadNum,networks,GamesPerThread,logger);
 					
 				}
 				
@@ -70,84 +71,102 @@ public class ComputeGeneration {
 			try {
 				//System.out.println(i);
 				threads.get(i).join();
+				
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		
+		for(int i = 0; i < threads.size(); i++){
+			
+				//System.out.println(i);
+				threads.remove(i);
+			
+		}
 		
 		
 	}
 	
 	
-	private static void RunSelectionOfGames(int threadNum, List<TakNetwork> networks, int GamesPerThread){
-		int net1num = 0;
-		int net2num = 0;
-		int net3num = 0;
-		int atGame = 0;
-		TakNetwork net1 = null;
-		TakNetwork net2 = null;
-		TakNetwork net3 = null;
-		int winner = 0;
-
-		for(int i = 0; i < GamesPerThread; i++){
-			
-			while(StaticGlobals.PAUSED){
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+	private static void RunSelectionOfGames(int threadNum, List<TakNetwork> networks, int GamesPerThread, Logger logger){
+		try{
+			int net1num = 0;
+			int net2num = 0;
+			int net3num = 0;
+			int atGame = 0;
+			TakNetwork net1 = null;
+			TakNetwork net2 = null;
+			TakNetwork net3 = null;
+			int winner = 0;
+	
+			for(int i = 0; i < GamesPerThread; i++){
+				
+				while(StaticGlobals.PAUSED){
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-			}
-
-			atGame = threadNum * GamesPerThread + i;
-			net1num = atGame/networks.size();
-			net2num = atGame%networks.size();
-			net3num = atGame%networks.size();
-
-			
-			long start=System.currentTimeMillis();
-			try{
-				net1 = networks.get(net1num);
-				net2 = networks.get(net2num);
-				net3 = randNets.get(net3num);
-			}catch(IndexOutOfBoundsException e){
-				//last network run. exit. 
-				return;
-			}
-
-			try{
-				winner = Board.playGame(net1, net2, 8);
-			}catch(ArrayIndexOutOfBoundsException e){
-				e.printStackTrace();
-				System.out.println("Error caught in game " +net1num+ " : " + net2num);
-			}
-			
-			if(Math.abs(winner)==32){
-				System.err.println("Road");
-			}
-			net1.setWins(net1.getWins() + winner);
-			net2.setWins(net2.getWins() + (-1*winner));
-
-			 winner = Board.playGame(net1, net3, 8);
-
-			if(Math.abs(winner)==32){
-				System.err.println("Road");
-			}
+	
+				atGame = threadNum * GamesPerThread + i;
+				net1num = atGame/networks.size();
+				net2num = atGame%networks.size();
+				net3num = atGame%networks.size();
+	
+				
+				long start=System.currentTimeMillis();
+				try{
+					net1 = networks.get(net1num);
+					net2 = networks.get(net2num);
+					net3 = randNets.get(net3num);
+				}catch(IndexOutOfBoundsException e){
+					//last network run. exit. 
+					return;
+				}
+	
+				try{
+					winner = Board.playGame(net1, net2, 8);
+				}catch(ArrayIndexOutOfBoundsException e){
+					
+					if(StaticGlobals.LOGGING_ENABLED){
+						logger.severe(e.getMessage().toString());
+					}
+					e.printStackTrace();
+					System.out.println("Error caught in game " +net1num+ " : " + net2num);
+				}
+				
+				if(Math.abs(winner)==32){
+					System.err.println("Road");
+				}
 				net1.setWins(net1.getWins() + winner);
-				//net3.setLosses(net3.getLosses() + -1*winner);
-
-
-			if(StaticGlobals.PRINT_GAME_WINNER && i%50 == 0){
-				System.out.println("game " + net1num + ":" + net2num + " Winner: "
-				+  winner + " Time: "+(System.currentTimeMillis()-start)/1000.0 + " S");
+				net2.setWins(net2.getWins() + (-1*winner));
+	
+				 winner = Board.playGame(net1, net3, 8);
+	
+				if(Math.abs(winner)==32){
+					System.err.println("Road");
+				}
+					net1.setWins(net1.getWins() + winner);
+					//net3.setLosses(net3.getLosses() + -1*winner);
+	
+	
+				if(StaticGlobals.PRINT_GAME_WINNER){
+					System.out.println("game " + net1num + ":" + net2num + " Winner: "
+					+  winner + " Time: "+(System.currentTimeMillis()-start)/1000.0 + " S");
+				}
+	
 			}
-
+			
 		}
-		
-		
-		
+		catch(Exception e){
+			if(StaticGlobals.LOGGING_ENABLED){
+				logger.severe(e.getMessage().toString());
+			}
+			e.printStackTrace();
+			throw e;
+		}
 	}
 }

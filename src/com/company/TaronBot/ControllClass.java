@@ -29,7 +29,12 @@ public class ControllClass {
 			input = reader.nextLine();
 			
 			switch(input){
-			
+
+
+			case "save": 
+				StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT = true;
+				System.out.println("Saving after next generation");
+				return;
 			case "pause": 
 				StaticGlobals.PAUSED = true;
 				System.out.println("Paused");
