@@ -87,17 +87,17 @@ public class ComputeGeneration {
 		
 		
 	}
-	
+
 	
 	private static void RunSelectionOfGames(int threadNum, List<TakNetwork> networks, int GamesPerThread, Logger logger){
 		try{
 			int net1num = 0;
 			int net2num = 0;
-			int net3num = 0;
+			//int net3num = 0;
 			int atGame = 0;
 			TakNetwork net1 = null;
 			TakNetwork net2 = null;
-			TakNetwork net3 = null;
+			//TakNetwork net3 = null;
 			int winner = 0;
 	
 			for(int i = 0; i < GamesPerThread; i++){
@@ -114,14 +114,14 @@ public class ComputeGeneration {
 				atGame = threadNum * GamesPerThread + i;
 				net1num = atGame/networks.size();
 				net2num = atGame%networks.size();
-				net3num = atGame%networks.size();
+	//			net3num = atGame%networks.size();
 	
 				
 				long start=System.currentTimeMillis();
 				try{
 					net1 = networks.get(net1num);
 					net2 = networks.get(net2num);
-					net3 = randNets.get(net3num);
+	//				net3 = randNets.get(net3num);
 				}catch(IndexOutOfBoundsException e){
 					//last network run. exit. 
 					return;
@@ -144,12 +144,12 @@ public class ComputeGeneration {
 				net1.setWins(net1.getWins() + winner);
 				net2.setWins(net2.getWins() + (-1*winner));
 	
-				 winner = Board.playGame(net1, net3, 8);
+	//			 winner = Board.playGame(net1, net3, 8);
 	
-				if(Math.abs(winner)==32){
-					System.err.println("Road");
-				}
-					net1.setWins(net1.getWins() + winner);
+	//			if(Math.abs(winner)==32){
+	//				System.err.println("Road");
+	//			}
+	//				net1.setWins(net1.getWins() + winner);
 					//net3.setLosses(net3.getLosses() + -1*winner);
 	
 	

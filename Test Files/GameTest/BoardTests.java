@@ -3,6 +3,7 @@ import com.company.TaronBot.Game.Board;
 import com.company.TaronBot.Game.Move;
 import com.company.TaronBot.Game.Moves.DeStack;
 import com.company.TaronBot.Game.Moves.Placement;
+import com.sun.org.apache.xpath.internal.SourceTree;
 import junit.framework.*;
 
 
@@ -67,6 +68,31 @@ public class BoardTests extends TestCase{
         board.getMap()[1][1].add(-1);
 
         assertTrue(board.checkForVictory()!=null);
+
+    }
+    public void testVictory(){
+        board =new Board(8,new LinkedList<>(),true);
+        for (int i = 0; i <8 ; i++) {
+            board.getMap()[i][0].add(1);
+
+        }
+        /*
+        for(boolean row[]:board.topLevel(true)){
+            for(boolean place:row){
+                if(place){
+                    System.out.print("1 ");
+                }else{
+                    System.out.print("0 ");
+                }
+            }
+            System.out.println();
+        }
+        //*/
+
+
+        //board.checkForVictory();
+        int i=board.checkRoadWin(board,true,board.topLevel(true));
+        //assertTrue(==32);
 
     }
 

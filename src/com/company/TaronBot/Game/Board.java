@@ -149,25 +149,8 @@ public class Board {
     }
     public int checkVictory(Board b, boolean cont){
         boolean topLevel[][]=b.topLevel(cont);
-        for (int i = 0; i <topLevel.length ; i++) {
-            if(checkVictory(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
-                System.err.println("road");
-                return 32;
-            };
-            if(checkVictory(i,0,topLevel,new boolean[topLevel.length][topLevel.length], true)){
-                System.err.println("road");
-                return 32;
-            };
-            topLevel=b.topLevel(!cont);
-            if(checkVictory(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
-                System.err.println("road");
-                return -32;
-            };
-            if(checkVictory(i,0,topLevel,new boolean[topLevel.length][topLevel.length], true)){
-                System.err.println("road");
-                return -32;
-            };
-        }
+        Integer x = checkRoadWin(b, cont, topLevel);
+        if (x != null) return x;
         int sign=1;
         if(cont==false){
             sign*=-1;
@@ -206,16 +189,43 @@ public class Board {
         return 500;
     }
 
+    public Integer checkRoadWin(Board b, boolean cont, boolean[][] topLevel) {
+        for (int i = 0; i <topLevel.length ; i++) {
+            if(checkVictory(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
+                System.err.println("road");
+                return 32;
+            };
+            if(checkVictory(i,0,topLevel,new boolean[topLevel.length][topLevel.length], true)){
+                System.err.println("road");
+                return 32;
+            };
+            topLevel=b.topLevel(!cont);
+            if(checkVictory(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
+                System.err.println("road");
+                return -32;
+            };
+            if(checkVictory(i,0,topLevel,new boolean[topLevel.length][topLevel.length], true)){
+                System.err.println("road");
+                return -32;
+            };
+        }
+        return null;
+    }
+
     private boolean checkVictory( int x, int y, boolean topLevel[][], boolean saidNo[][], boolean vertical ){
-    	/**System.err.println(x+" "+y);
+    	/*System.err.println(x+" "+y);
     	for( boolean[] b:saidNo){
     		for(boolean b2:b){
-    	    	System.err.print(b2+" ");
+                if(b2){
+                    System.err.print("0 ");
+                }else {
+                    System.err.print("_ ");
+                }
     		}
     		System.err.println();
     	}
     	System.err.println();
-         **/
+         //*/
         int xActive=0;
         int yActive=0;
         if(vertical){
@@ -224,9 +234,10 @@ public class Board {
             xActive=1;
         }
         if(x<topLevel.length&&y<topLevel.length&&x>=0&&y>=0) {
-            if (!topLevel[x][y]||saidNo[x][y]) {
+            if (!topLevel[x][y]) {
+               // System.err.println("Broke1");
                 return false;
-            } else if (topLevel.length == x * xActive + y * yActive) {
+            } else if (topLevel.length-1 == x * xActive + y * yActive) {
                 return true;
             } else {
                 boolean saidNoSendDown[][] = new boolean[saidNo.length][saidNo.length];
@@ -249,16 +260,16 @@ public class Board {
                     saidNoSendDown[x][y + 1] = true;
                 }
 
-                if (checkVictory(x+1,y,topLevel, saidNoSendDown,vertical)){
+                if (x+1<saidNo.length&&!saidNo[x+1][y]&&checkVictory(x+1,y,topLevel, saidNoSendDown,vertical)){
                     return true;
                 }
-                if (checkVictory(x,y+1,topLevel, saidNoSendDown,vertical)){
+                if (y+1<saidNo.length&&!saidNo[x][y+1]&&checkVictory(x,y+1,topLevel, saidNoSendDown,vertical)){
                     return true;
                 }
-                if (checkVictory(x-1,y,topLevel, saidNoSendDown,vertical)){
+                if (x-1>0&&!saidNo[x-1][y]&&checkVictory(x-1,y,topLevel, saidNoSendDown,vertical)){
                     return true;
                 }
-                if (checkVictory(x,y-1,topLevel, saidNoSendDown,vertical)){
+                if (y-1>0&&!saidNo[x][y-1]&&checkVictory(x,y-1,topLevel, saidNoSendDown,vertical)){
                     return true;
                 }
 
@@ -266,6 +277,7 @@ public class Board {
 
             }
         }
+        //System.err.println("Broke2");
 
         return false;
     }
