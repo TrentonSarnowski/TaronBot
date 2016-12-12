@@ -192,20 +192,20 @@ public class Board {
     public Integer checkRoadWin(Board b, boolean cont, boolean[][] topLevel) {
         for (int i = 0; i <topLevel.length ; i++) {
             if(checkVictory(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
-                System.err.println("road");
+               //System.err.println("road");
                 return 32;
             };
             if(checkVictory(i,0,topLevel,new boolean[topLevel.length][topLevel.length], true)){
-                System.err.println("road");
+                //System.err.println("road");
                 return 32;
             };
             topLevel=b.topLevel(!cont);
             if(checkVictory(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
-                System.err.println("road");
+                //System.err.println("road");
                 return -32;
             };
             if(checkVictory(i,0,topLevel,new boolean[topLevel.length][topLevel.length], true)){
-                System.err.println("road");
+                //System.err.println("road");
                 return -32;
             };
         }

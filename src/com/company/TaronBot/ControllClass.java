@@ -26,11 +26,29 @@ public class ControllClass {
 		Scanner reader = new Scanner(System.in);
 		while(true){
 			System.out.println("Waiting for input: ");
-			input = reader.nextLine();
+			input = reader.next();
 			
-			switch(input){
-
-
+			switch(input.toLowerCase()){
+			case "enable":
+				input = reader.next();
+				switch(input.toLowerCase()){
+				case "moves":
+					StaticGlobals.PRINT_GAME_MOVES = true;
+					break;
+				default:
+					System.out.println(input + " not recognized as boolean Switch");
+				}	
+				break;
+			case "disable":
+				input = reader.next();
+				switch(input.toLowerCase()){
+				case "moves":
+					StaticGlobals.PRINT_GAME_MOVES = false;
+					break;
+				default:
+					System.out.println(input + " not recognized as boolean Switch");
+				}
+				break;
 			case "save": 
 				StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT = true;
 				System.out.println("Saving after next generation");
