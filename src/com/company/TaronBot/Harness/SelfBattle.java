@@ -2,7 +2,6 @@ package com.company.TaronBot.Harness;
 
 import com.company.TaronBot.Game.Board;
 import com.company.TaronBot.Game.Move;
-import com.company.TaronBot.TaronBot;
 
 import java.util.ArrayList;
 

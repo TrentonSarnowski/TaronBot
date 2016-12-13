@@ -8,8 +8,9 @@ import java.util.List;
 public interface Move {
 
     String toString();
-    List<Integer>[][] performMove(List<Integer>[][] map, boolean control);
-    boolean checkFeasible(List<Integer>[][] map);
+    List<Integer>[][] performMove(Board map, boolean control);
+    boolean checkFeasible(Board map, boolean cont);
     double getWeight();
+    int  getType();
     String toPlayTakString();
 }

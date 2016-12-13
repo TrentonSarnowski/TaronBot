@@ -1,8 +1,13 @@
 package com.company.TaronBot.Network;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 
-public interface nonLinearFunction {
+/**
+ * simple interface for passing functions through the Networks. 
+ * @author deef0000dragon1
+ *
+ */
+public interface nonLinearFunction extends Serializable {
 	public double operation(double input);
 
 }

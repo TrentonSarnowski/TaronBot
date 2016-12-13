@@ -3,6 +3,7 @@ import com.company.TaronBot.Game.Board;
 import com.company.TaronBot.Game.Move;
 import com.company.TaronBot.Game.Moves.DeStack;
 import com.company.TaronBot.Game.Moves.Placement;
+import com.sun.org.apache.xpath.internal.SourceTree;
 import junit.framework.*;
 
 
@@ -67,6 +68,44 @@ public class BoardTests extends TestCase{
         board.getMap()[1][1].add(-1);
 
         assertTrue(board.checkForVictory()!=null);
+
+    }
+    public void testVictory(){
+        board =new Board(8,new LinkedList<>(),true);
+
+        board.getMap()[0][7].add(-1);
+        board.getMap()[1][7].add(-1);
+        board.getMap()[2][7].add(-1);
+        board.getMap()[2][6].add(-1);
+        board.getMap()[3][6].add(-1);
+        board.getMap()[4][6].add(-1);
+        board.getMap()[4][5].add(-1);
+        board.getMap()[4][4].add(-1);
+        board.getMap()[5][4].add(-1);
+        board.getMap()[6][4].add(-1);
+        board.getMap()[6][5].add(-1);
+        board.getMap()[7][5].add(-1);
+        board.getMap()[0][7].add(-1);
+
+
+
+
+        for(boolean row[]:board.topLevel(false)){
+            for(boolean place:row){
+                if(place){
+                    System.out.print("1 ");
+                }else{
+                    System.out.print("0 ");
+                }
+            }
+            System.out.println();
+        }
+        //*/
+
+
+        //board.checkForVictory();
+        int i=board.checkRoadWin(board,true,board.topLevel(true));
+        //assertTrue(==32);
 
     }
 

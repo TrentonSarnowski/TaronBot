@@ -1,5 +1,6 @@
 package com.company.TaronBot.Game.Moves;
 
+import com.company.TaronBot.Game.Board;
 import com.company.TaronBot.Game.Move;
 
 import java.util.List;
@@ -12,6 +13,7 @@ public class Placement implements Move {
     protected int y;
     protected int type;
     protected double weight;
+    boolean checkFeasible;
     public Placement(String move){
 
     }
@@ -21,25 +23,62 @@ public class Placement implements Move {
         this.y=y;
         this.type=type;
     }
-    @Override
-    public List<Integer>[][] performMove(List<Integer>[][] map, boolean control) {
-        if (map[x][y].isEmpty()==true) {
-            if(control){
 
+    @Override
+    public int getType() {
+        return type;
+    }
+
+    @Override
+    public List<Integer>[][] performMove(Board board, boolean control) {
+        List<Integer>[][] map=board.getMap();
+        if (checkFeasible(board, control)) {
+            if(control){
+                if(type==3){
+                    board.reducePositiveCapRemain();
+                }else{
+                    board.reducePositiveFlatRemain();
+                }
                 map[x][y].add(type);
 
                 return map;
             }else{
-                map[x][y].add(type*-1);
+                if(type==3){
+                    board.reduceNegativeCapRemain();
+                }else{
+                    board.reduceNegativeFlatRemain();
+                }
+                map[x][y].add(-1*type);
                 return map;
             }
         }
+        System.out.print("Failed Check");
         return null;
     }
 
     @Override
-    public boolean checkFeasible(List<Integer>[][] map) {
-        return map[x][y].isEmpty();
+    public boolean checkFeasible(Board map, boolean cont) {
+        if(map.getAIMap(cont)[x][y][0]!=0||!map.getMap()[x][y].isEmpty()){
+
+            checkFeasible=false;
+            return false;
+        }
+
+        if(type!=3){
+            checkFeasible=true;
+            return true;
+
+        }else if( type==3&&(cont && (map.getPositiveCapRemain()>0)||(!cont&&map.getNegativeCapRemain()>0))){
+            checkFeasible=true;
+            return true;
+        }else{
+            checkFeasible=false;
+            return false;
+        }
+
+
+
+        //return map.getMap()[x][y].isEmpty();
     }
 
     public String toString(){
@@ -49,7 +88,7 @@ public class Placement implements Move {
                 ret+="F";
                 break;
             case 2:
-                ret+="W";
+                ret+="S";
                 break;
             case 3:
                 ret+="C";

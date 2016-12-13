@@ -1,53 +1,93 @@
 package com.company.TaronBot.Game;
 
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import com.company.TaronBot.Game.Moves.*;
-import com.company.TaronBot.Network.Network;
-import sun.security.krb5.internal.crypto.Des;
 
-/**
+
+import com.company.TaronBot.Network.TakNetwork;
+import tech.deef.Tools.StaticGlobals;
+
+/**TakNetwork
  * Created by sarnowskit on 10/21/2016.
  */
 public class Board {
+    private static boolean print=false;
     private List<Integer> map[][];
-    
-    public static int playGame(Network Player1, Network Player2, int sideLength){
+    int positivePieceRemain=0;
+    int negativePieceRemain=0;
+    int positiveCapRemain=0;
+    int negativeCapRemain=0;
+    private static Move firstPlayer,SecondPlayer=null;
+    public static int playGame(TakNetwork Player1, TakNetwork Player2, int sideLength){
+
         Board game=new Board(sideLength, new LinkedList<>(), true);
-        boolean check1=false;
-        boolean check2=false;
+        int check1=500;
+        //boolean check2=false;
         List<Move> moves;
+        moves = Player1.calculate(game.getAIMap(false));
+        for (Move m: moves) {
+            if(m.checkFeasible(game,false)&&m.getType()==1){
+
+                m.performMove(game,false);
+                firstPlayer=m;
+                //System.out.println(m.toString());
+                break;
+            }
+        }
+        moves = Player2.calculate(game.getAIMap(false));
+        for (Move m: moves) {
+            if(m.checkFeasible(game,true)&&m.getType()==1){
+                m.performMove(game,true);
+                SecondPlayer=m;
+                //System.out.println(m.toString());
+                break;
+            }
+        }
+        int i=1;
         do{
+        	//input data needs to be 9x8x8
+        	if(StaticGlobals.PRINT_GAME_MOVES){
+        		System.out.println(i+": "+firstPlayer+" "+SecondPlayer);
+        	}
+            i++;
             moves =Player1.calculate(game.getAIMap(true));
             for (Move m: moves) {
-                if(m.checkFeasible(game.getMap())){
-                    m.performMove(game.getMap(),true);
+                if(m.checkFeasible(game,true)){
+
+                    firstPlayer=m;
+                    m.performMove(game,true);
                     break;
                 }
             }
-            check1=game.checkVictory(game.topLevel(true));
-            check2 = game.checkVictory(game.topLevel(false));
-            if(check1){
-                return 1;
-            }else if(check2){
-                return -1;
+            check1=game.checkVictory(game,true);
+
+
+
+            if(check1 != 500){
+            	if(StaticGlobals.PRINT_GAME_MOVES){
+            		System.out.println(i+": "+firstPlayer);
+            	}
+            	return check1;
             }
             moves =Player2.calculate(game.getAIMap(true));
             for (Move m: moves) {
-                if(m.checkFeasible(game.getMap())){
-                    m.performMove(game.getMap(),true);
+                if(m.checkFeasible(game,false)){
+                    SecondPlayer=m;
+                    m.performMove(game,false);
                     break;
                 }
             }
-            check2= game.checkVictory(game.topLevel(true));
-            check1= game.checkVictory(game.topLevel(false));
-            if(check1){
-                return -1;
-            }else if(check2){
-                return 1;
+            check1=game.checkVictory(game,true);
+            if(check1 != 500){
+                if(StaticGlobals.PRINT_GAME_MOVES){
+                    System.out.println(i+": "+firstPlayer +" "+ SecondPlayer);
+                }
+                return check1;
             }
         }while(true);
 
@@ -55,6 +95,40 @@ public class Board {
     }
 
     public Board(int sideLength, List<Move> boardState, boolean start){
+        switch (sideLength){
+            case 3:
+                positivePieceRemain=10;
+                negativePieceRemain=10;
+                break;
+            case 4:
+                positivePieceRemain=15;
+                negativePieceRemain=15;
+                break;
+            case 5:
+                positivePieceRemain=21;
+                negativePieceRemain=21;
+                positiveCapRemain=1;
+                negativeCapRemain=1;
+                break;
+            case 6:
+                positivePieceRemain=30;
+                negativePieceRemain=30;
+                positiveCapRemain=1;
+                negativeCapRemain=1;
+                break;
+            case 7:
+                positivePieceRemain=40;
+                negativePieceRemain=40;
+                positiveCapRemain=2;
+                negativeCapRemain=2;
+                break;
+            case 8:
+                positivePieceRemain=50;
+                negativePieceRemain=50;
+                positiveCapRemain=2;
+                negativeCapRemain=2;
+                break;
+        }
         map=new List[sideLength][sideLength];
         for (List[] e:map) {
             for (List here:e) {
@@ -69,22 +143,90 @@ public class Board {
         }
         boolean ready=start;
         for (Move e:boardState) {
-            System.err.println(tryMove(e, ready));
+            //System.err.println(tryMove(e, ready));
             ready=!ready;
         }
     }
-    public boolean checkVictory(boolean topLevel[][]){
+    public int checkVictory(Board b, boolean cont){
+        boolean topLevel[][]=b.topLevel(cont);
+        Integer x = checkRoadWin(b, cont, topLevel);
+        if (x != null) return x;
+        int sign=1;
+        if(cont==false){
+            sign*=-1;
+        }
+        //todo
+        //todo add check for full board
+        boolean full=true;
+        for(List<Integer> l[]:b.getMap()){
+            for(List<Integer> m:l){
+                if(m.isEmpty()){
+                    full=false;
+                }
+            }
+        }
+        if(positivePieceRemain<=0||negativePieceRemain<=0||full){
+            int positiveSum=0;
+            int negativeSum=0;
+            for(List<Integer> l[]:b.getMap()){
+                for(List<Integer> m:l){
+                    if(m.size()>0) {
+                        if (m.get(m.size() - 1) == 1) {
+                            positiveSum++;
+                        } else if (m.get(m.size() - 1) == -1) {
+                            negativeSum++;
+                        }
+                    }
+                }
+            }
+            if(cont){
+                return positiveSum-negativeSum;
+            }else{
+
+            }
+        }
+
+        return 500;
+    }
+
+    public Integer checkRoadWin(Board b, boolean cont, boolean[][] topLevel) {
+
         for (int i = 0; i <topLevel.length ; i++) {
-            if(checkVictory(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
-                return true;
+            if(RoadCheck(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
+                //System.err.println("road");
+                return 32;
             };
-            if(checkVictory(i,0,topLevel,new boolean[topLevel.length][topLevel.length], true)){
-                return true;
+            if(RoadCheck(i,0,topLevel,new boolean[topLevel.length][topLevel.length], true)){
+                //System.err.println("road");
+                return 32;
+            };
+            topLevel=b.topLevel(!cont);
+            if(RoadCheck(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
+                System.err.println("road");
+                return -32;
+            };
+            if(RoadCheck(i,0,topLevel,new boolean[topLevel.length][topLevel.length], true)){
+                //System.err.println("road");
+                return -32;
             };
         }
-        return false;
+        return null;
     }
-    private boolean checkVictory( int x, int y, boolean topLevel[][], boolean saidNo[][], boolean vertical ){
+
+    private boolean RoadCheck( int x, int y, boolean topLevel[][], boolean saidNo[][], boolean vertical ){
+    	/*System.err.println(x+" "+y);
+    	for( boolean[] b:saidNo){
+    		for(boolean b2:b){
+                if(b2){
+                    System.err.print("0 ");
+                }else {
+                    System.err.print("_ ");
+                }
+    		}
+    		System.err.println();
+    	}
+    	System.err.println();
+         //*/
         int xActive=0;
         int yActive=0;
         if(vertical){
@@ -92,10 +234,11 @@ public class Board {
         }else{
             xActive=1;
         }
-        if(x<=topLevel.length&&y<=topLevel.length&&x>=0&&y>=0) {
+        if(x<topLevel.length&&y<topLevel.length&&x>=0&&y>=0) {
             if (!topLevel[x][y]) {
+               // System.err.println("Broke1");
                 return false;
-            } else if (topLevel.length == x * xActive + y * yActive) {
+            } else if (topLevel.length-1 == x * xActive + y * yActive) {
                 return true;
             } else {
                 boolean saidNoSendDown[][] = new boolean[saidNo.length][saidNo.length];
@@ -108,25 +251,26 @@ public class Board {
                 if (x > 0) {
                     saidNoSendDown[x - 1][y] = true;
                 }
-                if (x < saidNo.length) {
+                if (x < saidNo.length-1) {
                     saidNoSendDown[x + 1][y] = true;
                 }
                 if (y > 0) {
                     saidNoSendDown[x][y - 1] = true;
                 }
-                if (y < saidNo.length) {
+                if (y < saidNo.length-1) {
                     saidNoSendDown[x][y + 1] = true;
                 }
-                if (checkVictory(x+1,y,topLevel, saidNoSendDown,vertical)){
+
+                if (x+1<saidNo.length&&!saidNo[x+1][y]&&RoadCheck(x+1,y,topLevel, saidNoSendDown,vertical)){
                     return true;
                 }
-                if (checkVictory(x,y+1,topLevel, saidNoSendDown,vertical)){
+                if (y+1<saidNo.length&&!saidNo[x][y+1]&&RoadCheck(x,y+1,topLevel, saidNoSendDown,vertical)){
                     return true;
                 }
-                if (checkVictory(x-1,y,topLevel, saidNoSendDown,vertical)){
+                if (x-1>=0&&!saidNo[x-1][y]&&RoadCheck(x-1,y,topLevel, saidNoSendDown,vertical)){
                     return true;
                 }
-                if (checkVictory(x,y-1,topLevel, saidNoSendDown,vertical)){
+                if (y-1>=0&&!saidNo[x][y-1]&&RoadCheck(x,y-1,topLevel, saidNoSendDown,vertical)){
                     return true;
                 }
 
@@ -134,6 +278,8 @@ public class Board {
 
             }
         }
+        //System.err.println("Broke2");
+
         return false;
     }
     public List<Integer>[][] getMap() {
@@ -141,13 +287,13 @@ public class Board {
     }
 
     public boolean tryMove(Move e, boolean positive){
-        e.performMove(map, positive);
+        e.performMove(this, positive);
 
         return false;
     }
     public List<Move> generateAllMoves(List<Integer> i){
         List<Move> moves=new LinkedList<>();
-        
+
         return null;
     }
     public Move checkForVictory(){
@@ -741,7 +887,10 @@ public class Board {
             for (int j = 0; j < map.length; j++) {
                 if(!map[i][j].isEmpty()){
                     int temp = map[i][j].get(map[i][j].size() - 1);
-                    topLevel[i][j] = sign*temp == sign*1 || sign*temp == sign*3;
+                    if(temp==sign*3||temp==sign*1){
+                        topLevel[i][j]=true;
+                    }
+
                 }
             }
         }
@@ -774,6 +923,32 @@ public class Board {
             }
         }
         return AIMap;
+    }
+
+    public int getNegativePieceRemain() {
+        return negativePieceRemain;
+    }
+    public int getPositivePieceRemain(){
+        return positivePieceRemain;
+    }
+
+    public int getPositiveCapRemain(){
+        return positiveCapRemain;
+    }
+    public int getNegativeCapRemain(){
+        return positiveCapRemain;
+    }
+    public void reducePositiveCapRemain(){
+        positiveCapRemain--;
+    }
+    public void reduceNegativeCapRemain(){
+        negativeCapRemain--;
+    }
+    public void reducePositiveFlatRemain(){
+        positivePieceRemain--;
+    }
+    public void reduceNegativeFlatRemain(){
+        negativePieceRemain--;
     }
 
 }
