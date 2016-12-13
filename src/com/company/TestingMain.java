@@ -254,7 +254,7 @@ public class TestingMain {
 				Random rand = new Random(RandomNunber);
 				testNetwork.randomize(rand);
 			}
-			TakNetwork testNetwork = new TakNetwork(dimns+1, dimns, dimns, 8);
+			testNetwork = new TakNetwork(dimns+1, dimns, dimns, 8);
 			RandomNunber = random.nextInt();
 			Random rand = new Random(RandomNunber);
 			testNetwork.randomize(rand);

@@ -201,7 +201,7 @@ public class Board {
                 return 32;
             };
             topLevel=b.topLevel(!cont);
-            if(checkVictory(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
+            if(RoadCheck(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
                 System.err.println("road");
                 return -32;
             };
