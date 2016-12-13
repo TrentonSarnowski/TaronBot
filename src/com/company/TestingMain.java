@@ -62,8 +62,8 @@ public class TestingMain {
 
 		TakNetwork network1;
 		TakNetwork network2;
-		/*network1=loadTesting("C:\\Users\\sarnowskit\\Downloads\\TaronBot\\networks\\TestGnerationalGrowth\\output\\Network" + 0 + ".takNetwork");
-		network2=loadTesting("C:\\Users\\sarnowskit\\Downloads\\TaronBot\\networks\\TestGnerationalGrowth\\output\\Network" + 0 + ".takNetwork");
+		network1=loadTesting("C:\\Users\\sarnowskit\\Downloads\\TaronBot\\networks\\TestGnerationalGrowth\\output\\Network" + 0 + ".takNetwork");
+		network2=loadTesting("C:\\Users\\sarnowskit\\Downloads\\TaronBot\\networks\\TestGnerationalGrowth\\output\\Network" + 1 + ".takNetwork");
 		Board.playGame(network1,network2,8);
 		Board.playGame(network2,network1,8);
 		//*/
@@ -164,7 +164,7 @@ public class TestingMain {
 						"C:\\Users\\sarnowskit\\Downloads\\TaronBot\\networks\\TestGnerationalGrowth\\output\\Network2.takNetwork"),
 				loadTesting("C:\\Users\\sarnowskit\\Desktop\\64 gened networks\\Network0.takNetwork"), 8));*/
 		//TestGnerationalGrowth(64,100,8);
-		TestGnerationalGrowth(64,1000,8,5);
+		//TestGnerationalGrowth(64,1000,8,5);
 
 		// TestSingleGame();
 		// TestGeneration();
@@ -254,7 +254,7 @@ public class TestingMain {
 				Random rand = new Random(RandomNunber);
 				testNetwork.randomize(rand);
 			}
-			TakNetwork testNetwork = new TakNetwork(dimns+1, dimns, dimns, 8);
+			testNetwork = new TakNetwork(dimns+1, dimns, dimns, 8);
 			RandomNunber = random.nextInt();
 			Random rand = new Random(RandomNunber);
 			testNetwork.randomize(rand);

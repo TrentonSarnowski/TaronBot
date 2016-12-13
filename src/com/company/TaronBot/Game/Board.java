@@ -49,7 +49,8 @@ public class Board {
             }
         }
         int i=1;
-        do{
+        for (int j = 0; j <1000 ; j++)
+        {
         	//input data needs to be 9x8x8
         	if(StaticGlobals.PRINT_GAME_MOVES){
         		System.out.println(i+": "+firstPlayer+" "+SecondPlayer);
@@ -89,7 +90,8 @@ public class Board {
                 }
                 return check1;
             }
-        }while(true);
+        }
+        return 0;
 
 
     }
@@ -201,7 +203,7 @@ public class Board {
                 return 32;
             };
             topLevel=b.topLevel(!cont);
-            if(checkVictory(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
+            if(RoadCheck(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
                 System.err.println("road");
                 return -32;
             };
