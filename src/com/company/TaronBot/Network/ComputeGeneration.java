@@ -1,6 +1,7 @@
 package com.company.TaronBot.Network;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
@@ -23,6 +24,7 @@ public class ComputeGeneration {
 			net.setLosses(0);
 		}
 
+		/*
 		long RandomNunber=0;
 		Random random=new Random();
 		randNets=new ArrayList<>();
@@ -35,7 +37,7 @@ public class ComputeGeneration {
 			randNets.add(testNetwork);
 
 			//all 100 networks generate
-		}
+		}//*/
 
 		ArrayList<Thread> threads = new ArrayList<Thread>(Threads);
 		for(int i = 0; i < Threads; i++){
@@ -114,42 +116,44 @@ public class ComputeGeneration {
 				atGame = threadNum * GamesPerThread + i;
 				net1num = atGame/networks.size();
 				net2num = atGame%networks.size();
-	//			net3num = atGame%networks.size();
+				//net3num = atGame%networks.size();
 	
 				
 				long start=System.currentTimeMillis();
 				try{
 					net1 = networks.get(net1num);
 					net2 = networks.get(net2num);
-	//				net3 = randNets.get(net3num);
+					//net3 = randNets.get(net3num);
 				}catch(IndexOutOfBoundsException e){
 					//last network run. exit. 
 					return;
 				}
 	
 				try{
-					winner = Board.playGame(net1, net2, 8);
+					winner = Board.playGame(net1, net2, net1.getWidth());
 				}catch(ArrayIndexOutOfBoundsException e){
 					
 					if(StaticGlobals.LOGGING_ENABLED){
-						logger.severe(e.getMessage().toString());
+					
+						logger.severe(Arrays.toString(e.getStackTrace()));
 					}
 					e.printStackTrace();
 					System.out.println("Error caught in game " +net1num+ " : " + net2num);
 				}
 				
 				if(Math.abs(winner)==32){
-					System.err.println("Road");
-				}
+					//System.err.println("Road");
 				net1.setWins(net1.getWins() + winner);
-				net2.setWins(net2.getWins() + (-1*winner));
+
+				}
+				//net2.setWins(net2.getWins() + (-1*winner));
 	
-	//			 winner = Board.playGame(net1, net3, 8);
+				//winner = Board.playGame(net1, net3, 8);
 	
-	//			if(Math.abs(winner)==32){
-	//				System.err.println("Road");
-	//			}
-	//				net1.setWins(net1.getWins() + winner);
+				//if(Math.abs(winner)==32){
+				//	System.err.println("Road");
+				//}
+				//net1.setWins(net1.getWins() + winner);
 					//net3.setLosses(net3.getLosses() + -1*winner);
 	
 	
@@ -163,7 +167,7 @@ public class ComputeGeneration {
 		}
 		catch(Exception e){
 			if(StaticGlobals.LOGGING_ENABLED){
-				logger.severe(e.getMessage().toString());
+				logger.severe(Arrays.toString(e.getStackTrace()));
 			}
 			e.printStackTrace();
 			throw e;

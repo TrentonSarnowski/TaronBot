@@ -47,7 +47,7 @@ public class TestingMain {
 	 */
 	public static void main(String[] args) {
 		//networkGroupMutatorsTest();
-		// startControllThread();
+		startControllThread();
 
 		// NetTesting();
 		// ThreadedTesting(20);
@@ -56,7 +56,7 @@ public class TestingMain {
 
 		// ComputeGenerationTesting(15);
 		//for (int i = 0; i <4 ; i++) {
-			TestGnerationalGrowth(64,16,7);
+			//TestGnerationalGrowth(64,16,7);
 
 //		}
 
@@ -164,6 +164,7 @@ public class TestingMain {
 						"C:\\Users\\sarnowskit\\Downloads\\TaronBot\\networks\\TestGnerationalGrowth\\output\\Network2.takNetwork"),
 				loadTesting("C:\\Users\\sarnowskit\\Desktop\\64 gened networks\\Network0.takNetwork"), 8));*/
 		//TestGnerationalGrowth(64,100,8);
+		TestGnerationalGrowth(64,1000,8,5);
 
 		// TestSingleGame();
 		// TestGeneration();
@@ -188,7 +189,7 @@ public class TestingMain {
 		t.start();
 	}
 
-	private static void TestGnerationalGrowth(int generationSize, int generations, int cores) {
+	private static void TestGnerationalGrowth(int generationSize, int generations, int cores, int dimns) {
 
 
 		Logger logger = Logger.getLogger("MyLog");
@@ -253,6 +254,10 @@ public class TestingMain {
 				Random rand = new Random(RandomNunber);
 				testNetwork.randomize(rand);
 			}
+			TakNetwork testNetwork = new TakNetwork(dimns+1, dimns, dimns, 8);
+			RandomNunber = random.nextInt();
+			Random rand = new Random(RandomNunber);
+			testNetwork.randomize(rand);
 			// System.out.println((testNetwork.toString()));
 
 			networks.add(testNetwork);
@@ -271,7 +276,7 @@ public class TestingMain {
 				logger.config("Beginning Generation: " + i);
 			}
 
-			if(StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT){
+			if(StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT || i%100 == 99){
 
 				String output = "networks\\FORCEEXIT\\TestGnerationalGrowth\\output";
 
@@ -286,7 +291,7 @@ public class TestingMain {
 
 					FileOutputStream fout;
 					try {
-						fout = new FileOutputStream(output + "\\Network" + s + ".takNetwork");
+						fout = new FileOutputStream(output + "\\GEN" + i + "Network" + s +".takNetwork");
 						ObjectOutputStream oos = new ObjectOutputStream(fout);
 						oos.writeObject(networks.get(s));
 						oos.close();
@@ -300,9 +305,9 @@ public class TestingMain {
 				}
 
 				System.out.println("Networks Saved");
-
-				return;
-
+				if(StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT){
+					return;
+				}
 			}
 
 
@@ -375,28 +380,29 @@ public class TestingMain {
 			} catch (IndexOutOfBoundsException e) {
 				//System.out.println("ExpectedIndexOutOfBoudsError");
 			}
+
 			if (LOGGING_ENABLED) {
 				logger.config("Removing " + remove.size() + " networks");
 			}
 				
-				for (TakNetwork net : remove) {
-					networks.remove(net);
-				}
-				
-				if(StaticGlobals.GENERATIONAL_NOTIFIERS){
-					System.out.println("Starting new network generation");
-				}
-				if (LOGGING_ENABLED) {
-					logger.config("Starting new network generation");
-				}
-				networks.addAll(MateNetworks.GroupMateNetworks(networks, random, generationSize-networks.size()));
+			for (TakNetwork net : remove) {
+				networks.remove(net);
+			}
+
+			if(StaticGlobals.GENERATIONAL_NOTIFIERS){
+				System.out.println("Starting new network generation");
+			}
+			if (LOGGING_ENABLED) {
+				logger.config("Starting new network generation");
+			}
+			networks.addAll(MateNetworks.GroupMateNetworks(networks, random, generationSize-networks.size()));
 
 				
-				if (LOGGING_ENABLED) {
-					logger.config("Networks Generated.");
-				}
+			if (LOGGING_ENABLED) {
+				logger.config("Networks Generated.");
+			}
 
-				// direct dupe top net
+			// direct dupe top net
 
 			/*
 			 * while (networks.size() < generationSize) {
@@ -422,7 +428,7 @@ public class TestingMain {
 
 			FileOutputStream fout;
 			try {
-				fout = new FileOutputStream(output + "\\Network" + i + ".takNetwork");
+				fout = new FileOutputStream(output + "\\Network" + dimns + "x" + dimns + i + ".takNetwork");
 				ObjectOutputStream oos = new ObjectOutputStream(fout);
 				oos.writeObject(networks.get(i));
 				oos.close();
@@ -441,7 +447,7 @@ public class TestingMain {
 		ArrayList<TakNetwork> randNets = new ArrayList<>();
 
 		for (int j = 0; j < 100; j++) {
-			TakNetwork testNetwork = new TakNetwork(9, 8, 8, 3);
+			TakNetwork testNetwork = new TakNetwork(dimns+1, dimns, dimns, 3);
 			RandomNunber = random.nextInt();
 			Random rand = new Random(RandomNunber);
 			testNetwork.randomize(rand);
@@ -470,7 +476,7 @@ public class TestingMain {
 				try {
 
 
-					win = Board.playGame(networks.get(j), randNets.get(i), 8);
+					win = Board.playGame(networks.get(j), randNets.get(i), dimns);
 					// System.out.println("Win: " + win);
 					if (win > 0) {
 						networks.get(j).setWins(networks.get(j).getWins() + 1);
@@ -508,7 +514,7 @@ public class TestingMain {
 		}catch(Exception E){
 			E.printStackTrace();
 
-			logger.severe(E.getStackTrace().toString());
+			logger.severe(Arrays.toString(E.getStackTrace()));
 
 			String output = "networks\\ERROREXIT\\TestGnerationalGrowth\\output";
 
