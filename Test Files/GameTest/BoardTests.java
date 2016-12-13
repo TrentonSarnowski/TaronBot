@@ -72,12 +72,25 @@ public class BoardTests extends TestCase{
     }
     public void testVictory(){
         board =new Board(8,new LinkedList<>(),true);
-        for (int i = 0; i <8 ; i++) {
-            board.getMap()[i][0].add(1);
 
-        }
-        /*
-        for(boolean row[]:board.topLevel(true)){
+        board.getMap()[0][7].add(-1);
+        board.getMap()[1][7].add(-1);
+        board.getMap()[2][7].add(-1);
+        board.getMap()[2][6].add(-1);
+        board.getMap()[3][6].add(-1);
+        board.getMap()[4][6].add(-1);
+        board.getMap()[4][5].add(-1);
+        board.getMap()[4][4].add(-1);
+        board.getMap()[5][4].add(-1);
+        board.getMap()[6][4].add(-1);
+        board.getMap()[6][5].add(-1);
+        board.getMap()[7][5].add(-1);
+        board.getMap()[0][7].add(-1);
+
+
+
+
+        for(boolean row[]:board.topLevel(false)){
             for(boolean place:row){
                 if(place){
                     System.out.print("1 ");

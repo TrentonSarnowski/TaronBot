@@ -55,13 +55,23 @@ public class TestingMain {
 		// ThreadedTesting(1000);
 
 		// ComputeGenerationTesting(15);
+		//for (int i = 0; i <4 ; i++) {
+			TestGnerationalGrowth(64,16,7);
 
-		TestGnerationalGrowth(16,16,4);
-		/*TakNetwork network1;
+//		}
+
+		TakNetwork network1;
 		TakNetwork network2;
+		/*network1=loadTesting("C:\\Users\\sarnowskit\\Downloads\\TaronBot\\networks\\TestGnerationalGrowth\\output\\Network" + 0 + ".takNetwork");
+		network2=loadTesting("C:\\Users\\sarnowskit\\Downloads\\TaronBot\\networks\\TestGnerationalGrowth\\output\\Network" + 0 + ".takNetwork");
+		Board.playGame(network1,network2,8);
+		Board.playGame(network2,network1,8);
+		//*/
+
+		/*
 		List<TakNetwork> newNetworks=new ArrayList<>();
 		List<TakNetwork> oldNetworks=new ArrayList<>();
-		for (int i = 0; i <64 ; i++) {
+		for (int i = 0; i <10 ; i++) {
 			network2=loadTesting("C:\\Users\\sarnowskit\\Desktop\\Network Storage\\64Size64genRankedWinLoss"+"\\Network"+i+".takNetwork");
 			network2.setWins(0);
 			oldNetworks.add(network2);
@@ -76,7 +86,7 @@ public class TestingMain {
 		int winner=0;
 		for (int i = 0; i <10 ; i++) {
 			network1=newNetworks.get(i);
-			for (int j = 0; j <64 ; j++) {
+			for (int j = 0; j <10 ; j++) {
 				network2= oldNetworks.get(j);
 				winner=Board.playGame(network1,network2,8);
 				if(winner>0){
@@ -87,7 +97,7 @@ public class TestingMain {
 					network2.setWins(network2.getWins()+1);
 					network1.setLosses(network1.getLosses()+1);
 				}
-				winner=Board.playGame(network1,network2,8);
+				winner=Board.playGame(network2,network1,8);
 				if(winner<0){
 					network1.setWins(network1.getWins()+1);
 					network2.setLosses(network2.getLosses()+1);
@@ -133,15 +143,15 @@ public class TestingMain {
 		);
 		System.out.println(" old set");
 		int oldwins=0;
-		for (int i = 0; i <64 ; i++) {
-			System.out.println(oldNetworks.get(i).toString()+" wins:" +oldNetworks.get(i).getWins()+" winRatio: "+oldNetworks.get(i).getWins()/oldNetworks.get(i).getLosses());
+		for (int i = 0; i <10 ; i++) {
+			System.out.println(oldNetworks.get(i).toString()+" wins:" +oldNetworks.get(i).getWins()+" loss: "+oldNetworks.get(i).getLosses());
 			oldwins+=oldNetworks.get(i).getWins();
 		}
 		System.out.println();
 		System.out.println(" new set");
 		int newwins=0;
 		for (int i = 0; i <10 ; i++) {
-			System.out.println(newNetworks.get(i).toString()+" wins:" +newNetworks.get(i).getWins()+" winRatio: "+newNetworks.get(i).getWins()/newNetworks.get(i).getLosses());
+			System.out.println(newNetworks.get(i).toString()+" wins:" +newNetworks.get(i).getWins()+" loss: "+newNetworks.get(i).getLosses());
 			newwins+=newNetworks.get(i).getWins();
 		}
 
@@ -228,19 +238,29 @@ public class TestingMain {
 		NumberFormat formatter = new DecimalFormat("#0.0000");
 
 		// gen networks
+
+
 		int RandomNunber = 0;
 		for (int j = 0; j < generationSize; j++) {
-			TakNetwork testNetwork = new TakNetwork(9, 8, 8, 8);
-			RandomNunber = random.nextInt();
-			Random rand = new Random(RandomNunber);
-			testNetwork.randomize(rand);
+			TakNetwork testNetwork;
+			if(StaticGlobals.LOAD_FROM_LAST_RUN) {
+				testNetwork = loadTesting("C:\\Users\\sarnowskit\\Downloads\\TaronBot\\networks\\TestGnerationalGrowth\\output\\Network"+j+".takNetwork");
+				testNetwork.setWins(0);
+				testNetwork.setLosses(0);
+			}else {
+				testNetwork = new TakNetwork(9, 8, 8, 8);
+				RandomNunber = random.nextInt();
+				Random rand = new Random(RandomNunber);
+				testNetwork.randomize(rand);
+			}
 			// System.out.println((testNetwork.toString()));
 
 			networks.add(testNetwork);
 
 			// all 100 networks generate
 		}
-
+		System.out.println("Base Generated");
+		//*/
 		if (LOGGING_ENABLED) {
 			logger.config("Beginning Generation");
 		}
@@ -417,7 +437,7 @@ public class TestingMain {
 			logger.config("Networks Saved. ");
 			logger.config("Generating Random Testing Networks for comparison");
 		}
-
+		/*
 		ArrayList<TakNetwork> randNets = new ArrayList<>();
 
 		for (int j = 0; j < 100; j++) {
@@ -479,10 +499,12 @@ public class TestingMain {
 			buffer.append(s);
 		}
 
+
 		if (LOGGING_ENABLED) {
 			logger.config("Testing Complete");
 			logger.config(buffer.toString());
 		}
+		//*/
 		}catch(Exception E){
 			E.printStackTrace();
 

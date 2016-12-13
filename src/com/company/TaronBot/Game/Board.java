@@ -85,7 +85,7 @@ public class Board {
             check1=game.checkVictory(game,true);
             if(check1 != 500){
                 if(StaticGlobals.PRINT_GAME_MOVES){
-                    System.out.println(i+": "+firstPlayer);
+                    System.out.println(i+": "+firstPlayer +" "+ SecondPlayer);
                 }
                 return check1;
             }
@@ -190,29 +190,30 @@ public class Board {
     }
 
     public Integer checkRoadWin(Board b, boolean cont, boolean[][] topLevel) {
+
         for (int i = 0; i <topLevel.length ; i++) {
-            if(checkVictory(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
-                System.err.println("road");
+            if(RoadCheck(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
+                //System.err.println("road");
                 return 32;
             };
-            if(checkVictory(i,0,topLevel,new boolean[topLevel.length][topLevel.length], true)){
-                System.err.println("road");
+            if(RoadCheck(i,0,topLevel,new boolean[topLevel.length][topLevel.length], true)){
+                //System.err.println("road");
                 return 32;
             };
             topLevel=b.topLevel(!cont);
-            if(checkVictory(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
-                System.err.println("road");
+            if(RoadCheck(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
+                //System.err.println("road");
                 return -32;
             };
-            if(checkVictory(i,0,topLevel,new boolean[topLevel.length][topLevel.length], true)){
-                System.err.println("road");
+            if(RoadCheck(i,0,topLevel,new boolean[topLevel.length][topLevel.length], true)){
+                //System.err.println("road");
                 return -32;
             };
         }
         return null;
     }
 
-    private boolean checkVictory( int x, int y, boolean topLevel[][], boolean saidNo[][], boolean vertical ){
+    private boolean RoadCheck( int x, int y, boolean topLevel[][], boolean saidNo[][], boolean vertical ){
     	/*System.err.println(x+" "+y);
     	for( boolean[] b:saidNo){
     		for(boolean b2:b){
@@ -260,16 +261,16 @@ public class Board {
                     saidNoSendDown[x][y + 1] = true;
                 }
 
-                if (x+1<saidNo.length&&!saidNo[x+1][y]&&checkVictory(x+1,y,topLevel, saidNoSendDown,vertical)){
+                if (x+1<saidNo.length&&!saidNo[x+1][y]&&RoadCheck(x+1,y,topLevel, saidNoSendDown,vertical)){
                     return true;
                 }
-                if (y+1<saidNo.length&&!saidNo[x][y+1]&&checkVictory(x,y+1,topLevel, saidNoSendDown,vertical)){
+                if (y+1<saidNo.length&&!saidNo[x][y+1]&&RoadCheck(x,y+1,topLevel, saidNoSendDown,vertical)){
                     return true;
                 }
-                if (x-1>0&&!saidNo[x-1][y]&&checkVictory(x-1,y,topLevel, saidNoSendDown,vertical)){
+                if (x-1>=0&&!saidNo[x-1][y]&&RoadCheck(x-1,y,topLevel, saidNoSendDown,vertical)){
                     return true;
                 }
-                if (y-1>0&&!saidNo[x][y-1]&&checkVictory(x,y-1,topLevel, saidNoSendDown,vertical)){
+                if (y-1>=0&&!saidNo[x][y-1]&&RoadCheck(x,y-1,topLevel, saidNoSendDown,vertical)){
                     return true;
                 }
 
@@ -886,7 +887,10 @@ public class Board {
             for (int j = 0; j < map.length; j++) {
                 if(!map[i][j].isEmpty()){
                     int temp = map[i][j].get(map[i][j].size() - 1);
-                    topLevel[i][j] = sign*temp == sign*1 || sign*temp == sign*3;
+                    if(temp==sign*3||temp==sign*1){
+                        topLevel[i][j]=true;
+                    }
+
                 }
             }
         }
