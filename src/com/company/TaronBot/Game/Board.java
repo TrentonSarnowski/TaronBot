@@ -196,19 +196,26 @@ public class Board {
         for (int i = 0; i <topLevel.length ; i++) {
             if(RoadCheck(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
                 //System.err.println("road");
+                StaticGlobals.roadCount++;
+
                 return 32;
             };
             if(RoadCheck(i,0,topLevel,new boolean[topLevel.length][topLevel.length], true)){
                 //System.err.println("road");
+                StaticGlobals.roadCount++;
+
                 return 32;
             };
             topLevel=b.topLevel(!cont);
             if(RoadCheck(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
-                System.err.println("road");
+                StaticGlobals.roadCount++;
+                //System.err.println("road");
                 return -32;
             };
             if(RoadCheck(i,0,topLevel,new boolean[topLevel.length][topLevel.length], true)){
                 //System.err.println("road");
+                StaticGlobals.roadCount++;
+
                 return -32;
             };
         }

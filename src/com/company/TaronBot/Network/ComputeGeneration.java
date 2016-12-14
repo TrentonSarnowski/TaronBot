@@ -14,7 +14,7 @@ import tech.deef.Tools.StaticGlobals;
 public class ComputeGeneration {
 	private static ArrayList<TakNetwork> randNets=new ArrayList<>();
 	public static void compute(List<TakNetwork> networks, int Threads, Logger logger){
-		
+		StaticGlobals.roadCount=0;
 		int totalGames = networks.size()*networks.size();
 		int GamesPerThread = (int) Math.floor((double)totalGames/((double)Threads))+1;
 		
@@ -86,6 +86,7 @@ public class ComputeGeneration {
 				threads.remove(i);
 			
 		}
+		System.out.println(StaticGlobals.roadCount+" / "+(64*64));
 		
 		
 	}
@@ -141,12 +142,13 @@ public class ComputeGeneration {
 					System.out.println("Error caught in game " +net1num+ " : " + net2num);
 				}
 				
-				if(Math.abs(winner)==32){
+				//if(Math.abs(winner)==32){
 					//System.err.println("Road");
+
 				net1.setWins(net1.getWins() + winner);
 
-				}
-				//net2.setWins(net2.getWins() + (-1*winner));
+
+				net2.setWins(net2.getWins() + (-1*winner));
 	
 				//winner = Board.playGame(net1, net3, 8);
 	
