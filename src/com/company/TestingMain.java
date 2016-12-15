@@ -56,7 +56,7 @@ public class TestingMain {
 
         // ComputeGenerationTesting(15);
         for (int i = 0; i < 64; i++) {
-            TestGnerationalGrowth(64, 64, 3, 8);
+            TestGnerationalGrowth(64, 64, 2, 8);
         }
 /*
         TakNetwork network1;

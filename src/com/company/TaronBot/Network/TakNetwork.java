@@ -24,6 +24,9 @@ public class TakNetwork implements Serializable{
 	private int layers;
 	private int wins = 0;
 	private int losses = 0;
+	private int generation=0;
+	private int species=0;
+
 	
 	
 	public int getWins() {

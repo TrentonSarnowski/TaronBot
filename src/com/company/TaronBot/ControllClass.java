@@ -10,11 +10,23 @@ public class ControllClass {
 	 * TODO read in networks
 	 * mutate a list of networks
 	 * adjust verbosity of output
+	 	active Human game out puts weight
+	 	generation data
+
 	 * generate a series of networks
+	   generate
+	 	-s/-size <size>default 5</size>
+	 	-d/-depth <depth>default 8 </depth>
+	 	-q/-quantity/-num <quantity>default 64</quantity>
+	 	-complexity/ -c <complexity> default size*4</complexity>
+	 	-seed <seed>recorded in log default no seed</seed>
+	 	-name/-n <default>required</default>
 	 * select mutation method
 	 * select mutation percentage
 	 * help files
 	 * log into playtak
+	 	-name
+	 	-password
 	 * automate games on playtak
 	 * 
 	 */
