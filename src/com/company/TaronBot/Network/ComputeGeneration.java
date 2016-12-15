@@ -114,6 +114,14 @@ public class ComputeGeneration {
 		for(int i=startingPoint;i<endPoint;i++){
 			for (int j = 0; j <networks.size() ; j++) {
 				try {
+					while(StaticGlobals.PAUSED){
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
 					int score = Board.playGame(networks.get(i), networks.get(j), networks.get(i).getWidth());
 
 

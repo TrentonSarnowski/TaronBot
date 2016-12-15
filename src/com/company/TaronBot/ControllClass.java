@@ -51,15 +51,22 @@ public class ControllClass {
 				case "moves":
 					StaticGlobals.PRINT_GAME_MOVES = true;
 					break;
+				case "load":
+					StaticGlobals.LOAD_FROM_LAST_RUN=true;
+					break;
 				default:
 					System.out.println(input + " not recognized as boolean Switch");
 				}	
 				break;
+
 			case "disable":
 				input = reader.next();
 				switch(input.toLowerCase()){
 				case "moves":
 					StaticGlobals.PRINT_GAME_MOVES = false;
+					break;
+				case "load":
+					StaticGlobals.LOAD_FROM_LAST_RUN=false;
 					break;
 				default:
 					System.out.println(input + " not recognized as boolean Switch");
