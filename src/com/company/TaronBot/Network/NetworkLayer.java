@@ -59,8 +59,8 @@ public class NetworkLayer implements Serializable{
 
 		// TODO error handeling for less than 4 dimensions
 
-		inputLayerSize = 0;
-		outputLayerSize = 0;
+		inputLayerSize = 1;
+		outputLayerSize = 1;
 		
 		for(int i : previousLayerDimensions){
 			inputLayerSize = inputLayerSize*i;
@@ -72,6 +72,7 @@ public class NetworkLayer implements Serializable{
 		inputLayer = new double[inputLayerSize];
 		outputLayer = new double[outputLayerSize];
 
+
 		//all created. 
 		
 		// the problem here is that the program is not creating the correct
@@ -82,7 +83,7 @@ public class NetworkLayer implements Serializable{
 
 		//go through and create a double array for every position in the mutator array.
 		double[] m1;
-		for (int j = 0; j < outputLayerDimensions[0]; j++) {
+		for (int j = 0; j < outputLayerSize; j++) {
 			m1 = new double[inputLayerSize];
 			mutators.add(m1);
 		}
@@ -133,7 +134,7 @@ public class NetworkLayer implements Serializable{
 	 */
 	public void randomize(Random rand) {
 		// TODO Auto-generated method stub
-
+		
 		for (int i = 0; i < outputLayerSize; i++) {
 			for (int j = 0; j < inputLayerSize; j++) {
 				mutators.get(i)[j] = rand.nextDouble() * 2 - 1;

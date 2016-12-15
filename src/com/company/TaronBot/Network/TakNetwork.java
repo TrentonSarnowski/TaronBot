@@ -211,7 +211,6 @@ public class TakNetwork implements Serializable{
 		for(int i = 0; i < output.length; i++){
 			for(int j = 0; j < output[0].length; j++){
 				for(int k= 0; k < output[0][0].length; k++){
-					
 					output[i][j][k] = input[tracker];
 					tracker ++;
 				}
