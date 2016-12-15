@@ -199,8 +199,13 @@ public class TakNetwork implements Serializable{
 		}
 		
 		
-		return sortedMoves(output);
+		return sortedMoves(ConvertToOutputMoveArray(output));
 				
+	}
+
+	private double[][][] ConvertToOutputMoveArray(double[] output) {
+		// TODO Auto-generated method stub
+		return ;
 	}
 
 	/**
@@ -233,30 +238,30 @@ public class TakNetwork implements Serializable{
 	 * @param placements double[][][][] output from the final layer
 	 * @return ArrayList<Move>
 	 */
-	private List<Move> sortedMoves(double[] placements) {		
+	private List<Move> sortedMoves(double[][][] placements) {		
 		List<Move> moves = new ArrayList<Move>(width * height * 4);
 		
 		for(int i = 0; i < width; i++){
 			for(int j = 0; j < depth; j++){
-				moves.add(new Placement(i,j,1,placements[0][i][j][0]));
+				moves.add(new Placement(i,j,1,placements[i][j][0]));
 			}
 		}
 		
 		for(int i = 0; i < width; i++){
 			for(int j = 0; j < depth; j++){
-				moves.add(new Placement(i,j,2,placements[0][i][j][1]));
+				moves.add(new Placement(i,j,2,placements[i][j][1]));
 			}
 		}
 		
 		for(int i = 0; i < width; i++){
 			for(int j = 0; j < depth; j++){
-				moves.add(new Placement(i,j,3,placements[0][i][j][2]));
+				moves.add(new Placement(i,j,3,placements[i][j][2]));
 			}
 		}
 		
 		for(int i = 0; i < width; i++){
 			for(int j = 0; j < depth; j++){
-				Move m=createPlacement(i,j, Arrays.copyOfRange(placements[0][i][j], 4, placements[0][i][j].length), placements[0][i][j][3]);
+				Move m=createPlacement(i,j, Arrays.copyOfRange(placements[i][j], 4, placements[i][j].length), placements[i][j][3]);
 				if(m!=null) {
 					moves.add(m);
 				}
