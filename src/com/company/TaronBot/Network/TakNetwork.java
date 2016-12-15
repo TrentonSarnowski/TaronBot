@@ -156,16 +156,16 @@ public class TakNetwork implements Serializable{
 	public void setSpecies(int species){
 		this.species = species;
 	}
-	
+
 	public int getGeneration() {
 		// TODO Auto-generated method stub
 		return generation;
 	}
-	
+
 	public void setGeneration(int generation){
 		this.generation = generation;
 	}
-	
+
 	public int getUniqueID(int generationSize){
 		return getGeneration()*generationSize+getSpecies();
 	}

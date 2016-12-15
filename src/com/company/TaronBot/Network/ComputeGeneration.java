@@ -14,6 +14,7 @@ import tech.deef.Tools.StaticGlobals;
 public class ComputeGeneration {
 	private static ArrayList<TakNetwork> randNets=new ArrayList<>();
 	public static void compute(List<TakNetwork> networks, int Threads, Logger logger){
+		int valueArray[][]=new int[networks.size()][networks.size()];
 		StaticGlobals.roadCount=0;
 		int totalGames = networks.size()*networks.size();
 		int GamesPerThread = (int) Math.floor((double)totalGames/((double)Threads))+1;
@@ -40,29 +41,45 @@ public class ComputeGeneration {
 		}//*/
 
 		ArrayList<Thread> threads = new ArrayList<Thread>(Threads);
+		//todo--add page rank based allocation
+		int incriment=networks.size()/Threads;
+
 		for(int i = 0; i < Threads; i++){
-			
+			final int startingPoint=i*incriment;
+
+			final int endPoint;
+
+			if(i==Threads-1){
+				endPoint=networks.size();
+			}else{
+				endPoint=(i+1)*incriment;
+			}
 			final int threadNum = i;
 			Thread t = new Thread(){
 
 				@Override
 				public void run() {
-					RunSelectionOfGames(threadNum,networks,GamesPerThread,logger);
-					
+					if(true){
+						//System.err.println("run thread run");
+						RunGamesForEigenValues(threadNum, networks,startingPoint,endPoint,logger,valueArray);
+					}else {
+						RunSelectionOfGames(threadNum, networks, GamesPerThread, logger);
+					}
 				}
 				
 			};
+
 			threads.add(t);
 		//	System.out.println(i);
 		}
-		
-		
+
 		
 		
 		
 		//start Threads
 		for(Thread thread: threads){
 			//System.out.println(thread.toString());
+			//System.err.println("run nets");
 			thread.start();	
 			//System.out.println(thread.isAlive());
 		}
@@ -86,12 +103,46 @@ public class ComputeGeneration {
 				threads.remove(i);
 			
 		}
-		System.out.println(StaticGlobals.roadCount+" / "+(64*64));
-		
-		
+		System.out.println(StaticGlobals.roadCount+" / "+(networks.size()*networks.size()));
+		OrderedTakNetwork.PageRankOrdering(networks,valueArray);
+
+
+
 	}
 
-	
+	private static void RunGamesForEigenValues(int threadNum,List<TakNetwork> networks, int startingPoint, int endPoint, Logger logger , int[][] valueArray){
+		for(int i=startingPoint;i<endPoint;i++){
+			for (int j = 0; j <networks.size() ; j++) {
+				try {
+					int score = Board.playGame(networks.get(i), networks.get(j), networks.get(i).getWidth());
+
+
+					if(score!=0) {
+						networks.get(i).setWins(networks.get(i).getWins() + score/Math.abs(score));
+
+						networks.get(j).setWins(networks.get(j).getWins() + (-1*score)/Math.abs(score));
+						if(score==-32) {
+							valueArray[i][j] += 1;
+						}else if(score<0){
+							//valueArray[i][j] += 1;
+						}
+						if(score==32) {
+							valueArray[j][i] += 1;
+						}else if(score>0){
+							//valueArray[j][i] += 1;
+						}
+						//valueArray[i][j] -= score/Math.abs(score);
+					}
+				}catch (Exception e){
+					//System.err.println(e.getStackTrace());
+					e.printStackTrace();
+					System.err.println("Thread: "+threadNum+ " game: "+ i+" vs. "+j);
+
+				}
+			}
+		}
+
+	}
 	private static void RunSelectionOfGames(int threadNum, List<TakNetwork> networks, int GamesPerThread, Logger logger){
 		try{
 			int net1num = 0;
@@ -147,9 +198,10 @@ public class ComputeGeneration {
 
 				net1.setWins(net1.getWins() + winner);
 
-
 				net2.setWins(net2.getWins() + (-1*winner));
-	
+				//todo
+
+
 				//winner = Board.playGame(net1, net3, 8);
 	
 				//if(Math.abs(winner)==32){

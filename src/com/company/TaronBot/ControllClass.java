@@ -2,6 +2,10 @@ package com.company.TaronBot;
 
 import java.util.Scanner;
 
+import com.company.TaronBot.Game.Board;
+import com.company.TaronBot.Network.TakNetwork;
+import com.company.TestingMain;
+//import com.sun.org.apache.xpath.internal.operations.String;
 import tech.deef.Tools.StaticGlobals;
 
 public class ControllClass {
@@ -69,10 +73,51 @@ public class ControllClass {
 				StaticGlobals.PAUSED = true;
 				System.out.println("Paused");
 				break;
+			case "generate":
+				TestingMain.TestGnerationalGrowth(32, 256, 8, 5);
+
+				break;
 			case "unpause":
 				StaticGlobals.PAUSED = false;
 				System.out.println("Unpaused");
 				break;
+				case "play":
+					TakNetwork network1=null;
+					TakNetwork network2=null;
+					String net1="1";
+					String net2="2";
+					int size=5;
+					for (int i = 0; i <3 ; i++) {
+
+
+						input = reader.next();
+						switch (input.toLowerCase()) {
+							case "-one":
+								if(reader.hasNext()) {
+									net1 = reader.next();
+								}else{
+									net1 = "1";
+								}
+								break;
+							case "-two":
+								if(reader.hasNext()) {
+									net2 = reader.next();
+								}else{
+									net2 = "2";
+								}
+								break;
+							case "-s":
+								if(reader.hasNext()) {
+									size=Integer.parseInt(reader.next());
+								}
+								break;
+							default:
+								System.out.println(input + " not recognized as boolean Switch");
+						}
+					}
+					Board.playGame(TestingMain.loadTesting("networks\\TestGnerationalGrowth\\output\\Network"+size+"x"+size+net1+".taknetwork"),TestingMain.loadTesting("networks\\TestGnerationalGrowth\\output\\Network"+size+"x"+size+net2+".taknetwork"),size);
+
+					break;
 			default: 
 				System.out.println(input + " not recognized as command");
 			}
