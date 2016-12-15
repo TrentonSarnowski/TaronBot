@@ -91,8 +91,10 @@ public class TakNetwork implements Serializable{
 	 * @param width int
 	 * @param depth int 
 	 * @param layers int
+	 * @param species 
+	 * @param generation 
 	 */
-	public TakNetwork(int height, int width, int depth, int layers){
+	public TakNetwork(int height, int width, int depth, int layers, int generation, int species){
 		int[] inputDimensions = {depth,width,height,1};
 		int[] middleDimensions = {width,height,1,1};//depth may need to be adjusted.
 		int[] outputDimensions = {1,width,depth,width+7};
@@ -101,7 +103,8 @@ public class TakNetwork implements Serializable{
 		this.height = height;
 		this.depth = depth;
 		this.layers = layers;
-		
+		this.generation = generation;
+		this.species = species;
 				
 		network.add(new NetworkLayer(inputDimensions, middleDimensions, function));
 		
@@ -132,9 +135,9 @@ public class TakNetwork implements Serializable{
 	 * @param rand input random generator
 	 * @param changePrecentage the percentage of nodes that should be changed. (0.0-1.0) expected
 	 */
-	public TakNetwork returnAnotherMutatedNetwork (Random rand, double changePrecentage){
+	public TakNetwork returnAnotherMutatedNetwork (Random rand, double changePrecentage, int species){
 		
-		TakNetwork newNetwork = new TakNetwork(getHeight(), getWidth(), getDepth(), getLayers());
+		TakNetwork newNetwork = new TakNetwork(getHeight(), getWidth(), getDepth(), getLayers(), getGeneration()+1, species);
 
 		for(int i = 0 ; i < network.size(); i++){
 			newNetwork.setLayer(i, this.getLayer(i).changePercentageSingleLayerMutate(rand, changePrecentage));
@@ -145,6 +148,28 @@ public class TakNetwork implements Serializable{
 	}
 	
 	
+	public int getSpecies() {
+		// TODO Auto-generated method stub
+		return species;
+	}
+
+	public void setSpecies(int species){
+		this.species = species;
+	}
+	
+	public int getGeneration() {
+		// TODO Auto-generated method stub
+		return generation;
+	}
+	
+	public void setGeneration(int generation){
+		this.generation = generation;
+	}
+	
+	public int getUniqueID(int generationSize){
+		return getGeneration()*generationSize+getSpecies();
+	}
+
 	/**
 	 * sets the specific layer of the network
 	 * @param int i

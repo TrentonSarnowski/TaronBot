@@ -58,7 +58,8 @@ public class TestingMain {
         for (int i = 0; i < 64; i++) {
             TestGnerationalGrowth(64, 64, 2, 8);
         }
-/*
+        
+        /*
         TakNetwork network1;
 		TakNetwork network2;
 		network1=loadTesting("C:\\Users\\sarnowskit\\Downloads\\TaronBot\\networks\\TestGnerationalGrowth\\output\\Network" + 0 + ".takNetwork");
@@ -246,12 +247,12 @@ public class TestingMain {
                 testNetwork.setWins(0);
                 testNetwork.setLosses(0);
             } else {
-                testNetwork = new TakNetwork(9, 8, 8, 8);
+                testNetwork = new TakNetwork(9, 8, 8, 8,0,j);
                 RandomNunber = random.nextInt();
                 Random rand = new Random(RandomNunber);
                 testNetwork.randomize(rand);
             }
-            testNetwork = new TakNetwork(dimns + 1, dimns, dimns, 8);
+            testNetwork = new TakNetwork(dimns + 1, dimns, dimns, 8,0,j);
             RandomNunber = random.nextInt();
             Random rand = new Random(RandomNunber);
             testNetwork.randomize(rand);
@@ -390,7 +391,7 @@ public class TestingMain {
                 if (LOGGING_ENABLED) {
                     logger.config("Starting new network generation");
                 }
-                networks.addAll(MateNetworks.GroupMateNetworks(networks, random, generationSize - networks.size()));
+                networks.addAll(MateNetworks.GroupMateNetworks(networks, random, generationSize - networks.size(), i));
 
 
                 if (LOGGING_ENABLED) {
@@ -555,7 +556,7 @@ public class TestingMain {
         // gen networks
         int RandomNunber = 0;
         for (int i = 0; i < numToTest; i++) {
-            TakNetwork testNetwork = new TakNetwork(9, 8, 8, 8);
+            TakNetwork testNetwork = new TakNetwork(9, 8, 8, 8, 0, i);
             RandomNunber = random.nextInt();
             Random rand = new Random(RandomNunber);
             testNetwork.randomize(rand);
@@ -608,7 +609,7 @@ public class TestingMain {
         // gen networks
         int RandomNunber = 0;
         for (int i = 0; i < numPerGeneration; i++) {
-            TakNetwork testNetwork = new TakNetwork(9, 8, 8, 8);
+            TakNetwork testNetwork = new TakNetwork(9, 8, 8, 8,0,i);
             RandomNunber = random.nextInt();
             Random rand = new Random(RandomNunber);
             testNetwork.randomize(rand);
@@ -749,8 +750,8 @@ public class TestingMain {
     @SuppressWarnings("unused")
     private static void TestSingleGame() {
 
-        TakNetwork net1 = new TakNetwork(9, 8, 8, 8);
-        TakNetwork net2 = new TakNetwork(9, 8, 8, 8);
+        TakNetwork net1 = new TakNetwork(9, 8, 8, 8,0,0);
+        TakNetwork net2 = new TakNetwork(9, 8, 8, 8,0,1);
         Random rand = null;
 
         rand = new Random();
@@ -810,7 +811,7 @@ public class TestingMain {
         new File("networks\\gen0").mkdirs();
         int RandomNunber = 0;
         for (int i = 0; i < numPerGeneration; i++) {
-            TakNetwork testNetwork = new TakNetwork(9, 8, 8, 8);
+            TakNetwork testNetwork = new TakNetwork(9, 8, 8, 8,0,i);
             RandomNunber = random.nextInt();
             Random rand = new Random(RandomNunber);
             testNetwork.randomize(rand);
@@ -954,7 +955,7 @@ public class TestingMain {
     @SuppressWarnings("unused")
     private static void saveTesting() {
 
-        TakNetwork testNetwork = new TakNetwork(8, 8, 9, 8);
+        TakNetwork testNetwork = new TakNetwork(8, 8, 9, 8,0,0);
         Random rand = new Random(1);
         testNetwork.randomize(rand);
 
@@ -994,7 +995,7 @@ public class TestingMain {
         // the set of these networs will be used to test the group generation
         ArrayList<TakNetwork> takNetworks = new ArrayList<TakNetwork>(20);
         for (int i = 0; i < 20; i++) {
-            testNetwork = new TakNetwork(9, 8, 8, 8);
+            testNetwork = new TakNetwork(9, 8, 8, 8,0,i);
             takNetworks.add(testNetwork);
             Random random = new Random(i);
             testNetwork.randomize(random);
@@ -1002,7 +1003,7 @@ public class TestingMain {
 
         System.out.println("Beginning Generation");
         @SuppressWarnings("unused")
-        TakNetwork mate = MateNetworks.GroupMateNetworks(takNetworks, rand, 1).get(0);
+        TakNetwork mate = MateNetworks.GroupMateNetworks(takNetworks, rand, 1, 1).get(0);
         System.out.println("Ended Generation");
 
     }
@@ -1031,7 +1032,7 @@ public class TestingMain {
         long time = System.nanoTime();
         System.out.println(data / 1024 + " kB");
 
-        TakNetwork testNetwork = new TakNetwork(8, 8, 9, 8);
+        TakNetwork testNetwork = new TakNetwork(8, 8, 9, 8,0,0);
         Random rand = new Random(1);
         testNetwork.randomize(rand);
 
@@ -1062,7 +1063,7 @@ public class TestingMain {
             startupTime = System.nanoTime();
             // startupData = (Runtime.getRuntime().totalMemory() -
             // Runtime.getRuntime().freeMemory());
-            testNetwork = new TakNetwork(8, 8, 9, 10);
+            testNetwork = new TakNetwork(8, 8, 9, 10,0,i);
             takNetworks.add(testNetwork);
             Random random = new Random(i);
             testNetwork.randomize(random);

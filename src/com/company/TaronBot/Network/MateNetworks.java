@@ -23,7 +23,7 @@ public class MateNetworks {
 	 * @param rand Random random number generator used for the mating
 	 * @return TakNetwork a single network based on the the group mating process. 
 	 */
-	public static ArrayList<TakNetwork> GroupMateNetworks(List<TakNetwork> networks, Random rand, int numNetworks){
+	public static ArrayList<TakNetwork> GroupMateNetworks(List<TakNetwork> networks, Random rand, int numNetworks, int generation){
 		
 		RandomGenerator random = null;
 		
@@ -35,7 +35,7 @@ public class MateNetworks {
 		ArrayList<TakNetwork> outputNetworks = new ArrayList<TakNetwork>(numNetworks);
 		for(int i = 0; i < numNetworks; i++){
 			
-			outputNetworks.add( new TakNetwork(net0.getHeight(), net0.getWidth(), net0.getDepth(), net0.getLayers()));
+			outputNetworks.add( new TakNetwork(net0.getHeight(), net0.getWidth(), net0.getDepth(), net0.getLayers(),generation , i));
 		}
 		Mean mean = new Mean();
 		StandardDeviation std = new StandardDeviation();
@@ -115,7 +115,7 @@ public class MateNetworks {
 	 * @param changePercentage Double percentage to change each single random mutator value
 	 * @return TakNetwork the network that is being returned. 
 	 */
-	public TakNetwork SingleNetworkMutate(TakNetwork net, Random rand, double changePercentage){
-		return net.returnAnotherMutatedNetwork(rand, changePercentage);
+	public TakNetwork SingleNetworkMutate(TakNetwork net, Random rand, double changePercentage,int species){
+		return net.returnAnotherMutatedNetwork(rand, changePercentage,species);
 	}
 }

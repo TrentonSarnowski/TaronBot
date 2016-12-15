@@ -27,7 +27,7 @@ public class ComputeGenWithRandomSuplement {
         Random random=new Random();
         randNets=new ArrayList<>();
         for(int j = 0; j < networks.size(); j++){
-            TakNetwork testNetwork = new TakNetwork(9, 8, 8, 3);
+            TakNetwork testNetwork = new TakNetwork(9, 8, 8, 3,0,j);
             RandomNunber = random.nextInt();
             Random rand = new Random(RandomNunber);
             testNetwork.randomize(rand);
