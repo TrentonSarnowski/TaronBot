@@ -203,9 +203,23 @@ public class TakNetwork implements Serializable{
 				
 	}
 
-	private double[][][] ConvertToOutputMoveArray(double[] output) {
+	private double[][][] ConvertToOutputMoveArray(double[] input) {
 		// TODO Auto-generated method stub
-		return ;
+		double[][][] output = new double[width][depth][input.length/width/depth];
+		int tracker = 0;
+		
+		for(int i = 0; i < output.length; i++){
+			for(int j = 0; j < output[0].length; j++){
+				for(int k= 0; k < output[0][0].length; k++){
+					
+					output[i][j][k] = input[tracker];
+					tracker ++;
+				}
+			}
+		}
+		
+		
+		return output;
 	}
 
 	/**
@@ -219,10 +233,12 @@ public class TakNetwork implements Serializable{
 		double[] output = new double[board.length *board[0].length*board[0][0].length];
 		//create an array of the correct size to house the input values.
 
+		int tracker = 0;
 		for(int i = 0; i < board.length; i++){
 			for(int j = 0; j < board[0].length; j++){
 				for(int k = 0; k < board[0][0].length; k++){
-					output[i*board.length*board[0].length + board[0].length * j + k] = (double) board[i][j][k];
+					output[tracker] = (double) board[i][j][k];
+					tracker++;
 				}
 			}
 		}
