@@ -190,7 +190,7 @@ public class TakNetwork implements Serializable{
 	 */
 	public List<Move> calculate(int[][][] board){
 				
-		double[][][][] output;
+		double[] output;
 		
 		//inital calculation. 
 		output = network.get(0).calculate(convertArray(board));
@@ -209,15 +209,15 @@ public class TakNetwork implements Serializable{
 	 * @param board int[][][]
 	 * @return double[][][]
 	 */
-	private double[][][][] convertArray(int[][][] board) {
+	private double[] convertArray(int[][][] board) {
 		
-		double[][][][] output = new double[board.length][board[0].length][board[0][0].length][1];
+		double[] output = new double[board.length *board[0].length*board[0][0].length];
 		//create an array of the correct size to house the input values.
 
 		for(int i = 0; i < board.length; i++){
 			for(int j = 0; j < board[0].length; j++){
 				for(int k = 0; k < board[0][0].length; k++){
-					output[i][j][k][0] = (double) board[i][j][k];
+					output[i*board.length*board[0].length + board[0].length * j + k] = (double) board[i][j][k];
 				}
 			}
 		}
@@ -233,7 +233,7 @@ public class TakNetwork implements Serializable{
 	 * @param placements double[][][][] output from the final layer
 	 * @return ArrayList<Move>
 	 */
-	private List<Move> sortedMoves(double[][][][] placements) {		
+	private List<Move> sortedMoves(double[] placements) {		
 		List<Move> moves = new ArrayList<Move>(width * height * 4);
 		
 		for(int i = 0; i < width; i++){
