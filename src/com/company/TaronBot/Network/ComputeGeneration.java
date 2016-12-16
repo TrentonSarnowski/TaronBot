@@ -130,14 +130,14 @@ public class ComputeGeneration {
 
 						networks.get(j).setWins(networks.get(j).getWins() + (-1*score)/Math.abs(score));
 						if(score==-32) {
-							valueArray[i][j] += 1;
+							valueArray[j][i] += networks.get(i).getWidth();
 						}else if(score<0){
-							//valueArray[i][j] += 1;
+							valueArray[j][i] += 1;
 						}
 						if(score==32) {
-							valueArray[j][i] += 1;
+							valueArray[i][j] += networks.get(i).getWidth();
 						}else if(score>0){
-							//valueArray[j][i] += 1;
+							valueArray[i][j] += 1;
 						}
 						//valueArray[i][j] -= score/Math.abs(score);
 					}

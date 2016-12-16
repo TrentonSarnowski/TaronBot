@@ -45,8 +45,10 @@ public class Placement implements Move {
             }else{
                 if(type==3){
                     board.reduceNegativeCapRemain();
+                    //System.out.println(board.getNegativeCapRemain());
                 }else{
                     board.reduceNegativeFlatRemain();
+
                 }
                 map[x][y].add(-1*type);
                 return map;
@@ -64,11 +66,11 @@ public class Placement implements Move {
             return false;
         }
 
-        if(type!=3){
+        if(Math.abs(type)!=3){
             checkFeasible=true;
             return true;
 
-        }else if( type==3&&(cont && (map.getPositiveCapRemain()>0)||(!cont&&map.getNegativeCapRemain()>0))){
+        }else if( type==3&&((cont && (map.getPositiveCapRemain()>0))||(!cont&&map.getNegativeCapRemain()>0))){
             checkFeasible=true;
             return true;
         }else{

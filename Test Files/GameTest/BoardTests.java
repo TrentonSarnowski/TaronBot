@@ -108,6 +108,43 @@ public class BoardTests extends TestCase{
         //assertTrue(==32);
 
     }
+    public void testVictoryAltDirection(){
+        board =new Board(8,new LinkedList<>(),true);
 
+        board.getMap()[7][0].add(1);
+        board.getMap()[7][1].add(1);
+        board.getMap()[7][2].add(1);
+        board.getMap()[6][2].add(1);
+        board.getMap()[6][3].add(1);
+        board.getMap()[6][4].add(1);
+        board.getMap()[5][4].add(1);
+        board.getMap()[4][4].add(3);
+        board.getMap()[4][5].add(1);
+        board.getMap()[4][6].add(1);
+        board.getMap()[5][6].add(1);
+        board.getMap()[5][7].add(1);
+
+
+
+
+        for(boolean row[]:board.topLevel(true)){
+            for(boolean place:row){
+                if(place){
+                    System.out.print("1 ");
+                }else{
+                    System.out.print("0 ");
+                }
+            }
+            System.out.println();
+        }
+        //*/
+
+
+        //board.checkForVictory();
+        int i=board.checkRoadWin(board,true,board.topLevel(true));
+        System.err.println(i);
+        assertTrue(i==32);
+
+    }
 
 }

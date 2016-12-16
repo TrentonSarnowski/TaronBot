@@ -37,7 +37,10 @@ public class ControllClass {
 	
 	
 	public static void StartControll() {
-		
+		String net1="0";
+		String net2="1";
+		int size=5;
+
 		String input = "";
 		Scanner reader = new Scanner(System.in);
 		while(true){
@@ -50,6 +53,9 @@ public class ControllClass {
 				switch(input.toLowerCase()){
 				case "moves":
 					StaticGlobals.PRINT_GAME_MOVES = true;
+					break;
+				case "board":
+					StaticGlobals.PRINT_GAME_BOARD=true;
 					break;
 				case "load":
 					StaticGlobals.LOAD_FROM_LAST_RUN=true;
@@ -68,6 +74,9 @@ public class ControllClass {
 				case "load":
 					StaticGlobals.LOAD_FROM_LAST_RUN=false;
 					break;
+				case "board":
+					StaticGlobals.PRINT_GAME_BOARD=true;
+					break;
 				default:
 					System.out.println(input + " not recognized as boolean Switch");
 				}
@@ -80,51 +89,69 @@ public class ControllClass {
 				StaticGlobals.PAUSED = true;
 				System.out.println("Paused");
 				break;
-			case "generate":
-				TestingMain.TestGnerationalGrowth(32, 256, 8, 5);
+			case "continue": {
+				boolean previous = StaticGlobals.LOAD_FROM_LAST_RUN;
+				StaticGlobals.LOAD_FROM_LAST_RUN = true;
 
+				Thread t = new Thread() {
+
+					@Override
+					public void run() {
+						TestingMain.TestGnerationalGrowth(32, 256, 8, 5);
+
+					}
+
+				};
+				t.start();
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					System.out.println("Bahhh: how did this break!!!");
+				}
+				StaticGlobals.LOAD_FROM_LAST_RUN = previous;
+			}
 				break;
+			case "generate": {
+				Thread t = new Thread() {
+
+					@Override
+					public void run() {
+						TestingMain.TestGnerationalGrowth(32, 256, 8, 5);
+
+					}
+
+				};
+				t.start();
+			}
+				break;
+
 			case "unpause":
 				StaticGlobals.PAUSED = false;
 				System.out.println("Unpaused");
 				break;
-				case "play":
-					TakNetwork network1=null;
-					TakNetwork network2=null;
-					String net1="1";
-					String net2="2";
-					int size=5;
-					for (int i = 0; i <3 ; i++) {
 
+			case "player1":
+				net1=reader.next();
+				System.out.println(net1);
+				break;
+			case "player2":
+				net2=reader.next();
+				System.out.println(net2);
+				break;
+			case "size":
+				size =reader.nextInt();
+				break;
+			case "play":
+				//TakNetwork network1=null;
+				//TakNetwork network2=null;
+					//String line =reader.nextLine();
+				StaticGlobals.PRINT_GAME_MOVES=true;
+					//	Scanner r=new Scanner(line);
 
-						input = reader.next();
-						switch (input.toLowerCase()) {
-							case "-one":
-								if(reader.hasNext()) {
-									net1 = reader.next();
-								}else{
-									net1 = "1";
-								}
-								break;
-							case "-two":
-								if(reader.hasNext()) {
-									net2 = reader.next();
-								}else{
-									net2 = "2";
-								}
-								break;
-							case "-s":
-								if(reader.hasNext()) {
-									size=Integer.parseInt(reader.next());
-								}
-								break;
-							default:
-								System.out.println(input + " not recognized as boolean Switch");
-						}
-					}
-					Board.playGame(TestingMain.loadTesting("networks\\TestGnerationalGrowth\\output\\Network"+size+"x"+size+net1+".taknetwork"),TestingMain.loadTesting("networks\\TestGnerationalGrowth\\output\\Network"+size+"x"+size+net2+".taknetwork"),size);
-
-					break;
+				System.out.println("Player1: "+net1+" Player2: "+net2);
+				Board.playGame(TestingMain.loadTesting("networks\\TestGnerationalGrowth\\output\\Network"+size+"x"+size+net1+".taknetwork"),TestingMain.loadTesting("networks\\TestGnerationalGrowth\\output\\Network"+size+"x"+size+net2+".taknetwork"),size);
+				StaticGlobals.PRINT_GAME_MOVES =false;
+				break;
 			default: 
 				System.out.println(input + " not recognized as command");
 			}

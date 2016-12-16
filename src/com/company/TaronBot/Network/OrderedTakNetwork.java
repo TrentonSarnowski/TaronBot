@@ -23,28 +23,34 @@ public class OrderedTakNetwork {
 
     static List<TakNetwork> PageRankOrdering(List<TakNetwork> networks, int[][] weights) {
         //System.err.println(" into ordering");
-            pagerank=new double[networks.size()];
-            path=weights;
-            calc(networks.size());
-            ArrayList<sort> sortlist=new ArrayList<>();
-            for (int i = 0; i <pagerank.length ; i++) {
-                sortlist.add(new sort(pagerank[i],networks.get(i)));
+        pagerank = new double[networks.size()];
+        path = weights;
+        calc(networks.size());
+        ArrayList<sort> sortlist = new ArrayList<>();
+        for (int i = 0; i < pagerank.length; i++) {
+            sortlist.add(new sort(pagerank[i], networks.get(i)));
 
-                }
-            Collections.sort(sortlist, new Comparator<sort>() {
-                @Override
-                public int compare(sort o1, sort o2) {
-                    if(o1.weight>o2.weight){
-                        return -1;
-                    }else{
-                        return 1;
-                    }
-                }
-            });
+        }
+        Collections.sort(sortlist, (o1, o2) -> {
 
-        for (int i = 0; i <networks.size() ; i++) {
+
+            if (o1 == null || o2 == null) {
+                return 0;
+            }
+
+            if (((sort)o1).weight > ((sort)o2).weight) {
+                return 1;
+            } else if(((sort)o1).weight == ((sort)o2).weight ){
+                return 0;
+            }else {
+                return -1;
+            }
+
+        });
+
+        for (int i = 0; i < networks.size(); i++) {
             //System.out.println(i+": Network weight: "+sortlist.get(i).weight);
-            networks.set(i,sortlist.get(i).item);
+            networks.set(i, sortlist.get(i).item);
         }
         //System.err.println(" into ordering");
 
@@ -55,6 +61,7 @@ public class OrderedTakNetwork {
     /**
      * code found online at
      * http://codispatch.blogspot.com/2015/12/java-program-implement-google-page-rank-algorithm.html
+     *
      * @param totalNodes
      */
 
@@ -80,14 +87,14 @@ public class OrderedTakNetwork {
 
         //System.out.printf("\n Initial PageRank Values , 0th Step \n");
         for (k = 0; k < totalNodes; k++) {
-           // System.out.printf(" Page Rank of " + k + " is :\t" + pagerank[k] + "\n");
+            // System.out.printf(" Page Rank of " + k + " is :\t" + pagerank[k] + "\n");
         }
 
         while (ITERATION_STEP <= 2) // Iterations
         {
             // Store the PageRank for All Nodes in Temporary Array
             for (k = 0; k < totalNodes; k++) {
-                TempPageRank[k] =  pagerank[k];
+                TempPageRank[k] = pagerank[k];
                 pagerank[k] = 0;
             }
 
@@ -111,9 +118,9 @@ public class OrderedTakNetwork {
             //System.out.printf("\n After " + ITERATION_STEP + "th Step \n");
 
             for (k = 0; k <= totalNodes; k++)
-              //  System.out.printf(" Page Rank of " + k + " is :\t" + pagerank[k] + "\n");
+                //  System.out.printf(" Page Rank of " + k + " is :\t" + pagerank[k] + "\n");
 
-            ITERATION_STEP = ITERATION_STEP + 1;
+                ITERATION_STEP = ITERATION_STEP + 1;
         }
 
 // Add the Damping Factor to PageRank
@@ -124,12 +131,10 @@ public class OrderedTakNetwork {
 // Display PageRank
         //System.out.printf("\n Final Page Rank : \n");
         for (k = 0; k < totalNodes; k++) {
-          //  System.out.printf(" Page Rank of " + k + " is :\t" + pagerank[k] + "\n");
+            //  System.out.printf(" Page Rank of " + k + " is :\t" + pagerank[k] + "\n");
         }
 
     }
-
-
 
 
 }

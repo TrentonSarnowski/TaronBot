@@ -253,7 +253,7 @@ public class TestingMain {
                 testNetwork.setLosses(0);
             } else {
 
-                testNetwork = new TakNetwork(dimns + 1, dimns, dimns, 8,0,j);
+                testNetwork = new TakNetwork(dimns + 1, dimns, dimns, 16,0,j);
                 RandomNunber = random.nextInt();
                 Random rand = new Random(RandomNunber);
                 testNetwork.randomize(rand);
@@ -349,6 +349,7 @@ public class TestingMain {
 
                         t.append("NET: "
                                 + networks.get(j).toString().substring((networks.get(j).toString().indexOf("@") + 1), networks.get(j).toString().length())
+                                + "\t   Generation: "+networks.get(j).getGeneration()
                                 + "\t   Wins: " + networks.get(j).getWins() + "\n"); //newline not appended in logging.
                     }
                     System.out.println(t.toString());
@@ -367,10 +368,11 @@ public class TestingMain {
                 try {
                     remove.clear();
                     for (int j = 0; j < (generationSize); j++) {
-                        if (networks.get(j).getWins() < 0) {
-                            //System.out.println("removed " + j + " " + Math.cos(j * Math.PI / 2.0 / generationSize));
-                            remove.add(networks.get(j));
-                        }
+
+                            if(random.nextDouble()>Math.cos(j * Math.PI / 2.0 / generationSize)) {
+                                remove.add(networks.get(j));
+                            }
+
                     }
 
                     int temp = 1;
@@ -406,12 +408,11 @@ public class TestingMain {
 
                 // direct dupe top net
 
-			/*
-			 * while (networks.size() < generationSize) {
-					int toDupe = (int) Math.floor(Math.cos(random.nextDouble() * Math.PI / 2.0) * networks.size());
-					networks.add(networks.get(toDupe).returnAnotherMutatedNetwork(random, 0.00001));
-					System.out.println("Duped: " + toDupe);
-				}*/
+			//for (int j=0;networks.size() < generationSize;j++) {
+//					int toDupe = (int) Math.floor(Math.cos(random.nextDouble() * Math.PI / 2.0) * networks.size());
+//					networks.add(networks.get(toDupe).returnAnotherMutatedNetwork(random, 0.00001,j));
+					//System.out.println("Duped: " + toDupe);
+				//}
 
                 //networks.set(generationSize, networks.get(0).returnAnotherMutatedNetwork(random, 0.00001));
 
