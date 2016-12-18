@@ -47,127 +47,15 @@ public class TestingMain {
      */
     public static void main(String[] args) {
         //networkGroupMutatorsTest();
-        startControllThread();
+        //startControllThread();
 
         // NetTesting();
         // ThreadedTesting(20);
         // ThreadTimingTesting();
         // ThreadedTesting(1000);
-
         // ComputeGenerationTesting(15);
-        //for (int i = 0; i < 16; i++) {
-            //TestGnerationalGrowth(32, 256, 8, 5);
+        //TestGnerationalGrowth(32, 256, 8, 5);
 
-        /*
-        System.out.println();
-
-        //*/
-        //}
-        
-        /*
-        TakNetwork network1;
-		TakNetwork network2;
-		network1=loadTesting("C:\\Users\\sarnowskit\\Downloads\\TaronBot\\networks\\TestGnerationalGrowth\\output\\Network" + 0 + ".takNetwork");
-		network2=loadTesting("C:\\Users\\sarnowskit\\Downloads\\TaronBot\\networks\\TestGnerationalGrowth\\output\\Network" + 1 + ".takNetwork");
-		Board.playGame(network1,network2,8);
-		Board.playGame(network2,network1,8);
-		//*/
-
-		/*
-		List<TakNetwork> newNetworks=new ArrayList<>();
-		List<TakNetwork> oldNetworks=new ArrayList<>();
-		for (int i = 0; i <10 ; i++) {
-			network2=loadTesting("C:\\Users\\sarnowskit\\Desktop\\Network Storage\\64Size64genRankedWinLoss"+"\\Network"+i+".takNetwork");
-			network2.setWins(0);
-			oldNetworks.add(network2);
-
-		}
-		for (int i = 0; i <10 ; i++) {
-
-			network1=loadTesting("C:\\Users\\sarnowskit\\Downloads\\TaronBot\\networks\\TestGnerationalGrowth\\output\\Network" + i + ".takNetwork");
-			network1.setWins(0);
-			newNetworks.add(network1);
-		}
-		int winner=0;
-		for (int i = 0; i <10 ; i++) {
-			network1=newNetworks.get(i);
-			for (int j = 0; j <10 ; j++) {
-				network2= oldNetworks.get(j);
-				winner=Board.playGame(network1,network2,8);
-				if(winner>0){
-					network1.setWins(network1.getWins()+1);
-					network2.setLosses(network2.getLosses()+1);
-
-				}else{
-					network2.setWins(network2.getWins()+1);
-					network1.setLosses(network1.getLosses()+1);
-				}
-				winner=Board.playGame(network2,network1,8);
-				if(winner<0){
-					network1.setWins(network1.getWins()+1);
-					network2.setLosses(network2.getLosses()+1);
-
-				}else{
-					network2.setWins(network2.getWins()+1);
-					network1.setLosses(network1.getLosses()+1);
-				}
-
-			}
-		}
-		Collections.sort(newNetworks,new Comparator<TakNetwork>() {
-					public int compare(TakNetwork m1, TakNetwork m2) {
-						int out = 0;
-						if ((double) m1.getWins() < (double) m2.getWins()) {
-							// 1 is winner
-							return 1;
-						}
-						if ((double) m1.getWins() > (double) m2.getWins()) {
-							// 2 is winner
-							return -1;
-						}
-						return 0;
-
-					}
-				}
-			);
-		Collections.sort(oldNetworks,new Comparator<TakNetwork>() {
-					public int compare(TakNetwork m1, TakNetwork m2) {
-						int out = 0;
-						if ((double) m1.getWins() < (double) m2.getWins()) {
-							// 1 is winner
-							return 1;
-						}
-						if ((double) m1.getWins() > (double) m2.getWins()) {
-							// 2 is winner
-							return -1;
-						}
-						return 0;
-
-					}
-				}
-		);
-		System.out.println(" old set");
-		int oldwins=0;
-		for (int i = 0; i <10 ; i++) {
-			System.out.println(oldNetworks.get(i).toString()+" wins:" +oldNetworks.get(i).getWins()+" loss: "+oldNetworks.get(i).getLosses());
-			oldwins+=oldNetworks.get(i).getWins();
-		}
-		System.out.println();
-		System.out.println(" new set");
-		int newwins=0;
-		for (int i = 0; i <10 ; i++) {
-			System.out.println(newNetworks.get(i).toString()+" wins:" +newNetworks.get(i).getWins()+" loss: "+newNetworks.get(i).getLosses());
-			newwins+=newNetworks.get(i).getWins();
-		}
-
-		System.out.println();
-		System.out.println("old: "+oldwins+", new: "+newwins);
-
-		//*/
-		/*System.out.print(Board.playGame(
-				loadTesting(
-						"C:\\Users\\sarnowskit\\Downloads\\TaronBot\\networks\\TestGnerationalGrowth\\output\\Network2.takNetwork"),
-				loadTesting("C:\\Users\\sarnowskit\\Desktop\\64 gened networks\\Network0.takNetwork"), 8));*/
         //TestGnerationalGrowth(64,100,8);
         //TestGnerationalGrowth(64,1000,8,5);
 
