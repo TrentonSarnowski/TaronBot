@@ -23,8 +23,8 @@ public class ControllClass {
 	 	generation data
 
 	 * generate a series of networks
-		
-		generate	
+
+		generate
 		-name/-n <default>required</default>
 		-s/-size <size>default 5</size>
 		-d/-depth <depth>default 8 </depth>
@@ -45,11 +45,14 @@ public class ControllClass {
 	
 	public static void StartControll() {
 		Map<String, Object> objects = new HashMap<String, Object>();
-		
-		
+
+
 		String net1="0";
 		String net2="1";
 		int size=5;
+		int genSize=32;
+		int runGens=64;
+		int coreCount=8;
 
 		String input = "";
 		Scanner reader = new Scanner(System.in);
@@ -59,8 +62,8 @@ public class ControllClass {
 			
 			//***********************************START OF INPUT SWITCH*******************************
 			switch(input.toLowerCase()){
-			
-			
+
+
 			//***********************************ENABLE DIFFERNET GLOBAL BOOLEAN SWITCHES************
 			case "enable":
 				input = reader.next();
@@ -79,7 +82,7 @@ public class ControllClass {
 				}	
 				break;
 
-				
+
 			//***********************************Disable DIFFERNET GLOBAL BOOLEAN SWITCHES***********
 			case "disable":
 				input = reader.next();
@@ -97,32 +100,36 @@ public class ControllClass {
 					System.out.println(input + " not recognized as boolean Switch");
 				}
 				break;
-			
-			
-				
-			case "save": 
+
+
+
+			case "save":
 				StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT = true;
 				System.out.println("Saving after next generation");
 				return;
-			
-			
-				
-			case "pause": 
+
+
+
+			case "pause":
 				StaticGlobals.PAUSED = true;
 				System.out.println("Paused");
 				break;
-			
-			
-				
+
+
+
 			case "continue": {
 				boolean previous = StaticGlobals.LOAD_FROM_LAST_RUN;
 				StaticGlobals.LOAD_FROM_LAST_RUN = true;
+				final int innerSize=size;
+				final int innerGen=runGens;
+				final int innerRunGenSize=genSize;
+				final int innerDepth=coreCount;
 
 				Thread t = new Thread() {
 
 					@Override
 					public void run() {
-						TestingMain.TestGnerationalGrowth(32, 256, 8, 5);
+						TestingMain.TestGnerationalGrowth(innerRunGenSize, innerGen, innerDepth, innerSize);
 
 					}
 
@@ -136,20 +143,33 @@ public class ControllClass {
 				StaticGlobals.LOAD_FROM_LAST_RUN = previous;
 			}
 				break;
-			
-			
+			case "gensize":
+				genSize=reader.nextInt();
+				break;
+			case "rungens":
+				runGens=reader.nextInt();
+				break;
+			case "core":
+				coreCount=reader.nextInt();
+
+				break;
+			case "depth":
+				StaticGlobals.DEPTH=reader.nextInt();
+				break;
+
+
 				//**************************GENERATE A NEW NETWORK*************************
 			case "generate": {
-				//format without arguments right now to set formula. 
-				
-				
+				//format without arguments right now to set formula.
+
+
 				String line = reader.nextLine();
 				String[] commands = line.split("-");
 				String s1 = "",s2 = "";
 				HashMap<String, String> commandVal = new HashMap<String, String>();
-				
+
 				//set default values
-				
+
 				int GameSize = 5;
 				int NetworkDepth = 8;
 				int generationQuantity = 64;
@@ -164,88 +184,97 @@ public class ControllClass {
 				-complexity/ -c <complexity> default size*4</complexity>
 				-seed <seed>recorded in log default no seed</seed>
 				*/
-				
-				for(String command: commands){
-					try{
-					System.out.println(command);
-					s1 = command.split(" ")[0];
-					s2 = command.substring(command.indexOf(" ")+1);
-					System.out.println("s1:" + s1 + "\ns2:" + s2);
-					commandVal.put(s1, s2);
-					}catch(IndexOutOfBoundsException e){
-						//do nothing, possibly output that command is not recognized and break...
-					}
-				}
-				
-				if(!(commandVal.containsKey("name") || commandVal.containsKey("n"))){
-					System.out.println("network must be named to continue");
-					break;
-				}
-				
-				if(commandVal.containsKey("n")){
-					name = (commandVal.get("n"));
-				}
-				if(commandVal.containsKey("name")){
-					name = (commandVal.get("name"));
-				}
-				
-				
-				if(commandVal.containsKey("s")){
-					size = Integer.parseInt(commandVal.get("s"));
-				}
-				if(commandVal.containsKey("size")){
-					size = Integer.parseInt(commandVal.get("size"));
-				}
-				
-				
-				if(commandVal.containsKey("d")){
-					NetworkDepth = Integer.parseInt(commandVal.get("d"));
-				}
-				if(commandVal.containsKey("depth")){
-					NetworkDepth = Integer.parseInt(commandVal.get("depth"));
-				}
-				
-				if(commandVal.containsKey("q")){
-					generationQuantity = Integer.parseInt(commandVal.get("q"));
-				}
-				if(commandVal.containsKey("quantity")){
-					generationQuantity = Integer.parseInt(commandVal.get("quantity"));
-				}
-				if(commandVal.containsKey("num")){
-					generationQuantity = Integer.parseInt(commandVal.get("num"));
-				}
-				
-				if(commandVal.containsKey("complexity")){
-					complexity = Integer.parseInt(commandVal.get("complexity"));
-				}
-				if(commandVal.containsKey("c")){
-					complexity = Integer.parseInt(commandVal.get("c"));
-				}
-				
-				if(commandVal.containsKey("seed")){
-					seed = Integer.parseInt(commandVal.get("seed"));
-				}
-				
-				System.out.println("generatong networks");
-				ArrayList<TakNetwork> newNetwork = new ArrayList<TakNetwork>();
-				for(int i = 0; i < generationQuantity; i++){
-					newNetwork.add(new TakNetwork(size,size,size+1,NetworkDepth,0,i));
-				}
-				objects.put(name, newNetwork);
-				
-				
-			}
-				break;
 
-			
-			
+				for(String command: commands) {
+                    try {
+                        System.out.println(command);
+                        s1 = command.split(" ")[0];
+                        s2 = command.substring(command.indexOf(" ") + 1);
+                        System.out.println("s1:" + s1 + "\ns2:" + s2);
+                        commandVal.put(s1, s2);
+                    } catch (IndexOutOfBoundsException e) {
+                        //do nothing, possibly output that command is not recognized and break...
+                    }
+                    final int innerSize = size;
+                    final int innerGen = runGens;
+                    final int innerRunGenSize = genSize;
+                    final int cores = coreCount;
+
+                    Thread t = new Thread() {
+
+                        @Override
+                        public void run() {
+                            TestingMain.TestGnerationalGrowth(innerRunGenSize, innerGen, cores, innerSize);
+
+                        }
+                    };
+
+                    if (!(commandVal.containsKey("name") || commandVal.containsKey("n"))) {
+                        System.out.println("network must be named to continue");
+                        break;
+                    }
+
+                    if (commandVal.containsKey("n")) {
+                        name = (commandVal.get("n"));
+                    }
+                    if (commandVal.containsKey("name")) {
+                        name = (commandVal.get("name"));
+                    }
+
+
+                    if (commandVal.containsKey("s")) {
+                        size = Integer.parseInt(commandVal.get("s"));
+                    }
+                    if (commandVal.containsKey("size")) {
+                        size = Integer.parseInt(commandVal.get("size"));
+                    }
+
+
+                    if (commandVal.containsKey("d")) {
+                        NetworkDepth = Integer.parseInt(commandVal.get("d"));
+                    }
+                    if (commandVal.containsKey("depth")) {
+                        NetworkDepth = Integer.parseInt(commandVal.get("depth"));
+                    }
+
+                    if (commandVal.containsKey("q")) {
+                        generationQuantity = Integer.parseInt(commandVal.get("q"));
+                    }
+                    if (commandVal.containsKey("quantity")) {
+                        generationQuantity = Integer.parseInt(commandVal.get("quantity"));
+                    }
+                    if (commandVal.containsKey("num")) {
+                        generationQuantity = Integer.parseInt(commandVal.get("num"));
+                    }
+
+                    if (commandVal.containsKey("complexity")) {
+                        complexity = Integer.parseInt(commandVal.get("complexity"));
+                    }
+                    if (commandVal.containsKey("c")) {
+                        complexity = Integer.parseInt(commandVal.get("c"));
+                    }
+
+                    if (commandVal.containsKey("seed")) {
+                        seed = Integer.parseInt(commandVal.get("seed"));
+                    }
+                }
+                    System.out.println("generatong networks");
+                    ArrayList<TakNetwork> newNetwork = new ArrayList<TakNetwork>();
+                    for (int i = 0; i < generationQuantity; i++) {
+                        newNetwork.add(new TakNetwork(size, size, size + 1, NetworkDepth, 0, i));
+                    }
+                    objects.put(name, newNetwork);
+                }
+
+                    break;
+
 			case "unpause":
 				StaticGlobals.PAUSED = false;
 				System.out.println("Unpaused");
 				break;
 
-			
-			
+
+
 			case "player1":
 				net1=reader.next();
 				System.out.println(net1);

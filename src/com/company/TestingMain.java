@@ -35,6 +35,7 @@ import com.company.TaronBot.Network.TakNetwork;
 import tech.deef.Tools.StaticGlobals;
 
 public class TestingMain {
+    private static Random random;
 
     private static final boolean LOGGING_ENABLED = StaticGlobals.LOGGING_ENABLED; //work around to avoid having to rename 20+ lines.
     private static int numPerGeneration = 3;
@@ -47,6 +48,8 @@ public class TestingMain {
      */
     public static void main(String[] args) {
         //networkGroupMutatorsTest();
+        random = new Random();
+        startControllThread();
         //startControllThread();
 
         // NetTesting();
@@ -141,7 +144,7 @@ public class TestingMain {
                 testNetwork.setLosses(0);
             } else {
 
-                testNetwork = new TakNetwork(dimns + 1, dimns, dimns, 16,0,j);
+                testNetwork = new TakNetwork(dimns + 1, dimns, dimns, StaticGlobals.DEPTH,0,j);
                 RandomNunber = random.nextInt();
                 Random rand = new Random(RandomNunber);
                 testNetwork.randomize(rand);

@@ -273,6 +273,25 @@ public class DeStack implements Move {
         if (board.getMap()[x][y].size() < pickUpC) {
             return false;
         }
+        int size=leftBehind.size();
+
+        if(positive&&up){
+            if(y+size>=board.getMap()[0].length){
+                return false;
+            }
+        }else if(positive){
+            if(x+size>=board.getMap()[0].length){
+                return false;
+            }
+        }else if(!positive&&up){
+            if(y-size<0){
+                return false;
+            }
+        }else{
+            if(x-size>0){
+                return false;
+            }
+        }
         List<Integer>[][] map = board.getMap();
         List<Integer> pickUp = map[x][y];
         int xChange;
