@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class StaticGlobals {
 	public static  boolean LOAD_FROM_LAST_RUN=false;
 	public static  boolean PRINT_GAME_BOARD = false;
-
+	public static final int SIZE=5;
 	public static int DEPTH=4;
 	public static final boolean PRINT_LOOPING = false;
 	public static final boolean PRINT_THREAD_WINNER_OUTPUT = true;
