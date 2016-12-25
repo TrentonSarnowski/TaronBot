@@ -59,12 +59,9 @@ public class ComputeGeneration {
 
 				@Override
 				public void run() {
-					if(true){
-						//System.err.println("run thread run");
-						RunGamesForEigenValues(threadNum, networks,startingPoint,endPoint,logger,valueArray);
-					}else {
+					
 						RunSelectionOfGames(threadNum, networks, GamesPerThread, logger);
-					}
+					
 				}
 				
 			};
@@ -97,20 +94,20 @@ public class ComputeGeneration {
 			}
 		}
 		
+		
 		for(int i = 0; i < threads.size(); i++){
-			
 				//System.out.println(i);
 				threads.remove(i);
-			
 		}
-		System.out.println(StaticGlobals.roadCount+" / "+(networks.size()*networks.size()));
-		OrderedTakNetwork.PageRankOrdering(networks,valueArray);
+		//System.out.println(StaticGlobals.roadCount+" / "+(networks.size()*networks.size()));
+		//OrderedTakNetwork.PageRankOrdering(networks,valueArray);
 
 
 
 	}
 
 	private static void RunGamesForEigenValues(int threadNum,List<TakNetwork> networks, int startingPoint, int endPoint, Logger logger , int[][] valueArray){
+		System.out.println("Wrong!");
 		for(int i=startingPoint;i<endPoint;i++){
 			for (int j = 0; j <networks.size() ; j++) {
 				try {
@@ -198,16 +195,14 @@ public class ComputeGeneration {
 						logger.severe(Arrays.toString(e.getStackTrace()));
 					}
 					e.printStackTrace();
-					System.out.println("Error caught in game " +net1num+ " : " + net2num);
+					//System.out.println("Error caught in game " +net1num+ " : " + net2num);
 				}
 				
-				//if(Math.abs(winner)==32){
-					//System.err.println("Road");
-
-				net1.setWins(net1.getWins() + winner);
-
-				net2.setWins(net2.getWins() + (-1*winner));
-				//todo
+				if(winner > 0){
+					net1.setWins(net1.getWins() + 1);
+				}else {
+					net2.setWins(net2.getWins() + 1);
+				}
 
 
 				//winner = Board.playGame(net1, net3, 8);

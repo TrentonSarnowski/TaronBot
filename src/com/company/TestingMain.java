@@ -47,32 +47,83 @@ public class TestingMain {
      * @param args
      */
     public static void main(String[] args) {
-        //networkGroupMutatorsTest();
-        random = new Random();
-        startControllThread();
-        //startControllThread();
-
-        // NetTesting();
-        // ThreadedTesting(20);
-        // ThreadTimingTesting();
-        // ThreadedTesting(1000);
-        // ComputeGenerationTesting(15);
-        //TestGnerationalGrowth(32, 256, 8, 5);
-
-        //TestGnerationalGrowth(64,100,8);
-        //TestGnerationalGrowth(64,1000,8,5);
-
-        // TestSingleGame();
-        // TestGeneration();
-        // networkGenerationCalculationTest();
-        // saveTesting();
-        // loadTesting();
-        // networkmutatorsTest();
-        // testing();
-
+        
+    	for(int i = 0; i < 20; i++){
+        	testLayerDepth(i);
+    	}    	
     }
 
-    private static void startControllThread() {
+    private static void testLayerDepth(int depth) {
+    	System.out.println("network Depth: " + depth);
+    	ArrayList<TakNetwork> Randoms = new ArrayList<TakNetwork>();
+    	ArrayList<TakNetwork> growth = new ArrayList<TakNetwork>();
+    	int wins = 0;
+    	int temp = 0;
+    	int NUM_PER_GENERATION = 100;
+    	Random rand = new Random();
+    	
+    	for(int j = 0; j< 64; j++){
+    		growth.add(new TakNetwork(6,5,5, depth, 0, j));
+    		growth.get(j).randomize(rand);
+			
+		}
+    	
+    	for(int i = 0; i < 2000; i++){
+    		
+    		//generate and test the networks
+    		//test
+    		
+    		Randoms.clear();
+    		for(int j = 0; j< 64; j++){
+    			Randoms.add(new TakNetwork(6,5,5, depth, i, j));
+    			Randoms.get(j).randomize(rand);
+    		}
+    		
+    		ComputeGeneration.compute(growth, 6, null);
+    		
+    		wins = 0;
+    		for(int j = 0; j< 64; j++){
+    			for(TakNetwork t: Randoms){
+    				temp = Board.playGame(growth.get(j), t, 5);
+    				
+    				if(temp > 0){
+    					//System.out.println(wins);
+    					wins++;
+    				}
+    			}
+    		}
+    		System.out.println(wins);
+    		
+    		
+    		Collections.sort(growth, new Comparator<TakNetwork>() {
+                public int compare(TakNetwork m1, TakNetwork m2) {
+                    int out = 0;
+                    if ((double) m1.getWins() < (double) m2.getWins()) {
+                        // 1 is winner
+                        return 1;
+                    }
+                    if ((double) m1.getWins() > (double) m2.getWins()) {
+                        // 2 is winner
+                        return -1;
+                    }
+                    return 0;
+
+                }
+            });
+    		
+    		
+    		for(int l = 63; l > 31; l--){
+    			growth.remove(l);
+    		}
+    		
+    		
+    		growth.addAll(MateNetworks.GroupMateNetworks(growth, rand, 32 , i));
+    		//at 50. 
+    		
+    	}
+	}
+
+	private static void startControllThread() {
         Thread t = new Thread() {
 
             @Override
@@ -216,7 +267,7 @@ public class TestingMain {
                 if(true){
 
                 }else {
-                    Collections.sort(networks, new Comparator<TakNetwork>() {
+                	Collections.sort(networks, new Comparator<TakNetwork>() {
                         public int compare(TakNetwork m1, TakNetwork m2) {
                             int out = 0;
                             if ((double) m1.getWins() < (double) m2.getWins()) {
