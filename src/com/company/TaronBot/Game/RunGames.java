@@ -69,8 +69,20 @@ public class RunGames {
         }
     }
 
-    public void playGamesSetThreads(int cores) {
+    public void playGamesSetThreadsBlocks(int cores) {
 
+        List<Thread> threads = playGamesSetThreads(cores);
+        for (Thread t: threads) {
+
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public List<Thread> playGamesSetThreads(int cores) {
         Iterator<TakNetwork> player1 = this.player1.iterator();
         Iterator<TakNetwork> player2 = this.player2.iterator();
         List<Thread> threads=new ArrayList<>();
@@ -114,13 +126,6 @@ public class RunGames {
             threads.add(t);
             t.start();
         }
-        for (Thread t: threads) {
-
-            try {
-                t.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        return threads;
     }
 }
