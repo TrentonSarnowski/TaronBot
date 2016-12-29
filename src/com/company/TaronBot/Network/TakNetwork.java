@@ -76,6 +76,12 @@ public class TakNetwork implements Serializable{
 	public int getLayers() {
 		return layers;
 	}
+	public int addWins(){
+		return wins++;
+	}
+	public int addLosses(){
+		return losses++;
+	}
 
 
 	ArrayList<NetworkLayer> network = new ArrayList<NetworkLayer>();
