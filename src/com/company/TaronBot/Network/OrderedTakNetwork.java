@@ -21,7 +21,7 @@ public class OrderedTakNetwork {
         }
     }
 
-    static List<TakNetwork> PageRankOrdering(List<TakNetwork> networks, int[][] weights) {
+    public static List<TakNetwork> PageRankOrdering(List<TakNetwork> networks, int[][] weights) {
         //System.err.println(" into ordering");
         pagerank = new double[networks.size()];
         path = weights;
@@ -38,9 +38,9 @@ public class OrderedTakNetwork {
                 return 0;
             }
 
-            if (((sort)o1).weight > ((sort)o2).weight) {
+            if (o1.weight > o2.weight) {
                 return 1;
-            } else if(((sort)o1).weight == ((sort)o2).weight ){
+            } else if (o1.weight == o2.weight) {
                 return 0;
             }else {
                 return -1;
