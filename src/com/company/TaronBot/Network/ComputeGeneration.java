@@ -8,12 +8,14 @@ import java.util.logging.Logger;
 
 import com.company.TaronBot.Game.Board;
 
+import com.company.TaronBot.Game.RunGames;
 import com.company.TestingMain;
 import tech.deef.Tools.StaticGlobals;
 
 public class ComputeGeneration {
 	private static ArrayList<TakNetwork> randNets=new ArrayList<>();
-	public static void compute(List<TakNetwork> networks, int Threads, Logger logger){
+
+	public static List<TakNetwork> compute(List<TakNetwork> networks, int Threads, Logger logger) {
 		int valueArray[][]=new int[networks.size()][networks.size()];
 		StaticGlobals.roadCount=0;
 		int totalGames = networks.size()*networks.size();
@@ -40,71 +42,18 @@ public class ComputeGeneration {
 			//all 100 networks generate
 		}//*/
 
-		ArrayList<Thread> threads = new ArrayList<Thread>(Threads);
-		//todo--add page rank based allocation
-		int incriment=networks.size()/Threads;
+		RunGames games = new RunGames((ArrayList) networks);
 
-		for(int i = 0; i < Threads; i++){
-			final int startingPoint=i*incriment;
-
-			final int endPoint;
-
-			if(i==Threads-1){
-				endPoint=networks.size();
-			}else{
-				endPoint=(i+1)*incriment;
-			}
-			final int threadNum = i;
-			Thread t = new Thread(){
-
-				@Override
-				public void run() {
-					if(true){
-						//System.err.println("run thread run");
-						RunGamesForEigenValues(threadNum, networks,startingPoint,endPoint,logger,valueArray);
-					}else {
-						RunSelectionOfGames(threadNum, networks, GamesPerThread, logger);
-					}
-				}
-				
-			};
-
-			threads.add(t);
-		//	System.out.println(i);
-		}
-
-		
-		
-		
-		//start Threads
-		for(Thread thread: threads){
-			//System.out.println(thread.toString());
-			//System.err.println("run nets");
-			thread.start();	
-			//System.out.println(thread.isAlive());
-		}
-		
-		
-		//wait for threads to end
-		for(int i = 0; i < threads.size(); i++){
-			try {
-				//System.out.println(i);
-				threads.get(i).join();
-				
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		for (int i = 0; i < networks.size(); i++) {
+			for (int j = 0; j < networks.size() / 4; j++) {
+				games.addGame(i, j);
 			}
 		}
-		
-		for(int i = 0; i < threads.size(); i++){
-			
-				//System.out.println(i);
-				threads.remove(i);
-			
-		}
-		System.out.println(StaticGlobals.roadCount+" / "+(networks.size()*networks.size()));
-		OrderedTakNetwork.PageRankOrdering(networks,valueArray);
+		games.playGamesSetThreadsBlocks(Threads);
+
+
+		System.out.println(StaticGlobals.roadCount + " / " + (games.getCount()));
+		return games.GetSortedNetworks(RunGames.victoryType.WIN_LOSS_WEIGHTED);
 
 
 

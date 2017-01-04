@@ -27,7 +27,7 @@ public class RunGames {
     int winLossNoWeightPage[][];
     int winOneTwoWeightPage[][];
 
-    private enum victoryType {
+    public enum victoryType {
         WIN_NO_WEIGHT,//Wins all qualify as 1
         WIN_WEIGHTED,//Wins based on flat count difference or sideLength for road win
         WIN_ROAD_ONLY,//Wins based solly on road wins
@@ -136,7 +136,7 @@ public class RunGames {
                         count--;
 
                     }
-                    notify();
+                    //notify();
                 }
 
 
@@ -182,18 +182,19 @@ public class RunGames {
                     }
 
                     if (o1.weight > o2.weight) {
-                        return 1;
+                        return -1;
                     } else if (o1.weight == o2.weight) {
                         return 0;
                     } else {
-                        return -1;
+                        return 1;
                     }
 
                 });
-                for (int i = 0; i < returnValue.size(); i++) {
+                for (int i = 0; i < sortList.size(); i++) {
                     //System.out.println(i+": Network weight: "+sortlist.get(i).weight);
-                    returnValue.set(i, sortList.get(i).item);
+                    returnValue.add(sortList.get(i).item);
                 }
+                System.err.println(returnValue.size());
                 break;
             case WIN_NO_WEIGHT:
                 for (int i = 0; i < networks.size(); i++) {
@@ -207,15 +208,16 @@ public class RunGames {
                     }
 
                     if (o1.weight > o2.weight) {
-                        return 1;
+                        return -1;
                     } else if (o1.weight == o2.weight) {
                         return 0;
                     } else {
-                        return -1;
+                        return 1;
                     }
 
+
                 });
-                for (int i = 0; i < returnValue.size(); i++) {
+                for (int i = 0; i < sortList.size(); i++) {
                     //System.out.println(i+": Network weight: "+sortlist.get(i).weight);
                     returnValue.set(i, sortList.get(i).item);
                 }
@@ -232,15 +234,16 @@ public class RunGames {
                     }
 
                     if (o1.weight > o2.weight) {
-                        return 1;
+                        return -1;
                     } else if (o1.weight == o2.weight) {
                         return 0;
                     } else {
-                        return -1;
+                        return 1;
                     }
 
+
                 });
-                for (int i = 0; i < returnValue.size(); i++) {
+                for (int i = 0; i < sortList.size(); i++) {
                     //System.out.println(i+": Network weight: "+sortlist.get(i).weight);
                     returnValue.set(i, sortList.get(i).item);
                 }
@@ -257,15 +260,16 @@ public class RunGames {
                     }
 
                     if (o1.weight > o2.weight) {
-                        return 1;
+                        return -1;
                     } else if (o1.weight == o2.weight) {
                         return 0;
                     } else {
-                        return -1;
+                        return 1;
                     }
 
+
                 });
-                for (int i = 0; i < returnValue.size(); i++) {
+                for (int i = 0; i < sortList.size(); i++) {
                     //System.out.println(i+": Network weight: "+sortlist.get(i).weight);
                     returnValue.set(i, sortList.get(i).item);
                 }
@@ -282,15 +286,16 @@ public class RunGames {
                     }
 
                     if (o1.weight > o2.weight) {
-                        return 1;
+                        return -1;
                     } else if (o1.weight == o2.weight) {
                         return 0;
                     } else {
-                        return -1;
+                        return 1;
                     }
 
+
                 });
-                for (int i = 0; i < returnValue.size(); i++) {
+                for (int i = 0; i < sortList.size(); i++) {
                     //System.out.println(i+": Network weight: "+sortlist.get(i).weight);
                     returnValue.set(i, sortList.get(i).item);
                 }
@@ -322,6 +327,10 @@ public class RunGames {
                 return networks;
         }
         return returnValue;
+    }
+
+    public int getCount() {
+        return player1.size();
     }
 
     /**

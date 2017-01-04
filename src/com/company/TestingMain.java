@@ -25,7 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import com.company.TaronBot.ControllClass;
+import com.company.TaronBot.ControlClass;
 import com.company.TaronBot.Game.Board;
 import com.company.TaronBot.Game.Move;
 import com.company.TaronBot.Network.ComputeGeneration;
@@ -77,7 +77,7 @@ public class TestingMain {
 
             @Override
             public void run() {
-                ControllClass.StartControll();
+                ControlClass.StartControl();
 
             }
 

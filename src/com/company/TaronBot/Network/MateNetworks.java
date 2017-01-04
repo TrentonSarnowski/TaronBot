@@ -73,8 +73,14 @@ public class MateNetworks {
 					
 					random = new ISAACRandom();
 					random.setSeed(rand.nextInt());
-					NormalDistribution n = new NormalDistribution(random, mean.evaluate(statsArray), std.evaluate(statsArray));
-					
+					NormalDistribution n;
+					if (std.evaluate(statsArray) < .0001) {
+						//todo add Insertion
+						n = new NormalDistribution(random, mean.evaluate(statsArray), std.evaluate(statsArray));
+
+					} else {
+						n = new NormalDistribution(random, mean.evaluate(statsArray), std.evaluate(statsArray));
+					}
 					for(int layer = 0; layer < numNetworks; layer++){
 						layers.get(layer).getMutatorArray(q)[w] = n.sample();
 					}

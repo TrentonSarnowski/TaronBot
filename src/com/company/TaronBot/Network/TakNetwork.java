@@ -77,10 +77,10 @@ public class TakNetwork implements Serializable{
 		return layers;
 	}
 	public int addWins(){
-		return wins++;
+		return ++wins;
 	}
 	public int addLosses(){
-		return losses++;
+		return ++losses;
 	}
 
 
@@ -178,7 +178,7 @@ public class TakNetwork implements Serializable{
 
 	/**
 	 * sets the specific layer of the network
-	 * @param int i
+	 * @param i
 	 * @param changePercentageSingleLayerMutate NetworkLayer
 	 */
 	public void setLayer(int i, NetworkLayer changePercentageSingleLayerMutate) {
@@ -351,7 +351,7 @@ public class TakNetwork implements Serializable{
 		try {
 
 
-			movement = DeStack.DeStack(XInput, YInput, left, (int) d, (moveOutput[0] > 0 ? true : false), (moveOutput[1] > 0 ? true : false), weight);
+			movement = DeStack.DeStack(XInput, YInput, left, (int) d, (moveOutput[0] > 0), (moveOutput[1] > 0), weight);
 		}catch (Exception e){
 			movement =null;
 		}
