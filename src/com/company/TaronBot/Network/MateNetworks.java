@@ -40,10 +40,9 @@ public class MateNetworks {
 		Mean mean = new Mean();
 		StandardDeviation std = new StandardDeviation();
 		//generate a blank network for the mutation. 
-		//TODO fix this section of code to mutate properly
-		
-		
-		for(int a = 0; a < net0.getTotalNumberOfLayers(); a++){
+
+
+        for(int a = 0; a < net0.getTotalNumberOfLayers(); a++){
 			
 			//loop through every dimension of the mutator for this specific dimension
 			ArrayList<NetworkLayer> layers = new ArrayList<NetworkLayer>(numNetworks);

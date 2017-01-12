@@ -120,10 +120,14 @@ public class NetworkLayer implements Serializable{
 	private double corolate(double[] weights, double[] input) {
 
 		double sum = 0;
+        try {
 
-		for (int i = 0; i < inputLayerSize; i++) {
-			//System.err.println(i+" "+j+" "+k+" "+l);
-			sum += weights[i] * input[i];
+            for (int i = 0; i < inputLayerSize; i++) {
+                //System.err.println(i+" "+j+" "+k+" "+l);
+                sum += weights[i] * input[i];
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+
 		}
 		return sum;
 	}

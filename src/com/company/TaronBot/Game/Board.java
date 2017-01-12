@@ -22,7 +22,9 @@ public class Board {
     private int negativePieceRemain=0;
     private int positiveCapRemain=0;
     private int negativeCapRemain=0;
+    private boolean start;
     private static Move firstPlayer,SecondPlayer=null;
+    public int boardNumber;
     public static int playGame(TakNetwork Player1, TakNetwork Player2, int sideLength){
 
         Board game=new Board(sideLength, new LinkedList<>(), true);
@@ -130,7 +132,17 @@ public class Board {
 
     }
 
+    public boolean control() {
+        return start;
+    }
+
+    public static Board PlayTakBoard(int sideLength, List<Move> boardState, boolean start, int boardID) {
+        Board rv = new Board(sideLength, boardState, start);
+        rv.boardNumber = boardID;
+        return rv;
+    }
     public Board(int sideLength, List<Move> boardState, boolean start){
+        this.start = start;
         switch (sideLength){
             case 3:
                 positivePieceRemain=10;
@@ -234,25 +246,25 @@ public class Board {
                 StaticGlobals.roadCount++;
 
                 return 32;
-            };
+            }
             if(RoadCheck(i,0,topLevel,new boolean[topLevel.length][topLevel.length], true)){
                 //System.err.println("road");
                 StaticGlobals.roadCount++;
 
                 return 32;
-            };
+            }
             topLevel=b.topLevel(!cont);
             if(RoadCheck(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
                 StaticGlobals.roadCount++;
                 //System.err.println("road");
                 return -32;
-            };
+            }
             if(RoadCheck(i,0,topLevel,new boolean[topLevel.length][topLevel.length], true)){
                 //System.err.println("road");
                 StaticGlobals.roadCount++;
 
                 return -32;
-            };
+            }
         }
         return null;
     }

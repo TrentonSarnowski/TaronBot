@@ -5,6 +5,7 @@ import com.company.TaronBot.Game.Moves.DeStack;
 import com.company.TaronBot.Game.Moves.Placement;
 import com.sun.org.apache.xpath.internal.SourceTree;
 import junit.framework.*;
+import org.junit.*;
 
 
 import java.util.LinkedList;
@@ -18,6 +19,8 @@ public class BoardTests extends TestCase{
     public void setUp(){
         board=null;
     }
+
+    @org.junit.Test
     public void testCreate(){
         board =new Board(5,new LinkedList<>(),true);
         for (int i = 0; i <5 ; i++) {

@@ -96,7 +96,7 @@ public class Placement implements Move {
                 ret+="C";
                 break;
             default:
-                return "";
+                return "fail type";
         }
         switch (x){
             case 0:
@@ -124,14 +124,58 @@ public class Placement implements Move {
                 ret+="h";
                 break;
             default:
-                return "";
+                return "fail position: " + x;
         }
         ret+=""+(y+1);
 
         return ret;
     }
     public String toPlayTakString(){
-        return toString();
+        String ret = "P ";
+
+        switch (x) {
+            case 0:
+                ret += "A";
+                break;
+            case 1:
+                ret += "B";
+                break;
+            case 2:
+                ret += "C";
+                break;
+            case 3:
+                ret += "D";
+                break;
+            case 4:
+                ret += "E";
+                break;
+            case 5:
+                ret += "F";
+                break;
+            case 6:
+                ret += "G";
+                break;
+            case 7:
+                ret += "H";
+                break;
+            default:
+                return "fail position: " + x;
+        }
+        ret += "" + (y + 1) + " ";
+        switch (type) {
+            case 1:
+                ret += "";
+                break;
+            case 2:
+                ret += "W";
+                break;
+            case 3:
+                ret += "C";
+                break;
+            default:
+                return "fail type";
+        }
+        return ret;
     }
     @Override
     public double getWeight() {

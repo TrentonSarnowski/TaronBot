@@ -17,6 +17,7 @@ import java.util.logging.SimpleFormatter;
 import com.company.TaronBot.Game.Board;
 import com.company.TaronBot.Network.ComputeGeneration;
 import com.company.TaronBot.Network.MateNetworks;
+import com.company.TaronBot.Network.OrderedTakNetwork;
 import com.company.TaronBot.Network.TakNetwork;
 import com.company.TestingMain;
 //import com.sun.org.apache.xpath.internal.operations.String;
@@ -116,8 +117,20 @@ public class ControlClass {
                     StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT = true;
                     System.out.println("Saving after next generation");
                     return;
+                case "playgamesonline":
+                    final int genSizes = genSize;
+                    final int runGenst = runGens;
+                    final int coreCounts = coreCount;
+                    final int sizes = size;
+                    Thread t = new Thread() {
 
-
+                        @Override
+                        public void run() {
+                            GenerateNetworksOnline(genSizes, runGenst, coreCounts, sizes);
+                        }
+                    };
+                    t.start();
+                    break;
                 case "pause":
                     StaticGlobals.PAUSED = true;
                     System.out.println("Paused");
@@ -132,7 +145,7 @@ public class ControlClass {
                     final int innerRunGenSize = genSize;
                     final int innerDepth = coreCount;
 
-                    Thread t = new Thread() {
+                    Thread thread = new Thread() {
 
                         @Override
                         public void run() {
@@ -141,7 +154,7 @@ public class ControlClass {
                         }
 
                     };
-                    t.start();
+                    thread.start();
                     try {
                         Thread.sleep(10000);
                     } catch (InterruptedException e) {
@@ -506,6 +519,216 @@ public class ControlClass {
 
             System.out.println("Networks Saved");
 
+            return;
+
+
+        }
+
+    }
+
+    private static void GenerateNetworksOnline(int generationSize, int generations, int cores, int dimns) {
+
+
+        Logger logger = Logger.getLogger("MyLog");
+
+
+        Random random = new Random();
+        ArrayList<TakNetwork> networks = new ArrayList<>();
+        NumberFormat formatter = new DecimalFormat("#0.0000");
+
+        // gen networks
+
+
+        int RandomNumber = 0;
+        for (int j = 0; j < generationSize; j++) {
+            TakNetwork testNetwork;
+            if (StaticGlobals.LOAD_FROM_LAST_RUN) {
+                testNetwork = loadTesting("networks\\TestGnerationalGrowth\\output\\Network" + dimns + "x" + dimns + j + ".takNetwork");
+                testNetwork.setWins(0);
+                testNetwork.setLosses(0);
+            } else {
+
+                testNetwork = new TakNetwork(dimns + 1, dimns, dimns, StaticGlobals.DEPTH, 0, j);
+                RandomNumber = random.nextInt();
+                Random rand = new Random(RandomNumber);
+                testNetwork.randomize(rand);
+            }
+
+            // System.out.println((testNetwork.toString()));
+
+            networks.add(testNetwork);
+
+            // all 100 networks generate
+        }
+        System.out.println("Base Generated");
+        //*/
+        final List<TakNetwork> network2 = new ArrayList<>();
+        network2.add(networks.get(0));
+        network2.add(networks.get(1));
+        Thread thread = new Thread() {
+
+            @Override
+            public void run() {
+                ServerCommunication.playGame(network2);
+
+            }
+
+        };
+        thread.start();
+        try {
+            for (int i = 0; i < generations; i++) {
+
+
+                if (StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT || i % 100 == 99) {
+
+                    String output = "networks\\FORCEEXIT\\TestGnerationalGrowth\\output";
+
+
+                    System.out.println("Saving Networks");
+
+                    new File(output).mkdirs();
+                    for (int s = 0; s < networks.size(); s++) {
+
+                        FileOutputStream fout;
+                        try {
+                            fout = new FileOutputStream(output + "\\GEN" + i + "Network" + s + ".takNetwork");
+                            ObjectOutputStream oos = new ObjectOutputStream(fout);
+                            oos.writeObject(networks.get(s));
+                            oos.close();
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    System.out.println("Networks Saved");
+                    if (StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT) {
+                        return;
+                    }
+                }
+
+
+                System.out.println("\n\nGENERATION: " + i + "\n");
+                //todo
+                networks = (ArrayList) ComputeGeneration.compute(networks, cores, logger);
+
+
+                if (StaticGlobals.PRINT_NETWORK_STATS) {
+                    StringBuffer t = new StringBuffer();
+                   /*
+                    for (int j = 0; j < networks.size(); j++) {
+
+
+                        t.append("NET: "
+                                + networks.get(j).toString().substring((networks.get(j).toString().indexOf("@") + 1), networks.get(j).toString().length())
+                                + "\t   Generation: " + networks.get(j).getGeneration()
+                                + "\t   Wins: " + networks.get(j).getWins() + "\n"); //newline not appended in logging.
+                    }
+                    //*/
+                    System.out.println(t.toString());
+
+
+                }
+
+                ArrayList<TakNetwork> remove = new ArrayList<TakNetwork>();
+
+
+                try {
+                    remove.clear();
+                    for (int j = 0; j < (generationSize); j++) {
+
+                        if (random.nextDouble() > Math.cos(j * Math.PI / 2.0 / generationSize)) {
+                            remove.add(networks.get(j));
+                        }
+
+                    }
+
+                    int temp = 1;
+                    while (remove.size() < generationSize / 8) {
+                        remove.add(networks.get(networks.size() - temp));
+                        temp++;
+                    }
+
+                } catch (IndexOutOfBoundsException e) {
+                    //System.out.println("ExpectedIndexOutOfBoudsError");
+                }
+
+
+                for (TakNetwork net : remove) {
+                    networks.remove(net);
+                }
+
+                if (StaticGlobals.GENERATIONAL_NOTIFIERS) {
+                    System.out.println("Starting new network generation");
+                }
+
+                networks.addAll(MateNetworks.GroupMateNetworks(networks, random, generationSize - networks.size(), i));
+
+
+                // direct dupe top net
+
+                //for (int j=0;networks.size() < generationSize;j++) {
+//					int toDupe = (int) Math.floor(Math.cos(random.nextDouble() * Math.PI / 2.0) * networks.size());
+//					networks.add(networks.get(toDupe).returnAnotherMutatedNetwork(random, 0.00001,j));
+                //System.out.println("Duped: " + toDupe);
+                //}
+
+                //networks.set(generationSize, networks.get(0).returnAnotherMutatedNetwork(random, 0.00001));
+
+                network2.set(0, networks.get(0));
+                network2.set(1, networks.get(1));
+
+            }
+
+            String output = "networks\\TestGnerationalGrowth\\output";
+
+
+            new File(output).mkdirs();
+            for (int i = 0; i < networks.size(); i++) {
+
+                FileOutputStream fout;
+                try {
+                    fout = new FileOutputStream(output + "\\Network" + dimns + "x" + dimns + i + ".takNetwork");
+                    ObjectOutputStream oos = new ObjectOutputStream(fout);
+                    oos.writeObject(networks.get(i));
+                    oos.close();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+
+        } catch (Exception E) {
+            E.printStackTrace();
+
+            logger.severe(Arrays.toString(E.getStackTrace()));
+
+            String output = "networks\\ERROREXIT\\TestGnerationalGrowth\\output";
+
+
+            System.out.println("Saving Networks");
+
+            new File(output).mkdirs();
+            for (int s = 0; s < networks.size(); s++) {
+
+                FileOutputStream fout;
+                try {
+                    fout = new FileOutputStream(output + "\\Network" + s + ".takNetwork");
+                    ObjectOutputStream oos = new ObjectOutputStream(fout);
+                    oos.writeObject(networks.get(s));
+                    oos.close();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            System.out.println("Networks Saved");
+            while (thread.isAlive())
             return;
 
 
