@@ -3,7 +3,7 @@ package tech.deef.Tools;
 import java.util.ArrayList;
 
 public class StaticGlobals {
-	public static  boolean LOAD_FROM_LAST_RUN=false;
+	public static boolean LOAD_FROM_LAST_RUN = true;
 	public static  boolean PRINT_GAME_BOARD = false;
 	public static final int SIZE=5;
 	public static int DEPTH=4;
@@ -17,5 +17,6 @@ public class StaticGlobals {
 	public static boolean SAVE_NETWORKS_OUT_AND_EXIT = false;
 	public static boolean PAUSED = false;
 	public static int roadCount=0;
+
 
 }

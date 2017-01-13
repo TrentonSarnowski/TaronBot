@@ -61,8 +61,8 @@ public class ControlClass {
         String net1 = "0";
         String net2 = "1";
         int size = 5;
-        int genSize = 32;
-        int runGens = 1;
+        int genSize = 128;
+        int runGens = 1024;
         int coreCount = 8;
 
         String input = "";
@@ -112,12 +112,14 @@ public class ControlClass {
                     }
                     break;
 
-
+                case "cleanup":
+                    ServerCommunication.cont = false;
+                    break;
                 case "save":
                     StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT = true;
                     System.out.println("Saving after next generation");
                     return;
-                case "playgamesonline":
+                case "online":
                     final int genSizes = genSize;
                     final int runGenst = runGens;
                     final int coreCounts = coreCount;
@@ -374,7 +376,7 @@ public class ControlClass {
 
                 if (StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT || i % 100 == 99) {
 
-                    String output = "networks\\FORCEEXIT\\TestGnerationalGrowth\\output";
+                    String output = "networks\\TestGnerationalGrowth\\output";
 
 
                     System.out.println("Saving Networks");
@@ -452,7 +454,7 @@ public class ControlClass {
                 }
 
                 if (StaticGlobals.GENERATIONAL_NOTIFIERS) {
-                    System.out.println("Starting new network generation");
+                    // System.out.println("Starting new network generation");
                 }
 
                 networks.addAll(MateNetworks.GroupMateNetworks(networks, random, generationSize - networks.size(), i));
@@ -609,7 +611,7 @@ public class ControlClass {
                 }
 
 
-                System.out.println("\n\nGENERATION: " + i + "\n");
+                // System.out.println("\n\nGENERATION: " + i + "\n");
                 //todo
                 networks = (ArrayList) ComputeGeneration.compute(networks, cores, logger);
 

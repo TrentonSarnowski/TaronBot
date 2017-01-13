@@ -219,7 +219,7 @@ public class RunGames {
                 });
                 for (int i = 0; i < sortList.size(); i++) {
                     //System.out.println(i+": Network weight: "+sortlist.get(i).weight);
-                    returnValue.set(i, sortList.get(i).item);
+                    returnValue.add(sortList.get(i).item);
                 }
                 break;
             case WIN_ONE_TWO_WEIGHT:
@@ -245,7 +245,7 @@ public class RunGames {
                 });
                 for (int i = 0; i < sortList.size(); i++) {
                     //System.out.println(i+": Network weight: "+sortlist.get(i).weight);
-                    returnValue.set(i, sortList.get(i).item);
+                    returnValue.add(sortList.get(i).item);
                 }
                 break;
             case WIN_ROAD_ONLY:
@@ -271,7 +271,7 @@ public class RunGames {
                 });
                 for (int i = 0; i < sortList.size(); i++) {
                     //System.out.println(i+": Network weight: "+sortlist.get(i).weight);
-                    returnValue.set(i, sortList.get(i).item);
+                    returnValue.add(sortList.get(i).item);
                 }
                 break;
             case WIN_WEIGHTED:
@@ -297,7 +297,7 @@ public class RunGames {
                 });
                 for (int i = 0; i < sortList.size(); i++) {
                     //System.out.println(i+": Network weight: "+sortlist.get(i).weight);
-                    returnValue.set(i, sortList.get(i).item);
+                    returnValue.add(sortList.get(i).item);
                 }
                 break;
             case PAGE_WEIGHTED_WIN_LOSS_NO_WEIGHT:

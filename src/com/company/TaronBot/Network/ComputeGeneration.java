@@ -45,15 +45,15 @@ public class ComputeGeneration {
 		RunGames games = new RunGames((ArrayList) networks);
 
 		for (int i = 0; i < networks.size(); i++) {
-			for (int j = 0; j < networks.size() / 3; j++) {
+			for (int j = 0; j < networks.size() / 4; j++) {
 				games.addGame(i, j);
 			}
 		}
 		games.playGamesSetThreadsBlocks(Threads);
 
 
-		System.out.println(StaticGlobals.roadCount + " / " + (games.getCount()));
-		return games.GetSortedNetworks(RunGames.victoryType.PAGE_WEIGHTED_WIN_NO_WEIGHT);
+		//System.out.println(StaticGlobals.roadCount + " / " + (games.getCount()));
+		return games.GetSortedNetworks(RunGames.victoryType.WIN_ROAD_ONLY);
 
 
 
