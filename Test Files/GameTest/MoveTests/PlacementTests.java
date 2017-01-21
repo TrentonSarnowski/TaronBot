@@ -28,6 +28,14 @@ public class PlacementTests extends TestCase{
         test.performMove(testBoard,true);
         assertTrue(testBoard.getMap()[0][0].get(0)==1);
     }
+
+    public void testBlockedCheckFeasibleFlat() {
+        Integer[] array = {1, 1, 3, 2, 0};
+        Placement test = new Placement(0, 0, 1, 0);
+        Board testBoard = new Board(8, new LinkedList<>(), true);
+        test.performMove(testBoard, true);
+        assertTrue(testBoard.getMap()[0][0].get(0) == 1);
+    }
     public void testUnEncumberedPlacementCap(){
         Integer[] array={1,1,3,2,0};
         Placement test = new Placement(0,0,3,0);

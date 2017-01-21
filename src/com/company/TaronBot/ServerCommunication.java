@@ -4,14 +4,14 @@ import com.company.TaronBot.Game.Board;
 import com.company.TaronBot.Game.Move;
 import com.company.TaronBot.Game.Moves.DeStack;
 import com.company.TaronBot.Game.Moves.Placement;
+import com.company.TaronBot.Game.RunGames;
 import com.company.TaronBot.Network.TakNetwork;
 import com.company.TestingMain;
 import org.apache.commons.math3.ml.neuralnet.Network;
+import sun.security.krb5.internal.crypto.Des;
+import tech.deef.Tools.StaticGlobals;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.*;
 
@@ -21,6 +21,64 @@ public class ServerCommunication {
 
 
 	public static Boolean cont = true;
+
+	public static void online(RunGames.bot[] bots) {
+		try {
+			Socket socket = new Socket("www.playtak.com", 10000);
+			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			cont = true;
+			Thread t = new Thread() {
+				@Override
+				public void run() {
+
+					while (cont) {
+						try {
+							sleep(5000);
+
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						playSelf(bots);
+					}
+
+				}
+			};
+
+			//	commands.start();
+			out.println("Login sTAKbot " + StaticGlobals.Password);
+
+			t.start();
+			Thread ts = new Thread() {
+				@Override
+				public void run() {
+					while (true) {
+						try {
+							if (!cont) {
+								return;
+							}
+							out.println("PING");
+
+							sleep(15000);
+						} catch (Exception e) {
+
+						}
+					}
+				}
+			};
+			ts.start();
+
+			while (cont) {
+
+				WaitForGame(bots[0].getNet(), in, out, "sTAKbot");
+			}
+
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	public static void playGame(List<TakNetwork> l) {
 		// TODO Create examples of how to communicate with the server
 
@@ -32,28 +90,46 @@ public class ServerCommunication {
 			Thread t = new Thread() {
 				@Override
 				public void run() {
+
 					while (cont) {
+						try {
+							sleep(5000);
+
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 						playSelf(l);
 					}
 
 				}
 			};
-			t.start();
-			while (cont) {
-				Thread ts = new Thread() {
-					@Override
-					public void run() {
-						try {
 
+			//	commands.start();
+			out.println("Login sTAKbot " + StaticGlobals.Password);
+
+			t.start();
+			Thread ts = new Thread() {
+				@Override
+				public void run() {
+					while (true) {
+						try {
+							if (!cont) {
+								return;
+							}
 							out.println("PING");
-							sleep(30000);
+
+							sleep(15000);
 						} catch (Exception e) {
 
 						}
 					}
-				};
-				ts.start();
-				playGame(l.get(0), in, out, "sTAKbot");
+				}
+			};
+			ts.start();
+
+			while (cont) {
+
+				WaitForGame(l.get(0), in, out, "sTAKbot");
 			}
 
 
@@ -68,18 +144,17 @@ public class ServerCommunication {
 	public static Board parseToGame(String s, PrintWriter out, String playerName) {
 		Scanner sc = new Scanner(s);
 		try {
-			sleep(100);
+			//sleep(100);
 		} catch (Exception e) {
 
 		}
-		System.err.println("Parsing Game: " + s);
 		if (s.contains(playerName)) {
 			if (sc.hasNext() && sc.next().equals("Game")) {
 				if (sc.hasNext() && sc.next().equals("Start")) {
 					int no = sc.nextInt();
 					int size = sc.nextInt();
 					if (size > 9 || size < 5) {
-						out.println("Game" + no + " Resign");
+						out.println("Game#" + no + " Resign");
 						//Game#no Resign
 					} else {
 						sc.next();
@@ -100,206 +175,53 @@ public class ServerCommunication {
 		return null;
 	}
 
-	private static void playGame(TakNetwork player, BufferedReader in, PrintWriter out, String id) {
-
+	private static void WaitForGame(TakNetwork player, BufferedReader in, PrintWriter out, String id) {
 		Board b = seekGame(player, in, out, id);
-
 
 		if (b.control()) {
 
-
-			Game:
-			while (true) {
-				hi:
-				for (Move m : player.calculate(b.getAIMap(true))) {
-
-					if (m.checkFeasible(b, true)) {
-						if (!cont) {
-							out.println("Game#" + b.boardNumber + " Resign");
-							return;
-						}
-						out.println("Game#" + b.boardNumber + " " + m.toPlayTakString());
-						String input = "";
-						while (true) {
-							try {
-
-								input = in.readLine();
-							} catch (Exception e) {
-							}
-
-							if (input.contains("NOK")) {
-								break;
-							} else if (input.contains("OK")) {
-								m.performMove(b, true);
-								try {
-
-
-									sleep(750);
-								} catch (Exception e) {
-
-								}
-								break hi;
-
-							} else if (input.toLowerCase().contains("over")) {
-								Scanner sn = new Scanner(input);
-								sn.next();
-								sn.next();
-								switch (sn.next().toLowerCase().charAt(0)) {
-									case 'r':
-									case '1':
-									case 'f':
-										player.addWins();
-										break Game;
-									case '0':
-										break Game;
-									default:
-
-								}
-
-							}
-						}
-
-					}
-
-				}
-
-				Move m = null;
-				while (m == null) {
-					if (!cont) {
-						out.println("Game#" + b.boardNumber + " Resign");
-						return;
-					}
-					try {
-						String ss = in.readLine();
-
-						m = parseMove(ss, b.boardNumber);
-
-					} catch (GameOverException e) {
-						switch (e.getMessage().toLowerCase().charAt(0)) {
-							case 'r':
-							case '1':
-							case 'f':
-								player.addWins();
-								break;
-							default:
-
-						}
-						break Game;
-					} catch (Exception e) {
-						//System.err.println("Err message");
-					}
-				}
-
-				m.performMove(b, false);
-
-			}
+			playGame(player, in, out, b);
 
 		} else {
-			System.out.println("Play as Black");
+			Move l = null;
 
-			boolean gameOver = false;
-			Game:
-			while (!gameOver) {
-
-				Move l = null;
-				while (l == null) {
-					if (!cont) {
-						out.println("Game#" + b.boardNumber + " Resign");
-						return;
-					}
-					try {
-						String ss = in.readLine();
-						//System.out.println("try parse: " + ss);
-
-						l = parseMove(ss, b.boardNumber);
-
-					} catch (GameOverException e) {
-						//System.err.println("over " + e.getMessage());
-
-						switch (e.getMessage().toLowerCase().charAt(0)) {
-							case 'r':
-							case '1':
-							case 'f':
-								break;
-							default:
-								player.addWins();
-								break;
-
-						}
-						break Game;
-					} catch (Exception e) {
-						System.err.println("Err message");
-					}
-				}
-
-				l.performMove(b, false);
-				Boolean exit = false;
-				hi:
-				for (Move m : player.calculate(b.getAIMap(true))) {
-
-					if (m.checkFeasible(b, true)) {
-						if (!cont) {
-							out.println("Game#" + b.boardNumber + " Resign");
-							return;
-						}
-						out.println("Game#" + b.boardNumber + " " + m.toPlayTakString());
-						String input = "";
-						while (true) {
-							try {
-
-								input = in.readLine();
-							} catch (Exception e) {
-							}
-
-							if (input.contains("NOK")) {
-								break;
-							} else if (input.contains("OK")) {
-								try {
-									sleep(750);
-								} catch (Exception e) {
-
-								}
-								m.performMove(b, true);
-
-								break hi;
-							} else if (input.toLowerCase().contains("over")) {
-								Scanner sn = new Scanner(input);
-								sn.next();
-								sn.next();
-								switch (sn.next().toLowerCase().charAt(0)) {
-									case 'r':
-									case '1':
-									case 'f':
-										break;
-									default:
-										player.addWins();
-										break;
-
-								}
-								break Game;
-
-							}
-						}
-
-					}
-
-				}
+			while (l == null) {
+				String ss = "";
 				try {
-					//Thread.sleep(1500);
-				} catch (Exception e) {
+					ss = in.readLine();
+					l = parseMove(ss, b.boardNumber);
 
+				} catch (GameOverException e) {
+
+					switch (e.getMessage().toLowerCase().charAt(0)) {
+						case 'r':
+						case '1':
+						case 'f':
+							break;
+						default:
+							player.addWins();
+							break;
+
+					}
+					return;
+				} catch (Exception e) {
+					out.println("Game#" + b.boardNumber + " Resign");
+					return;
 				}
 			}
 
+			l.performMove(b, false);
+
+			playGame(player, in, out, b);
+
 		}
-		System.err.println("Game Over");
 	}
 
 	private static int findSeek(BufferedReader in, String o) throws Exception {
 		Integer i = null;
 		while (true) {
 			String s = in.readLine();
-			sleep(100);
+
 			if (s.toLowerCase().contains(o.toLowerCase())) {
 				Scanner inner = new Scanner(s);
 				if (inner.next().equals("Seek")) {
@@ -324,7 +246,6 @@ public class ServerCommunication {
 		} catch (Exception e) {
 			no = 0;
 		}
-		System.out.println(no);
 		out.println("Accept " + no);
 		Board b = null;
 		while (b == null) {
@@ -339,147 +260,101 @@ public class ServerCommunication {
 
 		if (b.control()) {
 
-
-			Game:
-			while (true) {
-				hi:
-				for (Move m : player.calculate(b.getAIMap(true))) {
-
-					if (m.checkFeasible(b, true)) {
-						out.println("Game#" + b.boardNumber + " " + m.toPlayTakString());
-						String input = "";
-						while (true) {
-							try {
-
-								input = in.readLine();
-							} catch (Exception e) {
-							}
-
-							if (input.contains("NOK")) {
-								break;
-							} else if (input.contains("OK")) {
-								try {
-
-
-									sleep(750);
-								} catch (Exception e) {
-
-								}
-								m.performMove(b, true);
-								break hi;
-							} else if (input.toLowerCase().contains("over")) {
-								Scanner sn = new Scanner(input);
-								sn.next();
-								sn.next();
-								switch (sn.next().toLowerCase().charAt(0)) {
-									case 'r':
-									case '1':
-									case 'f':
-										player.addWins();
-										break Game;
-									case '0':
-										break Game;
-									default:
-
-								}
-
-							}
-						}
-						try {
-							//Thread.sleep(1500);
-						} catch (Exception e) {
-
-						}
-
-					}
-
-				}
-				Move m = null;
-				while (m == null) {
-					try {
-						String ss = in.readLine();
-
-						m = parseMove(ss, b.boardNumber);
-
-					} catch (GameOverException e) {
-						switch (e.getMessage().toLowerCase().charAt(0)) {
-							case 'r':
-							case '1':
-							case 'f':
-								player.addWins();
-								break;
-							default:
-
-						}
-						break Game;
-					} catch (Exception e) {
-					}
-				}
-
-				m.performMove(b, false);
-
-			}
+			playGame(player, in, out, b);
 
 		} else {
+			Move l = null;
 
-			boolean gameOver = false;
-			Game:
-			while (!gameOver) {
+			while (l == null) {
+				String ss = "";
+				try {
+					ss = in.readLine();
+					l = parseMove(ss, b.boardNumber);
 
-				Move l = null;
-				while (l == null) {
-					try {
-						String ss = in.readLine();
+				} catch (GameOverException e) {
 
-						l = parseMove(ss, b.boardNumber);
+					switch (e.getMessage().toLowerCase().charAt(0)) {
+						case 'r':
+						case '1':
+						case 'f':
+							break;
+						default:
+							player.addWins();
+							break;
 
-					} catch (GameOverException e) {
-
-						switch (e.getMessage().toLowerCase().charAt(0)) {
-							case 'r':
-							case '1':
-							case 'f':
-								break;
-							default:
-								player.addWins();
-								break;
-
-						}
-						break Game;
-					} catch (Exception e) {
-						System.err.println("Err message");
 					}
+					return;
+				} catch (Exception e) {
+					out.println("Game#" + b.boardNumber + " Resign");
+					return;
 				}
+			}
 
-				l.performMove(b, false);
-				Boolean exit = false;
-				hi:
-				for (Move m : player.calculate(b.getAIMap(true))) {
+			l.performMove(b, false);
 
-					if (m.checkFeasible(b, true)) {
-						out.println("Game#" + b.boardNumber + " " + m.toPlayTakString());
-						String input = "";
-						while (true) {
-							try {
+			playGame(player, in, out, b);
 
-								input = in.readLine();
-							} catch (Exception e) {
+		}
+
+	}
+
+	private static void playGame(TakNetwork player, BufferedReader in, PrintWriter out, Board b) {
+		System.err.println("Game Started");
+		Move l;
+		boolean checkOutput = false;
+		Game:
+		while (true) {
+			if (checkOutput) {
+				System.err.println("Generating Moves");
+			}
+			List<Move> moves = player.calculate(b.getAIMap(true));
+
+			Move s = b.checkForVictory(true);
+			if (s != null) {
+				moves.add(0, s);
+				if (checkOutput) {
+					System.err.println("victory found");
+				}
+			}
+			if (checkOutput) {
+				System.err.println("finished move generation: " + moves.size());
+			}
+			boolean ExitCheck = true;
+
+			hi:
+			for (Move m : moves) {
+
+				if (!cont) {
+					out.println("Game#" + b.boardNumber + " Resign");
+					return;
+				}
+				if (m.checkFeasible(b, true)) {
+
+					if (checkOutput) {
+						System.err.println("try Move" + m.toPlayTakString());
+					}
+					out.println("Game#" + b.boardNumber + " " + m.toPlayTakString());
+
+					String input;
+
+					moveFailed:
+					do {
+
+						try {
+
+							input = in.readLine();
+							if (checkOutput) {
+								System.err.println("checking input" + input);
 							}
-
-							if (input.contains("NOK")) {
-								break;
-							} else if (input.contains("OK")) {
-								try {
-
-
-									sleep(750);
-								} catch (Exception e) {
-
+							if (input.equals("NOK")) {
+								if (checkOutput) {
+									System.err.println("Move failed");
 								}
-								m.performMove(b, true);
-
-								break hi;
-							} else if (input.toLowerCase().contains("over")) {
+								break moveFailed;
+							} else if (input.contains("Over") && input.contains("Game#" + b.boardNumber)) {
+								if (checkOutput) {
+									System.err.println("Game Over");
+								}
 								Scanner sn = new Scanner(input);
 								sn.next();
 								sn.next();
@@ -487,32 +362,67 @@ public class ServerCommunication {
 									case 'r':
 									case '1':
 									case 'f':
-										break;
-									default:
 										player.addWins();
-										break;
+									case '0':
+									default:
 
 								}
 								break Game;
 
-							}
-						}
 
-					}
+							} else {
+								l = parseMove(input, b.boardNumber);
+								if (l != null) {
+									if (checkOutput) {
+										System.err.println("Move performed: " + b.control() + ": " + m.toString() + ": " + m.getWeight());
+									}
+									if (checkOutput) {
+										System.err.println("Next move Reached: " + l.toPlayTakString());
+									}
+
+									m.performMove(b, true);
+									l.performMove(b, false);
+									sleep(500);
+
+									ExitCheck = false;
+									break hi;
+								}
+							}
+						} catch (GameOverException e) {
+
+							switch (e.getMessage().toLowerCase().charAt(0)) {
+								case 'r':
+								case '1':
+								case 'f':
+									break;
+								default:
+									player.addWins();
+
+
+							}
+							break Game;
+						} catch (Exception e) {
+							out.println("Game#" + b.boardNumber + " Resign");
+							break Game;
+						}
+					} while (l == null);
+
 
 				}
-
+			}
+			if (ExitCheck) {
+				out.println("Game#" + b.boardNumber + " Resign");
+				return;
 			}
 
 		}
-		System.err.println("Game Over");
-
 	}
 
 	private static Board seekGame(TakNetwork player, BufferedReader in, PrintWriter out, String id) {
+		System.err.println("Seeking Game");
 		String s = "";
 		Board b = null;
-		out.println("Seek " + player.getWidth() + " 300 10");
+		out.println("Seek " + player.getWidth() + " 60 0");
 		while ((b) == null) {
 			if (!cont) {
 				return new Board(player.getWidth(), new LinkedList<Move>(), true);
@@ -532,7 +442,7 @@ public class ServerCommunication {
 
 
 	public static Move parseMove(String s, int number) throws GameOverException {
-		//called after game confirmed
+
 		Scanner n = new Scanner(s);
 		try {
 
@@ -546,8 +456,8 @@ public class ServerCommunication {
 			switch (n.next().toLowerCase()) {
 				case "abandoned":
 				case "resign":
-					//todo make abandoned move
-					break;
+
+					throw new GameOverException(n.next());
 				case "over":
 					throw new GameOverException(n.next());
 				case "p":
@@ -565,6 +475,8 @@ public class ServerCommunication {
 	}
 
 	public static Placement parsePlacement(Scanner s) {
+
+
 		position p = new position(s.next());
 		int type = 1;
 		if (s.hasNext()) {
@@ -691,6 +603,7 @@ public class ServerCommunication {
 	}
 
 	public static void playSelf(List<TakNetwork> nets) {
+
 		Random r = new Random();
 
 		Thread t = new Thread() {
@@ -702,8 +615,9 @@ public class ServerCommunication {
 					Socket socket = new Socket("www.playtak.com", 10000);
 					out = new PrintWriter(socket.getOutputStream(), true);
 					BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+					out.println("Login sTAKbot1 " + StaticGlobals.Password);
 
-					playGame(nets.get(r.nextInt(nets.size())), in, out, "sTAKbot1");
+					WaitForGame(nets.get(r.nextInt(nets.size())), in, out, "sTAKbot1");
 					in.close();
 					out.close();
 					socket.close();
@@ -721,6 +635,8 @@ public class ServerCommunication {
 					Socket socket = new Socket("www.playtak.com", 10000);
 					out = new PrintWriter(socket.getOutputStream(), true);
 					BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+					out.println("Login sTAKbot2 " + StaticGlobals.Password);
+
 
 					acceptGame(nets.get(r.nextInt(nets.size())), in, out, "sTAKbot1");
 					in.close();
@@ -735,7 +651,6 @@ public class ServerCommunication {
 
 		try {
 			t.start();
-			sleep(1000);
 			t1.start();
 			t.join();
 			t1.join();
@@ -745,6 +660,63 @@ public class ServerCommunication {
 
 	}
 
+	public static void playSelf(RunGames.bot[] bots) {
+
+		Random r = new Random();
+
+		Thread t = new Thread() {
+			@Override
+			public void run() {
+				PrintWriter out;
+
+				try {
+					Socket socket = new Socket("www.playtak.com", 10000);
+					out = new PrintWriter(socket.getOutputStream(), true);
+					BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+					out.println("Login sTAKbot1 " + StaticGlobals.Password);
+
+					WaitForGame(bots[r.nextInt(bots.length - 1)].getNet(), in, out, "sTAKbot1");
+					in.close();
+					out.close();
+					socket.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		Thread t1 = new Thread() {
+			@Override
+			public void run() {
+				PrintWriter out;
+
+				try {
+					Socket socket = new Socket("www.playtak.com", 10000);
+					out = new PrintWriter(socket.getOutputStream(), true);
+					BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+					out.println("Login sTAKbot2 " + StaticGlobals.Password);
+
+
+					acceptGame(bots[r.nextInt(bots.length - 1)].getNet(), in, out, "sTAKbot1");
+					in.close();
+					out.close();
+					socket.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+
+
+		try {
+			t.start();
+			t1.start();
+			t.join();
+			t1.join();
+		} catch (Exception e) {
+		}
+
+
+	}
 	public void PING(PrintWriter w) {
 
 		w.println("PING");

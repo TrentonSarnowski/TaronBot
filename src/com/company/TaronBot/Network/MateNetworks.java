@@ -81,6 +81,7 @@ public class MateNetworks {
 						n = new NormalDistribution(random, mean.evaluate(statsArray), std.evaluate(statsArray));
 					}
 					for(int layer = 0; layer < numNetworks; layer++){
+
 						layers.get(layer).getMutatorArray(q)[w] = n.sample();
 					}
 	

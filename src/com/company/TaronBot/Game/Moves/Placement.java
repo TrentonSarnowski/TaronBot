@@ -59,8 +59,106 @@ public class Placement implements Move {
     }
 
     @Override
+    public boolean checkVictory(Board map, boolean cont) {
+        if (!checkFeasible(map, cont)) {
+            return false;
+
+        }
+        boolean b[][] = topLevelAfterMove(map, cont);
+        for (int i = 0; i < b.length; i++) {
+            if (RoadCheck(i, 0, b, new boolean[b.length][b.length], false)) {
+                return true;
+            }
+            if (RoadCheck(0, i, b, new boolean[b.length][b.length], true)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean RoadCheck(int x, int y, boolean topLevel[][], boolean saidNo[][], boolean vertical) {
+        /*System.err.println(x+" "+y);
+    	for( boolean[] b:saidNo){
+    		for(boolean b2:b){
+                if(b2){
+                    System.err.print("0 ");
+                }else {
+                    System.err.print("_ ");
+                }
+    		}
+    		System.err.println();
+    	}
+    	System.err.println();
+         //*/
+        int xActive = 0;
+        int yActive = 0;
+        if (vertical) {
+            yActive = 1;
+        } else {
+            xActive = 1;
+        }
+        //System.err.println(x+" "+y);
+
+        if (x < topLevel.length && y < topLevel.length && x >= 0 && y >= 0) {
+            if (!topLevel[x][y]) {
+                //System.err.println("Broke1");
+                return false;
+            } else if (topLevel.length - 1 == x * xActive + y * yActive) {
+                return true;
+            } else {
+                boolean saidNoSendDown[][] = new boolean[saidNo.length][saidNo.length];
+                for (int i = 0; i < saidNo.length; i++) {
+                    for (int j = 0; j < saidNo.length; j++) {
+                        saidNoSendDown[i][j] = saidNo[i][j];
+
+                    }
+                }
+                if (x > 0) {
+                    saidNoSendDown[x - 1][y] = true;
+                }
+                if (x < saidNo.length - 1) {
+                    saidNoSendDown[x + 1][y] = true;
+                }
+                if (y > 0) {
+                    saidNoSendDown[x][y - 1] = true;
+                }
+                if (y < saidNo.length - 1) {
+                    saidNoSendDown[x][y + 1] = true;
+                }
+
+                if (x + 1 < saidNo.length && !saidNo[x + 1][y] && topLevel[x + 1][y] && RoadCheck(x + 1, y, topLevel, saidNoSendDown, vertical)) {
+                    return true;
+                }
+                if (y + 1 < saidNo.length && !saidNo[x][y + 1] && topLevel[x][y + 1] && RoadCheck(x, y + 1, topLevel, saidNoSendDown, vertical)) {
+                    return true;
+                }
+                if (x - 1 >= 0 && !saidNo[x - 1][y] && topLevel[x - 1][y] && RoadCheck(x - 1, y, topLevel, saidNoSendDown, vertical)) {
+                    return true;
+                }
+                if (y - 1 >= 0 && !saidNo[x][y - 1] && topLevel[x][y - 1] && RoadCheck(x, y - 1, topLevel, saidNoSendDown, vertical)) {
+                    return true;
+                }
+
+
+            }
+        }
+        //System.err.println("Broke2");
+
+        return false;
+    }
+
+    private boolean[][] topLevelAfterMove(Board map, boolean cont) {
+        boolean[][] ret = map.topLevel(cont);
+        if (this.type == 1 || this.type == 3) {
+            ret[this.x][this.y] = true;
+        }
+
+        return ret;
+    }
+
+    @Override
     public boolean checkFeasible(Board map, boolean cont) {
-        if(map.getAIMap(cont)[x][y][0]!=0||!map.getMap()[x][y].isEmpty()){
+        if (map.getAIMap(cont)[x][y][0] != 0 || (!map.getMap()[x][y].isEmpty())) {
 
             checkFeasible=false;
             return false;

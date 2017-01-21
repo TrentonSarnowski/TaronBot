@@ -13,13 +13,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -85,7 +79,7 @@ public class TestingMain {
         t.start();
     }
 
-    public static void TestGnerationalGrowth(int generationSize, int generations, int cores, int dimns) {
+    public static void TestGenerationalGrowth(int generationSize, int generations, int cores, int dimns) {
 
 
         Logger logger = Logger.getLogger("MyLog");
@@ -139,7 +133,7 @@ public class TestingMain {
         for (int j = 0; j < generationSize; j++) {
             TakNetwork testNetwork;
             if (StaticGlobals.LOAD_FROM_LAST_RUN) {
-                testNetwork = loadTesting("networks\\TestGnerationalGrowth\\output\\Network"+ dimns+"x"+dimns+ j + ".takNetwork");
+                testNetwork = loadTesting("networks\\TestGenerationalGrowth\\output\\Network" + dimns + "x" + dimns + j + ".takNetwork");
                 testNetwork.setWins(0);
                 testNetwork.setLosses(0);
             } else {
@@ -170,7 +164,7 @@ public class TestingMain {
 
                 if (StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT || i % 100 == 99) {
 
-                    String output = "networks\\FORCEEXIT\\TestGnerationalGrowth\\output";
+                    String output = "networks\\TestGenerationalGrowth\\output";
 
                     if (LOGGING_ENABLED) {
                         logger.config("SavingNetworks to " + output);
@@ -310,7 +304,7 @@ public class TestingMain {
 
             }
 
-            String output = "networks\\TestGnerationalGrowth\\output";
+            String output = "networks\\TestGenerationalGrowth\\output";
 
             if (LOGGING_ENABLED) {
                 logger.config("Learning complete!");
@@ -410,7 +404,7 @@ public class TestingMain {
 
             logger.severe(Arrays.toString(E.getStackTrace()));
 
-            String output = "networks\\ERROREXIT\\TestGnerationalGrowth\\output";
+            String output = "networks\\TestGenerationalGrowth\\output";
 
             if (LOGGING_ENABLED) {
                 logger.config("SavingNetworks to " + output);
@@ -829,7 +823,8 @@ public class TestingMain {
     public static TakNetwork loadTesting(String s) {
         FileInputStream fin;
         try {
-            fin = new FileInputStream(s);
+            File f = new File(s);
+            fin = new FileInputStream(f);
             ObjectInputStream ois = new ObjectInputStream(fin);
             TakNetwork testNetwork = (TakNetwork) ois.readObject();
             ois.close();

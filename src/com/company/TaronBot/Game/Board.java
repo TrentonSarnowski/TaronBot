@@ -10,6 +10,9 @@ import com.company.TaronBot.Game.Moves.*;
 
 
 import com.company.TaronBot.Network.TakNetwork;
+import com.company.TaronBot.Network.generateMoves;
+import org.apache.commons.math3.ml.neuralnet.Network;
+import sun.security.krb5.internal.crypto.Des;
 import tech.deef.Tools.StaticGlobals;
 
 /**TakNetwork
@@ -25,6 +28,7 @@ public class Board {
     private boolean start;
     private static Move firstPlayer,SecondPlayer=null;
     public int boardNumber;
+    public static List<DeStack> moves = generateMoves.getDestacks(8);
     public static int playGame(TakNetwork Player1, TakNetwork Player2, int sideLength){
 
         Board game=new Board(sideLength, new LinkedList<>(), true);
@@ -32,9 +36,11 @@ public class Board {
         //boolean check2=false;
         List<Move> moves;
         moves = Player1.calculate(game.getAIMap(false));
-        for (Move m: moves) {
-            if(m.checkFeasible(game,false)&&m.getType()==1){
 
+        for (Move m: moves) {
+            if (m.checkFeasible(game, false)) {
+                ++StaticGlobals.flatCount;
+                ++StaticGlobals.moveCount;
                 m.performMove(game,false);
                 firstPlayer=m;
 
@@ -42,11 +48,16 @@ public class Board {
                 break;
             }
         }
-        moves = Player2.calculate(game.getAIMap(false));
+
+        moves = Player2.calculate(game.getAIMap(true));
         for (Move m: moves) {
-            if(m.checkFeasible(game,true)&&m.getType()==1){
+            if (m.checkFeasible(game, true)) {
+                ++StaticGlobals.flatCount;
+                ++StaticGlobals.moveCount;
+
                 m.performMove(game,true);
                 SecondPlayer=m;
+
                 //System.out.println(m.toString());
                 break;
             }
@@ -93,40 +104,67 @@ public class Board {
             for (Move m: moves) {
                 if(m.checkFeasible(game,true)){
                     //System.out.println(game.getPositiveCapRemain());
+                    if (m.getType() == 1) {
+                        ++StaticGlobals.flatCount;
+                    } else if (m.getType() == 2) {
+                        ++StaticGlobals.wallCount;
 
+                    } else if (m.getType() == 3) {
+                        ++StaticGlobals.capCount;
+                    } else if (m instanceof DeStack) {
+                        ++StaticGlobals.destackCount;
+                    }
+                    ++StaticGlobals.moveCount;
                     firstPlayer=m;
                     m.performMove(game,true);
                     break;
                 }
             }
-            check1=game.checkVictory(game,true);
-
-
+            check1 = game.checkVictory(true);
 
             if(check1 != 500){
             	if(StaticGlobals.PRINT_GAME_MOVES){
             		System.out.println(i+": "+firstPlayer);
             	}
-            	return check1;
+
+                ++StaticGlobals.gameCount;
+                return check1;
             }
             moves =Player2.calculate(game.getAIMap(true));
             for (Move m: moves) {
                 if(m.checkFeasible(game,false)){
                     //System.out.println(game.getPositiveCapRemain()+" "+m.getType());
+                    if (m.getType() == 1) {
+                        ++StaticGlobals.flatCount;
+                    } else if (m.getType() == 2) {
+                        ++StaticGlobals.wallCount;
 
+                    } else if (m.getType() == 3) {
+                        ++StaticGlobals.capCount;
+                    } else if (m.getType() == 0) {
+                        ++StaticGlobals.destackCount;
+                    }
+
+                    StaticGlobals.moveCount++;
                     SecondPlayer=m;
                     m.performMove(game,false);
                     break;
                 }
             }
-            check1=game.checkVictory(game,true);
+            check1 = game.checkVictory(true);
             if(check1 != 500){
                 if(StaticGlobals.PRINT_GAME_MOVES){
                     System.out.println(i+": "+firstPlayer +" "+ SecondPlayer);
                 }
+
+                ++StaticGlobals.gameCount;
+
                 return check1;
             }
         }
+
+        ++StaticGlobals.gameCount;
+
         return 0;
 
 
@@ -195,18 +233,16 @@ public class Board {
             ready=!ready;
         }
     }
-    public int checkVictory(Board b, boolean cont){
-        boolean topLevel[][]=b.topLevel(cont);
-        Integer x = checkRoadWin(b, cont, topLevel);
+
+    public int checkVictory(boolean cont) {
+        boolean topLevel[][] = this.topLevel(cont);
+        Integer x = checkRoadWin(cont, topLevel);
         if (x != null) return x;
-        int sign=1;
-        if(cont==false){
-            sign*=-1;
-        }
+
         //todo
         //todo add check for full board
         boolean full=true;
-        for(List<Integer> l[]:b.getMap()){
+        for (List<Integer> l[] : this.getMap()) {
             for(List<Integer> m:l){
                 if(m.isEmpty()){
                     full=false;
@@ -216,7 +252,7 @@ public class Board {
         if(positivePieceRemain<=0||negativePieceRemain<=0||full){
             int positiveSum=0;
             int negativeSum=0;
-            for(List<Integer> l[]:b.getMap()){
+            for (List<Integer> l[] : this.getMap()) {
                 for(List<Integer> m:l){
                     if(m.size()>0) {
                         if (m.get(m.size() - 1) == 1) {
@@ -237,10 +273,60 @@ public class Board {
         return 500;
     }
 
-    public Integer checkRoadWin(Board b, boolean cont, boolean[][] topLevel) {
+    public boolean checkForRoad(boolean[][] topLevel) {
+        for (int i = 0; i < topLevel.length; i++) {
+            if (checkForRoad(i, 0, new boolean[topLevel.length][topLevel.length], new boolean[topLevel.length][topLevel.length], topLevel, true)) {
+                return true;
+            }
+            if (checkForRoad(0, i, new boolean[topLevel.length][topLevel.length], new boolean[topLevel.length][topLevel.length], topLevel, false)) {
+                return true;
+            }
+
+        }
+        return false;
+    }
+
+    private boolean checkForRoad(int x, int y, boolean[][] triedPrevious, boolean[][] tried, boolean[][] topLevel, boolean vertical) {
+        if (x >= tried.length || y >= tried.length || x < 0 || y < 0) {
+            return false;
+        }
+        if (triedPrevious[x][y] || (!topLevel[x][y])) {
+            return false;
+        }
+        if ((vertical && (y == tried.length - 1)) || (!vertical && (x == tried.length - 1))) {
+            return true;
+        }
+        boolean sendTried[][] = new boolean[tried.length][tried.length];
+        for (int i = 0; i < tried.length; i++) {
+            for (int j = 0; j < tried.length; j++) {
+                sendTried[i][j] = tried[i][j];
+            }
+        }
+        if (x > 0) {
+            sendTried[x - 1][y] = true;
+        }
+        if (x < tried.length - 1) {
+            sendTried[x + 1][y] = true;
+        }
+        if (y > 0) {
+            sendTried[x][y - 1] = true;
+        }
+        if (y < tried.length - 1) {
+            sendTried[x][y + 1] = true;
+        }
+        //*/
+        sendTried[x][y] = true;
+        return checkForRoad(x + 1, y, tried, sendTried, topLevel, vertical) ||
+                checkForRoad(x - 1, y, tried, sendTried, topLevel, vertical) ||
+                checkForRoad(x, y + 1, tried, sendTried, topLevel, vertical) ||
+                checkForRoad(x, y - 1, tried, sendTried, topLevel, vertical);
+
+    }
+
+    public Integer checkRoadWin(boolean cont, boolean[][] topLevel) {
 
         for (int i = 0; i <topLevel.length ; i++) {
-            topLevel=b.topLevel(true);
+            topLevel = this.topLevel(true);
             if(RoadCheck(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
                 //System.err.println("road");
                 StaticGlobals.roadCount++;
@@ -253,7 +339,7 @@ public class Board {
 
                 return 32;
             }
-            topLevel=b.topLevel(!cont);
+            topLevel = this.topLevel(!cont);
             if(RoadCheck(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
                 StaticGlobals.roadCount++;
                 //System.err.println("road");
@@ -344,6 +430,23 @@ public class Board {
         return map;
     }
 
+    public Board deepCopy(Board b) {
+        Board ret = new Board(b.getMap().length, new LinkedList<>(), b.start);
+        List<Integer> value[][] = b.getMap();
+        List<Integer> retmap[][] = ret.getMap();
+        for (int i = 0; i < value.length; i++) {
+            for (int j = 0; j < value.length; j++) {
+                for (int k : value[i][j]) {
+                    retmap[i][j].add(k);
+                }
+            }
+        }
+        return ret;
+    }
+
+    public void addMove(Move m) {
+
+    }
     public boolean tryMove(Move e, boolean positive){
         e.performMove(this, positive);
 
@@ -354,21 +457,22 @@ public class Board {
 
         return null;
     }
-    public Move checkForVictory(){
-        boolean topLevel[][]=topLevel(true);
-        Move m=null;
-        for (int i = 0; i < topLevel.length ; i++) {
-            //// TODO: 10/28/2016
-            for (int j = 4; j >=0 ; j--) {
-                m=needFill(i,0,new boolean[topLevel.length][topLevel.length],topLevel,j,
-                        true,new boolean[topLevel.length][topLevel.length]);
-                if(m!=null){
-                    return m;
-                }
-                m=needFill(i,0,new boolean[topLevel.length][topLevel.length],topLevel,j,
-                        false,new boolean[topLevel.length][topLevel.length]);
-                if(m!=null){
-                    return m;
+
+    public Move checkForVictory(boolean cont) {
+
+        for (int i = 0; i < this.map.length; i++) {
+            for (int j = 0; j < this.map.length; j++) {
+                if (!topLevel(cont)[i][j]) {
+
+                    if (map[i][j].isEmpty()) {
+                        boolean b[][] = topLevel(cont);
+                        b[i][j] = true;
+                        if (checkForRoad(b)) {
+                            System.out.println("Road victory found: " + (new Placement(i, j, 1, 0).toPlayTakString()));
+
+                            return new Placement(i, j, 1, 0);
+                        }
+                    }
                 }
             }
         }
@@ -983,6 +1087,9 @@ public class Board {
         return AIMap;
     }
 
+    public List<Move> getAllMoves() {
+        return null;
+    }
     public int getNegativePieceRemain() {
         return negativePieceRemain;
     }

@@ -1,9 +1,6 @@
 package com.company.TaronBot;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -15,6 +12,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import com.company.TaronBot.Game.Board;
+import com.company.TaronBot.Game.RunGames;
 import com.company.TaronBot.Network.ComputeGeneration;
 import com.company.TaronBot.Network.MateNetworks;
 import com.company.TaronBot.Network.OrderedTakNetwork;
@@ -53,7 +51,190 @@ public class ControlClass {
      * automate games on playtak
      */
 
+    /**
+     * This begins the Remote Control Structure: Reduced functionality to prevent harm to computer because my secruity is low
+     * stakbot
+     *      ping: Sends a ping message to chat
+     *      online: Begins generating AI(see generate for AI specs), Brings up Demo games(vs self) for playTak, Brings up sTAKbot for challenge on Playtak
+     *      cleanup: Brings the AI down from online play. does not stop generation
+     *      pause: pauses offline generation
+     *      unpause: unpuases offline generation
+     *      depth i: sets the depth of the networks generated  with i
+     *      rungens i: sets the gens to be run to i
+     *      size i: sets the size of the board to be run
+     *      gensize i: sets the size of the generation to i:
 
+     * @param r: Scanner of the output from the site
+     * @param out: output to the site
+     */
+    public static void StartOnlineControl(Scanner r, PrintWriter out) {
+        Map<String, Object> objects = new HashMap<String, Object>();
+
+        Thread ping = new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+
+
+                        out.println("PING");
+                        sleep(15000);
+                    } catch (InterruptedException e) {
+                        System.err.println("did not ping");
+                    }
+                }
+            }
+        };
+        ping.start();
+        String net1 = "0";
+        String net2 = "1";
+        int size = 5;
+        int genSize = 128;
+        int runGens = 128;
+        int coreCount = 8;
+
+        String input = "";
+
+        while (true) {
+            //System.out.print("\nWaiting for input: ");
+            input = r.nextLine();
+            System.out.println(input);
+            Scanner reader = new Scanner(input);
+            input = reader.next();
+            if (input.toLowerCase().equals("shout")) {
+                System.err.println("read shout");
+
+                input = reader.next();
+                if (input.equals("<Tarontos>") || input.equals("<Deef0000dragon1>")) {
+                    System.err.println("read Tarontos");
+
+                    input = reader.next();
+                    if (input.toLowerCase().equals("stakbot")) {
+                        System.err.println("read stakbot");
+
+                        input = reader.next();
+                        System.err.println("");
+                        //***********************************START OF INPUT SWITCH*******************************
+                        switch (input.toLowerCase()) {
+
+                            case "ping":
+                                out.println("PING");
+                                out.println("Shout I Pinged");
+                                break;
+                            //***********************************ENABLE DIFFERNET GLOBAL BOOLEAN SWITCHES************
+                            case "weighttype"://todo add others
+                                switch (reader.next().toLowerCase()) {
+                                    case "nw":
+                                        RunGames.weightType = RunGames.victoryType.WIN_NO_WEIGHT;
+                                        break;
+                                    case "pnw":
+                                        RunGames.weightType = RunGames.victoryType.PAGE_WEIGHTED_WIN_NO_WEIGHT;
+                                        break;
+                                    case "pagewinloss":
+                                        RunGames.weightType = RunGames.victoryType.PAGE_WEIGHTED_WIN_LOSS_NO_WEIGHT;
+                                        break;
+                                    case "page12":
+                                        RunGames.weightType = RunGames.victoryType.PAGE_WEIGHTED_WIN_ONE_TWO_WEIGHT;
+                                        break;
+                                    case "12":
+                                        RunGames.weightType = RunGames.victoryType.WIN_ONE_TWO_WEIGHT;
+                                        break;
+                                    case "pagewinlossweighted":
+                                        RunGames.weightType = RunGames.victoryType.PAGE_WEIGHTED_WIN_LOSS_WEIGHTED;
+                                        break;
+
+                                }
+                                break;
+                            case "cleanup":
+                                out.println("Shout OK i'll remove the games");
+
+                                ServerCommunication.cont = false;
+                                break;
+
+                            case "online":
+                                out.println("Shout OK i'll bring stakbot Online");
+                                final int genSizes = genSize;
+                                final int runGenst = runGens;
+                                final int coreCounts = coreCount;
+                                final int sizes = size;
+
+                                Thread t = new Thread() {
+
+                                    @Override
+                                    public void run() {
+                                        for (int i = 0; i < 100; i++) {
+                                            if (ServerCommunication.cont) {
+                                                GenerateNetworksOnline(genSizes, runGenst, coreCounts, sizes);
+                                            }
+                                        }
+                                    }
+                                };
+                                t.start();
+                                break;
+                            case "pause":
+                                StaticGlobals.PAUSED = true;
+                                System.out.println("Paused");
+                                break;
+
+
+                            case "gensize":
+                                genSize = reader.nextInt();
+                                break;
+                            case "rungens":
+                                runGens = reader.nextInt();
+                                break;
+
+                            case "depth":
+                                StaticGlobals.DEPTH = reader.nextInt();
+                                break;
+
+
+                            //**************************GENERATE A NEW NETWORK*************************
+                            case "unpause":
+                                StaticGlobals.PAUSED = false;
+                                System.out.println("Unpaused");
+                                break;
+
+                            case "size":
+
+                                size = reader.nextInt();
+                                out.println("Shout OK Next time I'm brought online, i'll play size " + size);
+
+                                break;
+
+                            default:
+                                System.out.println(input + " not recognized as command");
+                        }
+
+                    }
+                }
+            }
+        }
+
+    }
+
+    /**
+     * This begins the Local Control Structure
+     * enable/disable:
+     * load: Loads game from last run
+     * moves: shows moves made--Testing
+     * board: shows the top level boardstate each turn--Testing
+     * online: Begins generating AI(see generate for AI specs), Brings up Demo games(vs self) for playTak, Brings up sTAKbot for challenge on Playtak
+     * cleanup: Brings the AI down from online play. does not stop generation
+     * generate: Begins AI generation with rungens generations of size gensize with thread count of cores and Edge length of Board
+     * continue: Enables load and generates(see generate) then disables load after load complete.
+     * pause: pauses offline generation
+     * unpause: unpuases offline generation
+     * save: saves networks currently being run, halts generation
+     * depth i: sets the depth of the networks generated  with i
+     * rungens i: sets the gens to be run to i
+     * size i: sets the size of the board to be run
+     * gensize i: sets the size of the generation to i:
+     * core i: sets the numbers of threads to run(defaults to 8)
+     * player1 i: sets the player 1 for local test game(from saved networks)
+     * player2 i: sets the player 2 for local test game(from saved networks)
+     * play: plays a game using player 1 and 2 with size size: Will fail if no saved network of size size with the player id
+     */
     public static void StartControl() {
         Map<String, Object> objects = new HashMap<String, Object>();
 
@@ -62,13 +243,13 @@ public class ControlClass {
         String net2 = "1";
         int size = 5;
         int genSize = 128;
-        int runGens = 1024;
+        int runGens = 128;
         int coreCount = 8;
 
         String input = "";
-        Scanner reader = new Scanner(System.in);
+        Scanner reader=new Scanner(System.in);
         while (true) {
-            System.out.print("\nWaiting for input: ");
+            System.out.println("\nWaiting for input: ");
             input = reader.next();
 
             //***********************************START OF INPUT SWITCH*******************************
@@ -76,6 +257,31 @@ public class ControlClass {
 
 
                 //***********************************ENABLE DIFFERNET GLOBAL BOOLEAN SWITCHES************
+                case "test":
+                    TakNetwork testNetwork;
+                    int RandomNumber;
+                    ArrayList<TakNetwork> n = new ArrayList<>();
+                    Random random = new Random();
+                    for (int i = 0; i < genSize; i++) {
+                        testNetwork = new TakNetwork(size + 1, size, size, StaticGlobals.DEPTH, 0, 0);
+                        RandomNumber = random.nextInt();
+                        Random rand = new Random(RandomNumber);
+                        testNetwork.randomize(rand);
+                        n.add(testNetwork);
+                    }
+                    System.err.println("Nets loaded");
+                    Thread NEAT = new Thread() {
+                        @Override
+                        public void run() {
+                            RunGames.NEATGAMEPLAY(n, 5, 10, 10, 6000000);
+                        }
+                    };
+                    NEAT.start();
+                    break;
+                case "gamecount":
+                    input = reader.next();
+                    StaticGlobals.GAMESTOPLAY = Long.parseLong(input);
+                    break;
                 case "enable":
                     input = reader.next();
                     switch (input.toLowerCase()) {
@@ -118,7 +324,7 @@ public class ControlClass {
                 case "save":
                     StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT = true;
                     System.out.println("Saving after next generation");
-                    return;
+                    break;
                 case "online":
                     final int genSizes = genSize;
                     final int runGenst = runGens;
@@ -128,7 +334,11 @@ public class ControlClass {
 
                         @Override
                         public void run() {
-                            GenerateNetworksOnline(genSizes, runGenst, coreCounts, sizes);
+                            for(int i=0;i<100;i++){
+                                if(ServerCommunication.cont) {
+                                    GenerateNetworksOnline(genSizes, runGenst, coreCounts, sizes);
+                                }
+                            }
                         }
                     };
                     t.start();
@@ -151,7 +361,7 @@ public class ControlClass {
 
                         @Override
                         public void run() {
-                            TestingMain.TestGnerationalGrowth(innerRunGenSize, innerGen, innerDepth, innerSize);
+                            TestingMain.TestGenerationalGrowth(innerRunGenSize, innerGen, innerDepth, innerSize);
 
                         }
 
@@ -187,7 +397,7 @@ public class ControlClass {
                     //size = generateCommand(objects, size, genSize, runGens, coreCount, reader);
                     //}
 
-                break;
+                    break;
 
                 case "unpause":
                     StaticGlobals.PAUSED = false;
@@ -214,7 +424,7 @@ public class ControlClass {
                     //	Scanner r=new Scanner(line);
 
                     System.out.println("Player1: " + net1 + " Player2: " + net2);
-                    Board.playGame(loadTesting("networks\\TestGnerationalGrowth\\output\\Network" + size + "x" + size + net1 + ".taknetwork"), loadTesting("networks\\TestGnerationalGrowth\\output\\Network" + size + "x" + size + net2 + ".taknetwork"), size);
+                    Board.playGame(loadTesting(".\\networks\\TestGenerationalGrowth\\output\\Network" + size + "x" + size + net1 + ".taknetwork"), loadTesting("networks\\TestGenerationalGrowth\\output\\Network" + size + "x" + size + net2 + ".taknetwork"), size);
                     StaticGlobals.PRINT_GAME_MOVES = false;
                     break;
                 default:
@@ -225,6 +435,16 @@ public class ControlClass {
 
     }
 
+    /**
+     * In progress will replace generate eventually working on good format for it
+     * @param objects
+     * @param size
+     * @param genSize
+     * @param runGens
+     * @param coreCount
+     * @param reader
+     * @return
+     */
     public static int generateCommand(Map<String, Object> objects, int size, int genSize, int runGens, int coreCount, Scanner reader) {
         //format without arguments right now to set formula.
 
@@ -270,7 +490,7 @@ public class ControlClass {
 
                 @Override
                 public void run() {
-                    TestingMain.TestGnerationalGrowth(innerRunGenSize, innerGen, cores, innerSize);
+                    TestingMain.TestGenerationalGrowth(innerRunGenSize, innerGen, cores, innerSize);
 
                 }
             };
@@ -333,6 +553,13 @@ public class ControlClass {
         return size;
     }
 
+    /**
+     * Generates networks offline
+     * @param generationSize
+     * @param generations
+     * @param cores
+     * @param dimns side length
+     */
     private static void GenerateNetworks(int generationSize, int generations, int cores, int dimns) {
 
 
@@ -350,7 +577,7 @@ public class ControlClass {
         for (int j = 0; j < generationSize; j++) {
             TakNetwork testNetwork;
             if (StaticGlobals.LOAD_FROM_LAST_RUN) {
-                testNetwork = loadTesting("networks\\TestGnerationalGrowth\\output\\Network" + dimns + "x" + dimns + j + ".takNetwork");
+                testNetwork = loadTesting("networks\\TestGenerationalGrowth\\output\\Network" + dimns + "x" + dimns + j + ".takNetwork");
                 testNetwork.setWins(0);
                 testNetwork.setLosses(0);
             } else {
@@ -376,7 +603,7 @@ public class ControlClass {
 
                 if (StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT || i % 100 == 99) {
 
-                    String output = "networks\\TestGnerationalGrowth\\output";
+                    String output = "networks\\TestGenerationalGrowth\\output";
 
 
                     System.out.println("Saving Networks");
@@ -386,7 +613,7 @@ public class ControlClass {
 
                         FileOutputStream fout;
                         try {
-                            fout = new FileOutputStream(output + "\\GEN" + i + "Network" + s + ".takNetwork");
+                            fout = new FileOutputStream(output + "\\"+"Network"+networks.get(s).getWidth()+"x"+networks.get(s).getWidth() + s + ".takNetwork");
                             ObjectOutputStream oos = new ObjectOutputStream(fout);
                             oos.writeObject(networks.get(s));
                             oos.close();
@@ -399,6 +626,7 @@ public class ControlClass {
 
                     System.out.println("Networks Saved");
                     if (StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT) {
+                        StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT=false;
                         return;
                     }
                 }
@@ -473,7 +701,7 @@ public class ControlClass {
 
             }
 
-            String output = "networks\\TestGnerationalGrowth\\output";
+            String output = "networks\\TestGenerationalGrowth\\output";
 
 
             new File(output).mkdirs();
@@ -498,7 +726,7 @@ public class ControlClass {
 
             logger.severe(Arrays.toString(E.getStackTrace()));
 
-            String output = "networks\\ERROREXIT\\TestGnerationalGrowth\\output";
+            String output = "networks\\TestGenerationalGrowth\\output";
 
 
             System.out.println("Saving Networks");
@@ -508,7 +736,7 @@ public class ControlClass {
 
                 FileOutputStream fout;
                 try {
-                    fout = new FileOutputStream(output + "\\Network" + s + ".takNetwork");
+                    fout = new FileOutputStream(output + "\\Network" + dimns + "x" + dimns + s + ".takNetwork");
                     ObjectOutputStream oos = new ObjectOutputStream(fout);
                     oos.writeObject(networks.get(s));
                     oos.close();
@@ -527,7 +755,13 @@ public class ControlClass {
         }
 
     }
-
+    /**
+     * Generates networks offline while bringing online functionality up(demo games and bot seeks games)
+     * @param generationSize
+     * @param generations
+     * @param cores
+     * @param dimns side length
+     */
     private static void GenerateNetworksOnline(int generationSize, int generations, int cores, int dimns) {
 
 
@@ -545,7 +779,7 @@ public class ControlClass {
         for (int j = 0; j < generationSize; j++) {
             TakNetwork testNetwork;
             if (StaticGlobals.LOAD_FROM_LAST_RUN) {
-                testNetwork = loadTesting("networks\\TestGnerationalGrowth\\output\\Network" + dimns + "x" + dimns + j + ".takNetwork");
+                testNetwork = loadTesting("networks\\TestGenerationalGrowth\\output\\Network" + dimns + "x" + dimns + j + ".takNetwork");
                 testNetwork.setWins(0);
                 testNetwork.setLosses(0);
             } else {
@@ -583,9 +817,7 @@ public class ControlClass {
 
                 if (StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT || i % 100 == 99) {
 
-                    String output = "networks\\FORCEEXIT\\TestGnerationalGrowth\\output";
-
-
+                    String output = "networks\\TestGenerationalGrowth\\output";
                     System.out.println("Saving Networks");
 
                     new File(output).mkdirs();
@@ -593,7 +825,7 @@ public class ControlClass {
 
                         FileOutputStream fout;
                         try {
-                            fout = new FileOutputStream(output + "\\GEN" + i + "Network" + s + ".takNetwork");
+                            fout = new FileOutputStream(output + "\\Network" + dimns + "x" + dimns + i + ".takNetwork");
                             ObjectOutputStream oos = new ObjectOutputStream(fout);
                             oos.writeObject(networks.get(s));
                             oos.close();
@@ -606,6 +838,8 @@ public class ControlClass {
 
                     System.out.println("Networks Saved");
                     if (StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT) {
+                        StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT=false;
+
                         return;
                     }
                 }
@@ -683,9 +917,7 @@ public class ControlClass {
 
             }
 
-            String output = "networks\\TestGnerationalGrowth\\output";
-
-
+            String output = "networks\\TestGenerationalGrowth\\output";
             new File(output).mkdirs();
             for (int i = 0; i < networks.size(); i++) {
 
@@ -708,7 +940,7 @@ public class ControlClass {
 
             logger.severe(Arrays.toString(E.getStackTrace()));
 
-            String output = "networks\\ERROREXIT\\TestGnerationalGrowth\\output";
+            String output = "networks\\TestGenerationalGrowth\\output";
 
 
             System.out.println("Saving Networks");
@@ -718,7 +950,7 @@ public class ControlClass {
 
                 FileOutputStream fout;
                 try {
-                    fout = new FileOutputStream(output + "\\Network" + s + ".takNetwork");
+                    fout = new FileOutputStream(output + "\\Network" + dimns + "x" + dimns + s + ".takNetwork");
                     ObjectOutputStream oos = new ObjectOutputStream(fout);
                     oos.writeObject(networks.get(s));
                     oos.close();

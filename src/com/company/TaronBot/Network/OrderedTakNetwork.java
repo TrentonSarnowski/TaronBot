@@ -39,11 +39,11 @@ public class OrderedTakNetwork {
             }
 
             if (o1.weight > o2.weight) {
-                return -1;
+                return 1;
             } else if (o1.weight == o2.weight) {
                 return 0;
             }else {
-                return 1;
+                return -1;
             }
 
         });

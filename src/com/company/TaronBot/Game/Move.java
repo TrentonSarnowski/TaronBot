@@ -13,4 +13,6 @@ public interface Move {
     double getWeight();
     int  getType();
     String toPlayTakString();
+
+    boolean checkVictory(Board map, boolean cont);
 }
