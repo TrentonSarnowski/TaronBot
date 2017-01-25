@@ -272,6 +272,7 @@ public class ControlClass {
                                 testNetwork.randomize(rand);
                             }
                         }catch (Exception e){
+                            System.err.println("Bad net");
                             testNetwork = new TakNetwork(size + 1, size, size, StaticGlobals.DEPTH, 0, i);
                             RandomNumber = random.nextInt();
                             Random rand = new Random(RandomNumber);

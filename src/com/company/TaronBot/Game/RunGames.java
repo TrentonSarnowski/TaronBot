@@ -172,9 +172,9 @@ public class RunGames {
 
             FileOutputStream fout;
             try {
-                fout = new FileOutputStream(output + "\\Network" + networks.get(s).getWidth() + "x" + networks.get(s).getWidth() + s + ".takNetwork");
+                fout = new FileOutputStream(output + "\\Network" + bots[s].getNet().getWidth() + "x" + bots[s].getNet().getWidth() + s + ".takNetwork");
                 ObjectOutputStream oos = new ObjectOutputStream(fout);
-                oos.writeObject(networks.get(s));
+                oos.writeObject(bots[s].getNet().getWidth());
                 oos.close();
 
             } catch (IOException e) {
