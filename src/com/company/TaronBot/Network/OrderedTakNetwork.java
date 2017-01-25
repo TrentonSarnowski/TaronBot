@@ -2,7 +2,6 @@ package com.company.TaronBot.Network;
 
 import java.util.List;
 import java.util.*;
-import java.io.*;
 
 /**
  * Created by sarnowskit on 12/14/2016.

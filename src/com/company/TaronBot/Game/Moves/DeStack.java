@@ -108,13 +108,14 @@ public class DeStack implements Move {
 
     /**
      * Standard usage init
-     * @param x starting x
-     * @param y starting y
-     * @param left left behind on each square does not include starting square
-     * @param pickup pickup count must agree with left
-     * @param verticalAxis along the vertical
+     *
+     * @param x                 starting x
+     * @param y                 starting y
+     * @param left              left behind on each square does not include starting square
+     * @param pickup            pickup count must agree with left
+     * @param verticalAxis      along the vertical
      * @param positiveDirection in the posotive
-     * @param weight eight of the move--use zero if not AI
+     * @param weight            eight of the move--use zero if not AI
      */
     public DeStack(int x, int y, List<Integer> left, int pickup, boolean verticalAxis, boolean positiveDirection, double weight) {
         this.weight = weight;
@@ -146,8 +147,10 @@ public class DeStack implements Move {
      * "M " + sq1+" " +sq2+" " +left+ " " +left + ect.
      * sq1= starting square in format s=letter(x), q=number(y+1)
      * sq2= ending position se sq1
+     *
      * @return
      */
+
     public String toPlayTakString() {
         String ret = "M ";
         switch (x) {
@@ -217,6 +220,7 @@ public class DeStack implements Move {
     /**
      * turns the move to ahuman readable string
      * M + sq + direction(><+-)+ left+left
+     *
      * @return
      */
     @Override
@@ -293,6 +297,7 @@ public class DeStack implements Move {
 
     /**
      * Destack=type zero
+     *
      * @return
      */
     @Override
@@ -336,14 +341,13 @@ public class DeStack implements Move {
             }
 
 
-
-            for (int j = 0; j < leftBehind.get(i-1); j++) {
+            for (int j = 0; j < leftBehind.get(i - 1); j++) {
 
                 try {
                     map[x + i * (sign * xChange)][y + i * (sign * yChange)].add(pickUp.get(sum));
 
                     sum++;
-                }catch (Exception e){
+                } catch (Exception e) {
                     System.err.println("Errr");
                 }
             }
@@ -358,7 +362,7 @@ public class DeStack implements Move {
 
     public boolean checkFeasible(Board board, boolean control) {
         //System.err.println(toString());
-        if(x>=board.getMap().length||y>=board.getMap().length){
+        if (x >= board.getMap().length || y >= board.getMap().length) {
             return false;
         }
         if (board.getMap()[x][y].isEmpty()) {
@@ -373,22 +377,22 @@ public class DeStack implements Move {
         if (board.getMap()[x][y].size() < pickUpC) {
             return false;
         }
-        int size=leftBehind.size();
+        int size = leftBehind.size();
 
-        if(positive&&up){
-            if(y+size>=board.getMap()[0].length){
+        if (positive && up) {
+            if (y + size >= board.getMap()[0].length) {
                 return false;
             }
-        }else if(positive){
-            if(x+size>=board.getMap()[0].length){
+        } else if (positive) {
+            if (x + size >= board.getMap()[0].length) {
                 return false;
             }
-        }else if(!positive&&up){
-            if(y-size<0){
+        } else if (!positive && up) {
+            if (y - size < 0) {
                 return false;
             }
-        }else{
-            if(x-size>0){
+        } else {
+            if (x - size > 0) {
                 return false;
             }
         }
@@ -434,8 +438,8 @@ public class DeStack implements Move {
         }
 
         for (int i = 1; i <= leftBehind.size(); i++) {
-            int xTrue=x + (i * xChange * sign);
-            int yTrue=y + (i * yChange * sign);
+            int xTrue = x + (i * xChange * sign);
+            int yTrue = y + (i * yChange * sign);
             try {
                 if (map[xTrue][yTrue].size() != 0) {
                     int topValue = Math.abs(board.getMap()[xTrue][yTrue].get(board.getMap()[xTrue][yTrue].size() - 1));

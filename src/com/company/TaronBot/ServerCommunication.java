@@ -6,9 +6,6 @@ import com.company.TaronBot.Game.Moves.DeStack;
 import com.company.TaronBot.Game.Moves.Placement;
 import com.company.TaronBot.Game.RunGames;
 import com.company.TaronBot.Network.TakNetwork;
-import com.company.TestingMain;
-import org.apache.commons.math3.ml.neuralnet.Network;
-import sun.security.krb5.internal.crypto.Des;
 import tech.deef.Tools.StaticGlobals;
 
 import java.io.*;

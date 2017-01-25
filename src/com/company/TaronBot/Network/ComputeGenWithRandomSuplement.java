@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 
 import com.company.TaronBot.Game.Board;
 
-import com.company.TestingMain;
 import tech.deef.Tools.StaticGlobals;
 
 public class ComputeGenWithRandomSuplement {

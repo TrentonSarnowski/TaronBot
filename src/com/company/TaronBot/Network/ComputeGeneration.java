@@ -3,13 +3,11 @@ package com.company.TaronBot.Network;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.logging.Logger;
 
 import com.company.TaronBot.Game.Board;
 
 import com.company.TaronBot.Game.RunGames;
-import com.company.TestingMain;
 import tech.deef.Tools.StaticGlobals;
 
 public class ComputeGeneration {

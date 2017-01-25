@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-import tech.deef.Tools.Tools;
-
 /**
  * the individual layer of a network.
  * @author deef0000dragon1

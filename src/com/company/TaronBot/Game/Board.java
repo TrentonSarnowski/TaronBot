@@ -1,7 +1,6 @@
 package com.company.TaronBot.Game;
 
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,8 +10,6 @@ import com.company.TaronBot.Game.Moves.*;
 
 import com.company.TaronBot.Network.TakNetwork;
 import com.company.TaronBot.Network.generateMoves;
-import org.apache.commons.math3.ml.neuralnet.Network;
-import sun.security.krb5.internal.crypto.Des;
 import tech.deef.Tools.StaticGlobals;
 
 /**TakNetwork

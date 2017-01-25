@@ -1,21 +1,15 @@
 package com.company.TaronBot;
 
 import java.io.*;
-import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 import com.company.TaronBot.Game.Board;
 import com.company.TaronBot.Game.RunGames;
 import com.company.TaronBot.Network.ComputeGeneration;
 import com.company.TaronBot.Network.MateNetworks;
-import com.company.TaronBot.Network.OrderedTakNetwork;
 import com.company.TaronBot.Network.TakNetwork;
 import com.company.TestingMain;
 //import com.sun.org.apache.xpath.internal.operations.String;
@@ -263,10 +257,26 @@ public class ControlClass {
                     ArrayList<TakNetwork> n = new ArrayList<>();
                     Random random = new Random();
                     for (int i = 0; i < genSize; i++) {
-                        testNetwork = new TakNetwork(size + 1, size, size, StaticGlobals.DEPTH, 0, 0);
-                        RandomNumber = random.nextInt();
-                        Random rand = new Random(RandomNumber);
-                        testNetwork.randomize(rand);
+                        try {
+
+
+                            if (StaticGlobals.LOAD_FROM_LAST_RUN) {
+                                testNetwork = loadTesting("networks\\TestNeat\\output\\Network" + size + "x" + size + i + ".takNetwork");
+                                testNetwork.setWins(0);
+                                testNetwork.setLosses(0);
+                            } else {
+
+                                testNetwork = new TakNetwork(size + 1, size, size, StaticGlobals.DEPTH, 0, i);
+                                RandomNumber = random.nextInt();
+                                Random rand = new Random(RandomNumber);
+                                testNetwork.randomize(rand);
+                            }
+                        }catch (Exception e){
+                            testNetwork = new TakNetwork(size + 1, size, size, StaticGlobals.DEPTH, 0, i);
+                            RandomNumber = random.nextInt();
+                            Random rand = new Random(RandomNumber);
+                            testNetwork.randomize(rand);
+                        }
                         n.add(testNetwork);
                     }
                     System.err.println("Nets loaded");

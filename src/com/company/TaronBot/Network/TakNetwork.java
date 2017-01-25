@@ -11,6 +11,7 @@ import java.util.Random;
 import com.company.TaronBot.Game.Move;
 import com.company.TaronBot.Game.Moves.DeStack;
 import com.company.TaronBot.Game.Moves.Placement;
+import sun.security.krb5.internal.crypto.Des;
 
 /**
  * TakNetwork class specifically designed for the creation of a square board with n layers. 
@@ -349,9 +350,12 @@ public class TakNetwork implements Serializable{
 			}
 		} 
 		try {
+			int number = 0; //needs to equal a number form 0 to 256.
+			//currently using a random number from the moveoutput (6) do to uncertanty on how the move was created.
+			boolean map[] = generateMoves.toArray((int)((moveOutput[6]+3)*256/6), height);
+			movement = new DeStack(map, (moveOutput[0] > 0), (moveOutput[1] > 0), weight,XInput, YInput);
 
-
-			movement = DeStack.DeStack(XInput, YInput, left, (int) d, (moveOutput[0] > 0), (moveOutput[1] > 0), weight);
+			//movement = DeStack.DeStack(XInput, YInput, left, (int) d, (moveOutput[0] > 0), (moveOutput[1] > 0), weight);
 		}catch (Exception e){
 			movement =null;
 		}

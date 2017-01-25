@@ -1,10 +1,8 @@
 package com.company.TaronBot.Game;
 
 import com.company.TaronBot.Network.MateNetworks;
-import com.company.TaronBot.Network.OrderedTakNetwork;
 import com.company.TaronBot.Network.TakNetwork;
 import com.company.TaronBot.ServerCommunication;
-import org.apache.commons.math3.ml.neuralnet.Network;
 import tech.deef.Tools.StaticGlobals;
 
 import java.io.*;
