@@ -230,6 +230,10 @@ public class ControlClass {
      * play: plays a game using player 1 and 2 with size size: Will fail if no saved network of size size with the player id
      */
     public static void StartControl() {
+        TakNetwork testNetwork;
+        int RandomNumber;
+        ArrayList<TakNetwork> n = new ArrayList<>();
+        Random random = new Random();
         Map<String, Object> objects = new HashMap<String, Object>();
 
 
@@ -252,10 +256,7 @@ public class ControlClass {
 
                 //***********************************ENABLE DIFFERNET GLOBAL BOOLEAN SWITCHES************
                 case "test":
-                    TakNetwork testNetwork;
-                    int RandomNumber;
-                    ArrayList<TakNetwork> n = new ArrayList<>();
-                    Random random = new Random();
+                    n = new ArrayList<>();
                     for (int i = 0; i < genSize; i++) {
                         try {
 
@@ -272,7 +273,7 @@ public class ControlClass {
                                 testNetwork.randomize(rand);
                             }
                         }catch (Exception e){
-                            System.err.println("Bad net");
+
                             testNetwork = new TakNetwork(size + 1, size, size, StaticGlobals.DEPTH, 0, i);
                             RandomNumber = random.nextInt();
                             Random rand = new Random(RandomNumber);
@@ -281,14 +282,41 @@ public class ControlClass {
                         n.add(testNetwork);
                     }
                     System.err.println("Nets loaded");
+                    ArrayList listOfItems=n;
                     Thread NEAT = new Thread() {
                         @Override
                         public void run() {
-                            RunGames.NEATGAMEPLAY(n, 5, 10, 10, 6000000);
+                            RunGames.NEATGAMEPLAY(listOfItems, 5, 10, 10, 6000000);
                         }
                     };
                     NEAT.start();
                     break;
+                case "loadonline":{
+
+                    n = new ArrayList<>();
+                    for (int i = 0; i < genSize; i++) {
+
+
+
+
+                                testNetwork = loadTesting("networks\\TestNeat\\output\\Network" + size + "x" + size + i + ".takNetwork");
+                                testNetwork.setWins(0);
+                                testNetwork.setLosses(0);
+
+
+                        n.add(testNetwork);
+                    }
+
+                }
+                ArrayList inner = n;
+                (new Thread(){
+                    @Override
+                    public void run() {
+                        ServerCommunication.playGame(inner);
+
+                    }
+                }).start();
+                break;
                 case "gamecount":
                     input = reader.next();
                     StaticGlobals.GAMESTOPLAY = Long.parseLong(input);

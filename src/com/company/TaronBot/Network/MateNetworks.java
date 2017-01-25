@@ -106,7 +106,7 @@ public class MateNetworks {
 	 * @param changePercentage Double percentage to change each single random mutator value
 	 * @return TakNetwork the network that is being returned. 
 	 */
-	public TakNetwork SingleNetworkMutate(TakNetwork net, Random rand, double changePercentage,int species){
+	public static TakNetwork SingleNetworkMutate(TakNetwork net, Random rand, double changePercentage,int species){
 		return net.returnAnotherMutatedNetwork(rand, changePercentage,species);
 	}
 }

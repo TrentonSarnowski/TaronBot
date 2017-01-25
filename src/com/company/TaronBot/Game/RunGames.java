@@ -97,12 +97,18 @@ public class RunGames {
                 while (true) {
                     for (int i = 0; i < bots.length; i++) {
                         if (bots[i].lifeCount <= 0) {
-                            ArrayList<TakNetwork> nets = new ArrayList<>();
-                            for (int j = 0; j < bots.length * .1; j++) {
-                                nets.add(bots[r.nextInt(bots.length)].net);
-                            }
-                            nets = MateNetworks.GroupMateNetworks(nets, r, (int) (bots.length * .1) + 1, bots[i].net.getGeneration() + 1);
+                            if(r.nextInt(100)<100) {
+                                ArrayList<TakNetwork> nets = new ArrayList<>();
+                                for (int j = 0; j < bots.length * .1; j++) {
+                                    nets.add(bots[r.nextInt(bots.length)].net);
+                                }
+                                nets = MateNetworks.GroupMateNetworks(nets, r, (int) (bots.length * .1) + 1, bots[i].net.getGeneration() + 1);
+
                             bots[i] = new bot(nets.get((int) (bots.length * .1)), lifeCount);
+                            }else {
+
+                                MateNetworks.SingleNetworkMutate(bots[r.nextInt(bots.length-1)].net,r,1,1);
+                            }
                         }
                     }
                     try {
@@ -158,7 +164,7 @@ public class RunGames {
         } catch (InterruptedException e) {
 
         }
-        System.err.println("Games startes");
+        System.err.println("Games starts");
 
         g.playGamesSetThreadsBlocks(5, bots);
 
@@ -174,7 +180,7 @@ public class RunGames {
             try {
                 fout = new FileOutputStream(output + "\\Network" + bots[s].getNet().getWidth() + "x" + bots[s].getNet().getWidth() + s + ".takNetwork");
                 ObjectOutputStream oos = new ObjectOutputStream(fout);
-                oos.writeObject(bots[s].getNet().getWidth());
+                oos.writeObject(bots[s].getNet());
                 oos.close();
 
             } catch (IOException e) {
