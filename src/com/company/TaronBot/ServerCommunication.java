@@ -6,6 +6,7 @@ import com.company.TaronBot.Game.Moves.DeStack;
 import com.company.TaronBot.Game.Moves.Placement;
 import com.company.TaronBot.Game.RunGames;
 import com.company.TaronBot.Network.TakNetwork;
+import sun.security.krb5.internal.crypto.Des;
 import tech.deef.Tools.StaticGlobals;
 
 import java.io.*;
@@ -108,18 +109,17 @@ public class ServerCommunication {
 			Thread ts = new Thread() {
 				@Override
 				public void run() {
-					while (true) {
+
 						try {
 							if (!cont) {
 								return;
 							}
 							out.println("PING");
 
-							sleep(15000);
 						} catch (Exception e) {
 
 						}
-					}
+
 				}
 			};
 			ts.start();
@@ -298,15 +298,17 @@ public class ServerCommunication {
 	private static void playGame(TakNetwork player, BufferedReader in, PrintWriter out, Board b) {
 		System.err.println("Game Started");
 		Move l;
+		List<Move> move=new ArrayList<>();
+
 		boolean checkOutput = false;
 		Game:
 		while (true) {
 			if (checkOutput) {
 				System.err.println("Generating Moves");
 			}
-			List<Move> moves = player.calculate(b.getAIMap(true));
+			List<Move> moves = player.calculate(b.getAIMap(true),b);
 
-			Move s = b.checkForVictory(true);
+			Move s = null;//b.checkForVictory(true);
 			if (s != null) {
 				moves.add(0, s);
 				if (checkOutput) {
@@ -325,11 +327,12 @@ public class ServerCommunication {
 					out.println("Game#" + b.boardNumber + " Resign");
 					return;
 				}
-				if (m.checkFeasible(b, true)) {
+				if (m.checkFeasible(b, true)&&((move.size()<10)||!m.isEqual(move.get(move.size()-10)))) {
 
 					if (checkOutput) {
 						System.err.println("try Move" + m.toPlayTakString());
 					}
+
 					out.println("Game#" + b.boardNumber + " " + m.toPlayTakString());
 
 					String input;
@@ -378,7 +381,9 @@ public class ServerCommunication {
 									}
 
 									m.performMove(b, true);
+									move.add(m);
 									l.performMove(b, false);
+
 									sleep(500);
 
 									ExitCheck = false;
@@ -419,7 +424,7 @@ public class ServerCommunication {
 		System.err.println("Seeking Game");
 		String s = "";
 		Board b = null;
-		out.println("Seek " + player.getWidth() + " 60 0");
+		out.println("Seek " + player.getWidth() + " 600 0");
 		while ((b) == null) {
 			if (!cont) {
 				return new Board(player.getWidth(), new LinkedList<Move>(), true);

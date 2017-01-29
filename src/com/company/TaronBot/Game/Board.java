@@ -32,7 +32,7 @@ public class Board {
         int check1=500;
         //boolean check2=false;
         List<Move> moves;
-        moves = Player1.calculate(game.getAIMap(false));
+        moves = Player1.calculate(game.getAIMap(false), game);
 
         for (Move m: moves) {
             if (m.checkFeasible(game, false)) {
@@ -40,13 +40,12 @@ public class Board {
                 ++StaticGlobals.moveCount;
                 m.performMove(game,false);
                 firstPlayer=m;
-
                 //System.out.println(m.toString());
                 break;
             }
         }
 
-        moves = Player2.calculate(game.getAIMap(true));
+        moves = Player2.calculate(game.getAIMap(true),game);
         for (Move m: moves) {
             if (m.checkFeasible(game, true)) {
                 ++StaticGlobals.flatCount;
@@ -97,7 +96,7 @@ public class Board {
                 }
             }
             i++;
-            moves =Player1.calculate(game.getAIMap(true));
+            moves =Player1.calculate(game.getAIMap(true),game);
             for (Move m: moves) {
                 if(m.checkFeasible(game,true)){
                     //System.out.println(game.getPositiveCapRemain());
@@ -127,7 +126,7 @@ public class Board {
                 ++StaticGlobals.gameCount;
                 return check1;
             }
-            moves =Player2.calculate(game.getAIMap(true));
+            moves =Player2.calculate(game.getAIMap(true),game);
             for (Move m: moves) {
                 if(m.checkFeasible(game,false)){
                     //System.out.println(game.getPositiveCapRemain()+" "+m.getType());

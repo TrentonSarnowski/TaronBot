@@ -937,7 +937,7 @@ public class TestingMain {
         PrintColor(time / 1000.0 / 1000.0 + " mS in a build\n", "green");
 
         time = System.nanoTime();
-        testNetwork.calculate(createTestBlank());
+        //testNetwork.calculate(createTestBlank());
         time = System.nanoTime() - time;
         PrintColor(time / 1000.0 / 1000.0 + " mS in a calculate", "green");
         PrintColor("\n\nTESTING DATA BELOW\n", "blue");
@@ -963,7 +963,7 @@ public class TestingMain {
             genTime = System.nanoTime();
             genData = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
             moves.clear();
-            moves = testNetwork.calculate(blank);
+            //moves = testNetwork.calculate(blank);
             endTime = System.nanoTime();
             endData = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
 

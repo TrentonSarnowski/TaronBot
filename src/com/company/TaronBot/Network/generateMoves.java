@@ -61,13 +61,19 @@ public class generateMoves {
     public static boolean[] toArray(int b, int height) {
         boolean ba[] = new boolean[height];
         int mult=1;
+        boolean ret =false;
         for (int i = 0; i < height ; i++) {
             if ((b & mult) == mult) {
                 ba[i] = true;
+            }else{
+                ret=true;
             }
             mult*=2;
         }
-
-        return ba;
+        if(ret) {
+            return ba;
+        }
+        boolean bs[]={true,false};
+        return bs;
     }
 }

@@ -74,15 +74,14 @@ public class RunGames {
         }
     }
 
-    public static TakNetwork[] NEATGAMEPLAY(List<TakNetwork> networks, int lifeCount, int lifeCap, int mateSize, int games) {
+    public static TakNetwork[] NEATGAMEPLAY(List<TakNetwork> networks, int lifeCount, int games, String OutputFile, int poolSize) {
         Random r = new Random();
         StaticGlobals.GAMESTOPLAY = games;
         bot[] bots = new bot[networks.size()];
-        for (int i = 0; i < networks.size(); i++) {
+        for (int i = 0; i < networks.size()&&i < poolSize; i++) {
             bots[i] = new bot(networks.get(i), lifeCount);
         }
         RunGames g = (new RunGames((new TakNetwork[0])).RunGames((ArrayList<TakNetwork>) networks));
-
         Thread t = new Thread() {
             @Override
             public void run() {
@@ -90,11 +89,14 @@ public class RunGames {
                 try {
 
 
-                    w = new PrintWriter("stats.txt");
+                    w = new PrintWriter(OutputFile+".csv");
                 } catch (Exception e) {
 
                 }
-                while (true) {
+                boolean exit=true;
+                long lastMoveCount=1;
+                long twoMoveCountBack=1;
+                while (exit) {
                     for (int i = 0; i < bots.length; i++) {
                         if (bots[i].lifeCount <= 0) {
                             if(r.nextInt(100)<100) {
@@ -123,14 +125,19 @@ public class RunGames {
                         System.err.println("wall Count: " + StaticGlobals.wallCount);
                         System.err.println("caps Count: " + StaticGlobals.capCount);
                         System.err.println("stak Count: " + StaticGlobals.destackCount);
+                        if((lastMoveCount==twoMoveCountBack)&&(lastMoveCount==StaticGlobals.moveCount)){
+                            exit=false;
+                        }
+                        twoMoveCountBack=lastMoveCount;
+                        lastMoveCount=StaticGlobals.moveCount;
                         if (w != null) {
-                            w.write(StaticGlobals.roadCount + "\t"
-                                    + StaticGlobals.gameCount + "\t" +
-                                    StaticGlobals.moveCount + "\t" +
-                                    StaticGlobals.flatCount + "\t" +
-                                    StaticGlobals.wallCount + "\t" +
-                                    StaticGlobals.capCount + "\t" +
-                                    StaticGlobals.destackCount + "\n");
+                            w.write(StaticGlobals.roadCount + ","
+                                    + StaticGlobals.gameCount + "," +
+                                    StaticGlobals.moveCount + "," +
+                                    StaticGlobals.flatCount + "," +
+                                    StaticGlobals.wallCount + "," +
+                                    StaticGlobals.capCount + "," +
+                                    StaticGlobals.destackCount + ",");
                             w.flush();
                         }
                         StaticGlobals.roadCount = 0;
@@ -140,10 +147,13 @@ public class RunGames {
                         StaticGlobals.destackCount = 0;
                         StaticGlobals.wallCount = 0;
                         StaticGlobals.capCount = 0;
+
                     } catch (InterruptedException e) {
 
                     }
+
                 }
+                w.close();
             }
         };
         Thread online = new Thread() {
@@ -153,7 +163,7 @@ public class RunGames {
             }
         };
 
-
+        //online.start();
         t.start();
 
         //online.start();
@@ -168,13 +178,13 @@ public class RunGames {
 
         g.playGamesSetThreadsBlocks(5, bots);
 
-        String output = "networks\\TestNeat\\output";
+        String output = "networks\\TestNeat\\output"+OutputFile;
 
 
         System.out.println("Saving Networks");
 
         new File(output).mkdirs();
-        for (int s = 0; s < networks.size(); s++) {
+        for (int s = 0; s < bots.length; s++) {
 
             FileOutputStream fout;
             try {

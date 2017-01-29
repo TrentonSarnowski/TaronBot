@@ -1,5 +1,7 @@
 package com.company.TaronBot.Game;
 
+import com.company.TaronBot.Game.Moves.DeStack;
+
 import java.util.List;
 
 /**
@@ -15,4 +17,14 @@ public interface Move {
     String toPlayTakString();
 
     boolean checkVictory(Board map, boolean cont);
+
+
+
+    default public boolean isEqual(Object b){
+        if(b instanceof Move){
+            return((Move) b).toPlayTakString().equals(this.toPlayTakString());
+        }
+        return false;
+    }
+
 }

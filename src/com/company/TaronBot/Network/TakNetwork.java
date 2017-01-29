@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
+import com.company.TaronBot.Game.Board;
 import com.company.TaronBot.Game.Move;
 import com.company.TaronBot.Game.Moves.DeStack;
 import com.company.TaronBot.Game.Moves.Placement;
@@ -195,7 +196,7 @@ public class TakNetwork implements Serializable{
 	 * @param board int[][][] input 3d board
 	 * @return list<Move> containing all possible moves ordered best to worst. 
 	 */
-	public List<Move> calculate(int[][][] board){
+	public List<Move> calculate(int[][][] board, Board b){
 				
 		double[] output;
 		
@@ -206,7 +207,7 @@ public class TakNetwork implements Serializable{
 		}
 		
 		
-		return sortedMoves(ConvertToOutputMoveArray(output));
+		return sortedMoves(ConvertToOutputMoveArray(output), b);
 				
 	}
 
@@ -260,7 +261,7 @@ public class TakNetwork implements Serializable{
 	 * @param placements double[][][][] output from the final layer
 	 * @return ArrayList<Move>
 	 */
-	private List<Move> sortedMoves(double[][][] placements) {		
+	private List<Move> sortedMoves(double[][][] placements, Board board) {
 		List<Move> moves = new ArrayList<Move>(width * height * 4);
 		
 		for(int i = 0; i < width; i++){
@@ -283,18 +284,56 @@ public class TakNetwork implements Serializable{
 		
 		for(int i = 0; i < width; i++){
 			for(int j = 0; j < depth; j++){
-				Move m=createPlacement(i,j, Arrays.copyOfRange(placements[i][j], 4, placements[i][j].length), placements[i][j][3]);
+
+				Move m=createPlacement(i,j, true, true, placements[i][j][7], placements[i][j][6], board.getMap()[i][j].size());
 				if(m!=null) {
 					moves.add(m);
 				}
 				// todo, figure out how the move output is created. set it up so that I can pass an array 3 times. 
 			}
 		}
-		
+		for(int i = 0; i < width; i++){
+			for(int j = 0; j < depth; j++){
+
+				Move m=createPlacement(i,j, true, false, placements[i][j][1], placements[i][j][0], board.getMap()[i][j].size());
+				if(m!=null) {
+					moves.add(m);
+				}
+				// todo, figure out how the move output is created. set it up so that I can pass an array 3 times.
+			}
+		}
+		for(int i = 0; i < width; i++){
+			for(int j = 0; j < depth; j++){
+
+				Move m=createPlacement(i,j, false, true, placements[i][j][3], placements[i][j][2], board.getMap()[i][j].size());
+				if(m!=null) {
+					moves.add(m);
+				}
+				// todo, figure out how the move output is created. set it up so that I can pass an array 3 times.
+			}
+		}
+		for(int i = 0; i < width; i++){
+			for(int j = 0; j < depth; j++){
+
+				Move m=createPlacement(i,j, false, false, placements[i][j][5], placements[i][j][4], board.getMap()[i][j].size());
+				if(m!=null) {
+					moves.add(m);
+				}
+				// todo, figure out how the move output is created. set it up so that I can pass an array 3 times.
+			}
+		}
+		Collections.shuffle(moves);
 		Collections.sort(moves, 
 						new Comparator<Move>() {
         					public int compare(Move m1, Move m2) {
-        						return (m1.getWeight() < m2.getWeight() ? 1 : (m1.getWeight() == m2.getWeight() ? 0 : -1));
+								if(m1.getWeight() <m2.getWeight()){
+									return 1;
+								}else if(m1.getWeight()==m2.getWeight()){
+									return 0;
+								}else{
+									return (m1.getWeight() < m2.getWeight() ? 1 : (m1.getWeight() == m2.getWeight() ? 0 : -1));
+
+								}
         					}
     					}
 						);
@@ -307,11 +346,11 @@ public class TakNetwork implements Serializable{
 	 * creates a placement for a specific location
 	 * @param XInput int x location
 	 * @param YInput int y location
-	 * @param moveOutput double[] the output array of the network
+
 	 * @param weight double weight of the specific move. 
 	 * @return Move the movement created
 	 */
-	private Move createPlacement(int XInput, int YInput, double[] moveOutput, double weight) {
+	private Move createPlacement(int XInput, int YInput, boolean positive, boolean vertical, double move, double weight, int height) {
 		//x location input
 		//y location input
 		//what move it is
@@ -327,33 +366,15 @@ public class TakNetwork implements Serializable{
 		 * get the remaning total
 		 * get the output number in the space
 		 * get the percentage
-		 * multiply by remaning peices
+		 * multiply by remaning Fpeices
 		 * round up
-		 * */ 
-		double d =  Math.abs(moveOutput[2]*width/(range/2));
-		int pickedUp = (int) d;
-		
-		double remaningTotal = 0;
-		double percentage;
-		for(int i = 3; i < moveOutput.length; i++){
-			remaningTotal = 0;
-			for(int j = i; j < moveOutput.length; j++){
-				remaningTotal += Math.abs((moveOutput[j])); 
-			}
-			
-			percentage = Math.abs(moveOutput[i])/remaningTotal;
-			left[i-3] = (int) (Math.floor(percentage*pickedUp)+1);
-			
-			pickedUp -= left[i-3];
-			if(pickedUp <= 0 ){
-				break;
-			}
-		} 
+		 * */
+
 		try {
 			int number = 0; //needs to equal a number form 0 to 256.
 			//currently using a random number from the moveoutput (6) do to uncertanty on how the move was created.
-			boolean map[] = generateMoves.toArray((int)((moveOutput[6]+3)*256/6), height);
-			movement = new DeStack(map, (moveOutput[0] > 0), (moveOutput[1] > 0), weight,XInput, YInput);
+			boolean map[] = generateMoves.toArray((int)((move+3)*256/6), height);
+			movement = new DeStack(map,vertical, positive, weight,XInput, YInput);
 
 			//movement = DeStack.DeStack(XInput, YInput, left, (int) d, (moveOutput[0] > 0), (moveOutput[1] > 0), weight);
 		}catch (Exception e){
