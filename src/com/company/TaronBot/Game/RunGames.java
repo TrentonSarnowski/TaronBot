@@ -137,7 +137,7 @@ public class RunGames {
                                     StaticGlobals.flatCount + "," +
                                     StaticGlobals.wallCount + "," +
                                     StaticGlobals.capCount + "," +
-                                    StaticGlobals.destackCount + ",");
+                                    StaticGlobals.destackCount + "\n");
                             w.flush();
                         }
                         StaticGlobals.roadCount = 0;
@@ -163,7 +163,7 @@ public class RunGames {
             }
         };
 
-        //online.start();
+        online.start();
         t.start();
 
         //online.start();

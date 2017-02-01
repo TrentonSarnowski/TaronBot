@@ -17,7 +17,7 @@ import static com.company.TestingMain.loadTesting;
 
 public class Main {
 	public static void main(String[] args){
-        if(true){
+        if(false){
             statGather();
             return;
         }

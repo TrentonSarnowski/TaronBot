@@ -8,61 +8,63 @@ import java.util.List;
 import com.company.TaronBot.Game.Moves.*;
 
 
+import com.company.TaronBot.NEAT.FastRoadFinder;
 import com.company.TaronBot.Network.TakNetwork;
 import com.company.TaronBot.Network.generateMoves;
 import tech.deef.Tools.StaticGlobals;
 
-/**TakNetwork
+/**
+ * TakNetwork
  * Created by sarnowskit on 10/21/2016.
  */
 public class Board {
-    private static boolean print=false;
+    private static boolean print = false;
     private List<Integer> map[][];
-    private int positivePieceRemain=0;
-    private int negativePieceRemain=0;
-    private int positiveCapRemain=0;
-    private int negativeCapRemain=0;
+    private int positivePieceRemain = 0;
+    private int negativePieceRemain = 0;
+    private int positiveCapRemain = 0;
+    private int negativeCapRemain = 0;
     private boolean start;
-    private static Move firstPlayer,SecondPlayer=null;
+    private static Move firstPlayer, SecondPlayer = null;
     public int boardNumber;
     public static List<DeStack> moves = generateMoves.getDestacks(8);
-    public static int playGame(TakNetwork Player1, TakNetwork Player2, int sideLength){
 
-        Board game=new Board(sideLength, new LinkedList<>(), true);
-        int check1=500;
+    public static int playGame(TakNetwork Player1, TakNetwork Player2, int sideLength) {
+
+        Board game = new Board(sideLength, new LinkedList<>(), true);
+        int check1 = 500;
         //boolean check2=false;
         List<Move> moves;
         moves = Player1.calculate(game.getAIMap(false), game);
 
-        for (Move m: moves) {
+        for (Move m : moves) {
             if (m.checkFeasible(game, false)) {
                 ++StaticGlobals.flatCount;
                 ++StaticGlobals.moveCount;
-                m.performMove(game,false);
-                firstPlayer=m;
+                m.performMove(game, false);
+                firstPlayer = m;
                 //System.out.println(m.toString());
                 break;
             }
         }
 
-        moves = Player2.calculate(game.getAIMap(true),game);
-        for (Move m: moves) {
+        moves = Player2.calculate(game.getAIMap(true), game);
+        for (Move m : moves) {
             if (m.checkFeasible(game, true)) {
                 ++StaticGlobals.flatCount;
                 ++StaticGlobals.moveCount;
 
-                m.performMove(game,true);
-                SecondPlayer=m;
+                m.performMove(game, true);
+                SecondPlayer = m;
 
                 //System.out.println(m.toString());
                 break;
             }
         }
-        int i=1;
-        for (int j = 0; j <1000 ; j++)
-        {
-        	//input data needs to be 9x8x8
-        	if(StaticGlobals.PRINT_GAME_MOVES) {
+        int i = 1;
+        for (int j = 0; j < 1000; j++) {
+            //input data needs to be 9x8x8
+            if (StaticGlobals.PRINT_GAME_MOVES) {
                 System.out.println(i + ": " + firstPlayer + " " + SecondPlayer);
                 if (StaticGlobals.PRINT_GAME_BOARD) {
                     for (boolean n[] :
@@ -96,9 +98,9 @@ public class Board {
                 }
             }
             i++;
-            moves =Player1.calculate(game.getAIMap(true),game);
-            for (Move m: moves) {
-                if(m.checkFeasible(game,true)){
+            moves = Player1.calculate(game.getAIMap(true), game);
+            for (Move m : moves) {
+                if (m.checkFeasible(game, true)) {
                     //System.out.println(game.getPositiveCapRemain());
                     if (m.getType() == 1) {
                         ++StaticGlobals.flatCount;
@@ -111,24 +113,24 @@ public class Board {
                         ++StaticGlobals.destackCount;
                     }
                     ++StaticGlobals.moveCount;
-                    firstPlayer=m;
-                    m.performMove(game,true);
+                    firstPlayer = m;
+                    m.performMove(game, true);
                     break;
                 }
             }
             check1 = game.checkVictory(true);
 
-            if(check1 != 500){
-            	if(StaticGlobals.PRINT_GAME_MOVES){
-            		System.out.println(i+": "+firstPlayer);
-            	}
+            if (check1 != 500) {
+                if (StaticGlobals.PRINT_GAME_MOVES) {
+                    System.out.println(i + ": " + firstPlayer);
+                }
 
                 ++StaticGlobals.gameCount;
                 return check1;
             }
-            moves =Player2.calculate(game.getAIMap(true),game);
-            for (Move m: moves) {
-                if(m.checkFeasible(game,false)){
+            moves = Player2.calculate(game.getAIMap(true), game);
+            for (Move m : moves) {
+                if (m.checkFeasible(game, false)) {
                     //System.out.println(game.getPositiveCapRemain()+" "+m.getType());
                     if (m.getType() == 1) {
                         ++StaticGlobals.flatCount;
@@ -142,15 +144,15 @@ public class Board {
                     }
 
                     StaticGlobals.moveCount++;
-                    SecondPlayer=m;
-                    m.performMove(game,false);
+                    SecondPlayer = m;
+                    m.performMove(game, false);
                     break;
                 }
             }
             check1 = game.checkVictory(true);
-            if(check1 != 500){
-                if(StaticGlobals.PRINT_GAME_MOVES){
-                    System.out.println(i+": "+firstPlayer +" "+ SecondPlayer);
+            if (check1 != 500) {
+                if (StaticGlobals.PRINT_GAME_MOVES) {
+                    System.out.println(i + ": " + firstPlayer + " " + SecondPlayer);
                 }
 
                 ++StaticGlobals.gameCount;
@@ -175,82 +177,82 @@ public class Board {
         rv.boardNumber = boardID;
         return rv;
     }
-    public Board(int sideLength, List<Move> boardState, boolean start){
+
+    public Board(int sideLength, List<Move> boardState, boolean start) {
         this.start = start;
-        switch (sideLength){
+        switch (sideLength) {
             case 3:
-                positivePieceRemain=10;
-                negativePieceRemain=10;
+                positivePieceRemain = 10;
+                negativePieceRemain = 10;
                 break;
             case 4:
-                positivePieceRemain=15;
-                negativePieceRemain=15;
+                positivePieceRemain = 15;
+                negativePieceRemain = 15;
                 break;
             case 5:
-                positivePieceRemain=21;
-                negativePieceRemain=21;
-                positiveCapRemain=1;
-                negativeCapRemain=1;
+                positivePieceRemain = 21;
+                negativePieceRemain = 21;
+                positiveCapRemain = 1;
+                negativeCapRemain = 1;
                 break;
             case 6:
-                positivePieceRemain=30;
-                negativePieceRemain=30;
-                positiveCapRemain=1;
-                negativeCapRemain=1;
+                positivePieceRemain = 30;
+                negativePieceRemain = 30;
+                positiveCapRemain = 1;
+                negativeCapRemain = 1;
                 break;
             case 7:
-                positivePieceRemain=40;
-                negativePieceRemain=40;
-                positiveCapRemain=2;
-                negativeCapRemain=2;
+                positivePieceRemain = 40;
+                negativePieceRemain = 40;
+                positiveCapRemain = 2;
+                negativeCapRemain = 2;
                 break;
             case 8:
-                positivePieceRemain=50;
-                negativePieceRemain=50;
-                positiveCapRemain=2;
-                negativeCapRemain=2;
+                positivePieceRemain = 50;
+                negativePieceRemain = 50;
+                positiveCapRemain = 2;
+                negativeCapRemain = 2;
                 break;
         }
-        map=new List[sideLength][sideLength];
-        for (List[] e:map) {
-            for (List here:e) {
-                here=new ArrayList();
+        map = new List[sideLength][sideLength];
+        for (List[] e : map) {
+            for (List here : e) {
+                here = new ArrayList();
             }
 
         }
-        for (int i = 0; i <sideLength ; i++) {
-            for (int j = 0; j <sideLength ; j++) {
-                map[i][j]=new ArrayList<>();
+        for (int i = 0; i < sideLength; i++) {
+            for (int j = 0; j < sideLength; j++) {
+                map[i][j] = new ArrayList<>();
             }
         }
-        boolean ready=start;
-        for (Move e:boardState) {
+        boolean ready = start;
+        for (Move e : boardState) {
             //System.err.println(tryMove(e, ready));
-            ready=!ready;
+            ready = !ready;
         }
     }
 
     public int checkVictory(boolean cont) {
         boolean topLevel[][] = this.topLevel(cont);
-        Integer x = checkRoadWin(cont, topLevel);
-        if (x != null) return x;
+        if (FastRoadFinder.RoadChecker(topLevelBoard(cont))) return 32;
 
         //todo
         //todo add check for full board
-        boolean full=true;
+        boolean full = true;
         for (List<Integer> l[] : this.getMap()) {
-            for(List<Integer> m:l){
-                if(m.isEmpty()){
-                    full=false;
+            for (List<Integer> m : l) {
+                if (m.isEmpty()) {
+                    full = false;
                 }
             }
         }
-        if(positivePieceRemain<=0||negativePieceRemain<=0||full){
-            int positiveSum=0;
-            int negativeSum=0;
+        if (positivePieceRemain <= 0 || negativePieceRemain <= 0 || full) {
+            int positiveSum = 0;
+            int negativeSum = 0;
             for (List<Integer> l[] : this.getMap()) {
-                for(List<Integer> m:l){
-                    if(m.size()>0) {
+                for (List<Integer> m : l) {
+                    if (m.size() > 0) {
                         if (m.get(m.size() - 1) == 1) {
                             positiveSum++;
                         } else if (m.get(m.size() - 1) == -1) {
@@ -259,9 +261,9 @@ public class Board {
                     }
                 }
             }
-            if(cont){
-                return positiveSum-negativeSum;
-            }else{
+            if (cont) {
+                return positiveSum - negativeSum;
+            } else {
 
             }
         }
@@ -319,29 +321,64 @@ public class Board {
 
     }
 
+    public int[] topLevelBoard(boolean b) {
+        List<Integer> l[] = null;
+        int[] ret = new int[map.length];
+        int altmultiply= 1024;
+
+        for (int i = 0; i < map.length; i++) {
+            l = map[i];
+            int multiply = 1;
+            if (b) {
+                for (int j=0;j<map.length;j++) {
+                    List<Integer> ls=l[j];
+                    if (!ls.isEmpty() && ls.get(ls.size() - 1) > 0 && ls.get(ls.size() - 1) != 2) {
+                        ret[i]=ret[i]|multiply;
+                        ret[j]=ret[j]|altmultiply;
+                    }
+                    multiply=multiply << 1;
+                }
+
+            } else {
+                for (int j=0;j<map.length;j++) {
+                    List<Integer> ls=l[j];
+                    if (!ls.isEmpty() && ls.get(ls.size() - 1) < 0 && ls.get(ls.size() - 1) != -2) {
+                        ret[i]=ret[i]|multiply;
+                        ret[j]=ret[j]|altmultiply;
+
+                    }
+                    multiply=multiply << 1;
+
+                }
+            }
+        altmultiply=altmultiply<<1;
+        }
+        return ret;
+    }
+
     public Integer checkRoadWin(boolean cont, boolean[][] topLevel) {
 
-        for (int i = 0; i <topLevel.length ; i++) {
+        for (int i = 0; i < topLevel.length; i++) {
             topLevel = this.topLevel(true);
-            if(RoadCheck(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
+            if (RoadCheck(0, i, topLevel, new boolean[topLevel.length][topLevel.length], false)) {
                 //System.err.println("road");
                 StaticGlobals.roadCount++;
 
                 return 32;
             }
-            if(RoadCheck(i,0,topLevel,new boolean[topLevel.length][topLevel.length], true)){
+            if (RoadCheck(i, 0, topLevel, new boolean[topLevel.length][topLevel.length], true)) {
                 //System.err.println("road");
                 StaticGlobals.roadCount++;
 
                 return 32;
             }
             topLevel = this.topLevel(!cont);
-            if(RoadCheck(0,i,topLevel,new boolean[topLevel.length][topLevel.length], false)){
+            if (RoadCheck(0, i, topLevel, new boolean[topLevel.length][topLevel.length], false)) {
                 StaticGlobals.roadCount++;
                 //System.err.println("road");
                 return -32;
             }
-            if(RoadCheck(i,0,topLevel,new boolean[topLevel.length][topLevel.length], true)){
+            if (RoadCheck(i, 0, topLevel, new boolean[topLevel.length][topLevel.length], true)) {
                 //System.err.println("road");
                 StaticGlobals.roadCount++;
 
@@ -351,8 +388,8 @@ public class Board {
         return null;
     }
 
-    private boolean RoadCheck( int x, int y, boolean topLevel[][], boolean saidNo[][], boolean vertical ){
-    	/*System.err.println(x+" "+y);
+    private boolean RoadCheck(int x, int y, boolean topLevel[][], boolean saidNo[][], boolean vertical) {
+        /*System.err.println(x+" "+y);
     	for( boolean[] b:saidNo){
     		for(boolean b2:b){
                 if(b2){
@@ -365,55 +402,54 @@ public class Board {
     	}
     	System.err.println();
          //*/
-        int xActive=0;
-        int yActive=0;
-        if(vertical){
-            yActive=1;
-        }else{
-            xActive=1;
+        int xActive = 0;
+        int yActive = 0;
+        if (vertical) {
+            yActive = 1;
+        } else {
+            xActive = 1;
         }
         //System.err.println(x+" "+y);
 
-        if(x<topLevel.length&&y<topLevel.length&&x>=0&&y>=0) {
+        if (x < topLevel.length && y < topLevel.length && x >= 0 && y >= 0) {
             if (!topLevel[x][y]) {
                 //System.err.println("Broke1");
                 return false;
-            } else if (topLevel.length-1 == x * xActive + y * yActive) {
+            } else if (topLevel.length - 1 == x * xActive + y * yActive) {
                 return true;
             } else {
                 boolean saidNoSendDown[][] = new boolean[saidNo.length][saidNo.length];
                 for (int i = 0; i < saidNo.length; i++) {
                     for (int j = 0; j < saidNo.length; j++) {
-                        saidNoSendDown[i][j]=saidNo[i][j];
+                        saidNoSendDown[i][j] = saidNo[i][j];
 
                     }
                 }
                 if (x > 0) {
                     saidNoSendDown[x - 1][y] = true;
                 }
-                if (x < saidNo.length-1) {
+                if (x < saidNo.length - 1) {
                     saidNoSendDown[x + 1][y] = true;
                 }
                 if (y > 0) {
                     saidNoSendDown[x][y - 1] = true;
                 }
-                if (y < saidNo.length-1) {
+                if (y < saidNo.length - 1) {
                     saidNoSendDown[x][y + 1] = true;
                 }
 
-                if (x+1<saidNo.length&&!saidNo[x+1][y]&&topLevel[x+1][y]&&RoadCheck(x+1,y,topLevel, saidNoSendDown,vertical)){
+                if (x + 1 < saidNo.length && !saidNo[x + 1][y] && topLevel[x + 1][y] && RoadCheck(x + 1, y, topLevel, saidNoSendDown, vertical)) {
                     return true;
                 }
-                if (y+1<saidNo.length&&!saidNo[x][y+1]&&topLevel[x][y+1]&&RoadCheck(x,y+1,topLevel, saidNoSendDown,vertical)){
+                if (y + 1 < saidNo.length && !saidNo[x][y + 1] && topLevel[x][y + 1] && RoadCheck(x, y + 1, topLevel, saidNoSendDown, vertical)) {
                     return true;
                 }
-                if (x-1>=0&&!saidNo[x-1][y]&&topLevel[x-1][y]&&RoadCheck(x-1,y,topLevel, saidNoSendDown,vertical)){
+                if (x - 1 >= 0 && !saidNo[x - 1][y] && topLevel[x - 1][y] && RoadCheck(x - 1, y, topLevel, saidNoSendDown, vertical)) {
                     return true;
                 }
-                if (y-1>=0&&!saidNo[x][y-1]&&topLevel[x][y-1]&&RoadCheck(x,y-1,topLevel, saidNoSendDown,vertical)){
+                if (y - 1 >= 0 && !saidNo[x][y - 1] && topLevel[x][y - 1] && RoadCheck(x, y - 1, topLevel, saidNoSendDown, vertical)) {
                     return true;
                 }
-
 
 
             }
@@ -422,6 +458,7 @@ public class Board {
 
         return false;
     }
+
     public List<Integer>[][] getMap() {
         return map;
     }
@@ -443,13 +480,15 @@ public class Board {
     public void addMove(Move m) {
 
     }
-    public boolean tryMove(Move e, boolean positive){
+
+    public boolean tryMove(Move e, boolean positive) {
         e.performMove(this, positive);
 
         return false;
     }
-    public List<Move> generateAllMoves(List<Integer> i){
-        List<Move> moves=new LinkedList<>();
+
+    public List<Move> generateAllMoves(List<Integer> i) {
+        List<Move> moves = new LinkedList<>();
 
         return null;
     }
@@ -476,11 +515,12 @@ public class Board {
 
         return null;
     }
+
     private Move getMoves(boolean[][] needFill, boolean[][] topLevel) {
-        for (int i=0;i<map.length;i++) {
-            for (int j=0;i<map.length;j++) {
-                int pickup=0;
-                if(topLevel[i][j]) {
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; i < map.length; j++) {
+                int pickup = 0;
+                if (topLevel[i][j]) {
                     if (needFill[i][j]) {//gets the depth to pick up
                         for (int k = 0; k < map[i][j].size(); k++) {
                             if (map[i][j].get(k) > 0) {
@@ -495,102 +535,105 @@ public class Board {
         }
         return null;
     }
-    private Move getDirectionalMove(int x, int y,boolean[][] needFill,boolean vertical, boolean positive, int pickup){
+
+    private Move getDirectionalMove(int x, int y, boolean[][] needFill, boolean vertical, boolean positive, int pickup) {
         int xActive;
         int dropcount;
-        int dropSum=0;
+        int dropSum = 0;
         int yActive;
         int sign;
-        int distance=1;
-        if(vertical){
-            xActive=0;
-            yActive=1;
-        }else{
-            xActive=1;
-            yActive=0;
+        int distance = 1;
+        if (vertical) {
+            xActive = 0;
+            yActive = 1;
+        } else {
+            xActive = 1;
+            yActive = 0;
         }
-        if(positive){
-            sign=1;
-        }else{
-            sign=-1;
+        if (positive) {
+            sign = 1;
+        } else {
+            sign = -1;
         }
-        List<Integer> leftOnStack=new LinkedList<Integer>();
-        for (int i = 1; i <=pickup ; i++) {
-            leftOnStack.add(map[x][y].get(map[x][y].size()-i));
+        List<Integer> leftOnStack = new LinkedList<Integer>();
+        for (int i = 1; i <= pickup; i++) {
+            leftOnStack.add(map[x][y].get(map[x][y].size() - i));
         }
-        ArrayList<Integer> leftBehind=new ArrayList<>();
+        ArrayList<Integer> leftBehind = new ArrayList<>();
 
 
-            for (int i = 1; i < ((1+sign)*2)*(map.length-(x*xActive+y*yActive)*(1+sign)/2)&&!leftOnStack.isEmpty() ; i++) {
-                if(needFill[x+i*xActive*(1+sign)/2][y+i*yActive*(1+sign)/2]){
-                    int topLevel=map[x+i*xActive*(1+sign)/2][y+i*yActive*(1+sign)/2].get(map[x+i*xActive*(1+sign)/2][y+i*yActive*(1+sign)/2].size()-1);
-                    if(Math.abs(topLevel)==2){
-                        //todo check if top of drop=3 {
-                        //todo check for need control previous and relevant other conditions}
-                        //else{
-                        //todo drop all at previous break out conditions met}
-                    }if(Math.abs(topLevel)==3){
-                        //todo drop all at previous break out condition met
-
-                    }else{
-                        //todo leave behind enough to control
-                    }
-                }else{
-                    int topLevel=map[x+i*xActive*(1+sign)/2][y+i*yActive*(1+sign)/2].get(map[x+i*xActive*(1+sign)/2][y+i*yActive*(1+sign)/2].size()-1);
-                    if(Math.abs(topLevel)==2){
-                        //todo drop at all on previous break out conditions met
-                    }if(Math.abs(topLevel)==3) {
-                        //todo drop all at previous break out condition met
-                    }else{
-                        leftBehind.add(1);
-                    }
+        for (int i = 1; i < ((1 + sign) * 2) * (map.length - (x * xActive + y * yActive) * (1 + sign) / 2) && !leftOnStack.isEmpty(); i++) {
+            if (needFill[x + i * xActive * (1 + sign) / 2][y + i * yActive * (1 + sign) / 2]) {
+                int topLevel = map[x + i * xActive * (1 + sign) / 2][y + i * yActive * (1 + sign) / 2].get(map[x + i * xActive * (1 + sign) / 2][y + i * yActive * (1 + sign) / 2].size() - 1);
+                if (Math.abs(topLevel) == 2) {
+                    //todo check if top of drop=3 {
+                    //todo check for need control previous and relevant other conditions}
+                    //else{
+                    //todo drop all at previous break out conditions met}
                 }
+                if (Math.abs(topLevel) == 3) {
+                    //todo drop all at previous break out condition met
+
+                } else {
+                    //todo leave behind enough to control
+                }
+            } else {
+                int topLevel = map[x + i * xActive * (1 + sign) / 2][y + i * yActive * (1 + sign) / 2].get(map[x + i * xActive * (1 + sign) / 2][y + i * yActive * (1 + sign) / 2].size() - 1);
+                if (Math.abs(topLevel) == 2) {
+                    //todo drop at all on previous break out conditions met
+                }
+                if (Math.abs(topLevel) == 3) {
+                    //todo drop all at previous break out condition met
+                } else {
+                    leftBehind.add(1);
+                }
+            }
 
         }
-        return new DeStack(x,y,leftBehind,pickup,vertical,positive,0);
+        return new DeStack(x, y, leftBehind, pickup, vertical, positive, 0);
     }
 
-    private Move getMove(boolean[][] needFill, boolean[][] topLevel, int row, boolean vertical){
-        if(vertical){
-            int sum=0;
-            int value=-1;
-            for (int i = 0; i <needFill.length ; i++) {
-                if(needFill[i][row]&&!topLevel[i][row]){
+    private Move getMove(boolean[][] needFill, boolean[][] topLevel, int row, boolean vertical) {
+        if (vertical) {
+            int sum = 0;
+            int value = -1;
+            for (int i = 0; i < needFill.length; i++) {
+                if (needFill[i][row] && !topLevel[i][row]) {
                     sum++;
-                    value=i;
+                    value = i;
                 }
             }
-            if(value==-1){
+            if (value == -1) {
                 return null;
             }
-            if(sum==1){
-                if(map[value][row].isEmpty()){
-                    Placement n=new Placement(value,row,1,3);
+            if (sum == 1) {
+                if (map[value][row].isEmpty()) {
+                    Placement n = new Placement(value, row, 1, 3);
                     return n;
-                }else if(map[value][row].get(map[value][row].size()-1)==-3){
+                } else if (map[value][row].get(map[value][row].size() - 1) == -3) {
 
 
                     for (int i = 0; i < map.length; i++) {
-                        if(map[value][i].get(map[value][i].size()-1)>0){
-                            int inStack=0;
-                            for (int piece:map[value][i]) {
-                                if(piece==1||piece==3){
+                        if (map[value][i].get(map[value][i].size() - 1) > 0) {
+                            int inStack = 0;
+                            for (int piece : map[value][i]) {
+                                if (piece == 1 || piece == 3) {
                                     inStack++;
                                 }
                             }
-                            if(inStack>0) {
+                            if (inStack > 0) {
                                 //// TODO: 10/28/2016
                                 //check for movement
                             }
                         }
-                        if(map[i][row].get(map[i][row].size()-1-1)>0){
-                            int inStack=0;
-                            for (int piece:map[i][row]) {
-                                if(piece==1||piece==3){
+                        if (map[i][row].get(map[i][row].size() - 1 - 1) > 0) {
+                            int inStack = 0;
+                            for (int piece : map[i][row]) {
+                                if (piece == 1 || piece == 3) {
                                     inStack++;
                                 }
                             }
-                            if(inStack>0) {
+                            if (inStack > 0) {
                                 //// TODO: 10/28/2016
                                 //check for movement
                             }
@@ -598,31 +641,31 @@ public class Board {
 
                     }
 
-                }else if(map[value][row].get(map[value][row].size()-1)==-3){
-                        return null;
+                } else if (map[value][row].get(map[value][row].size() - 1) == -3) {
+                    return null;
                 }
-                if(map[value][row].get(map[value][row].size()-1)==2){
-                    int inStack=0;
-                    for (int piece:map[value][row]) {
-                        if(piece==1||piece==3){
+                if (map[value][row].get(map[value][row].size() - 1) == 2) {
+                    int inStack = 0;
+                    for (int piece : map[value][row]) {
+                        if (piece == 1 || piece == 3) {
                             inStack++;
                         }
                     }
-                    if(inStack>0) {
+                    if (inStack > 0) {
                         //// TODO: 10/28/2016
                         //check for movement
                     }
                 }
 
-                if(Math.abs(map[value][row].get(map[value][row].size()-1))==2){
+                if (Math.abs(map[value][row].get(map[value][row].size() - 1)) == 2) {
                     for (int i = 0; i < map.length; i++) {
-                        if(map[value][i].get(map[value][i].size()-1)==3){
+                        if (map[value][i].get(map[value][i].size() - 1) == 3) {
                             //todo will need to add walls to calc
-                            getDeStack(value,i,needFill,topLevel,row>i,vertical);
+                            getDeStack(value, i, needFill, topLevel, row > i, vertical);
                         }
-                        if(map[i][row].get(map[i][row].size()-1)==3){
+                        if (map[i][row].get(map[i][row].size() - 1) == 3) {
 
-                            getDeStack(i,row,needFill,topLevel,value>i,vertical);
+                            getDeStack(i, row, needFill, topLevel, value > i, vertical);
 
                         }
 
@@ -630,7 +673,7 @@ public class Board {
                 }
             }
             //check for controlled stacks with enough controlled flats(capstone) in the mask
-            if(vertical) {
+            if (vertical) {
                 for (int i = 0; i < needFill.length; i++) {
                     int inStack = 0;
                     for (int piece : map[i][row]) {
@@ -640,12 +683,12 @@ public class Board {
                     }
                     if (inStack > sum) {
                         //// TODO: 10/28/2016
-                        getDeStack(i, row, needFill, topLevel, value>i, vertical);
+                        getDeStack(i, row, needFill, topLevel, value > i, vertical);
 
                     }
                 }
             }
-        }else {
+        } else {
             //todo add other direction
             int sum = 0;
             int value = -1;
@@ -660,14 +703,14 @@ public class Board {
             }
             if (sum == 1) {
                 if (map[row][value].isEmpty()) {
-                    Placement n = new Placement(row, value, 1,1);
+                    Placement n = new Placement(row, value, 1, 1);
                     return n;
                 } else if (map[row][value].get(map[row][value].size() - 1) == -3) {
                     return null;
                 }
 
                 for (int i = 0; i < map.length; i++) {
-                    if (!map[i][value].isEmpty()&&map[i][value].get(map[i][value].size() - 1) > 0) {
+                    if (!map[i][value].isEmpty() && map[i][value].get(map[i][value].size() - 1) > 0) {
                         int inStack = 0;
                         for (int piece : map[i][value]) {
                             if (piece == 1 || piece == 3) {
@@ -679,7 +722,7 @@ public class Board {
                             //check for movement
                         }
                     }
-                    if (map[row][i].get(map[row][i].size() - 1 ) > 0) {
+                    if (map[row][i].get(map[row][i].size() - 1) > 0) {
                         int inStack = 0;
                         for (int piece : map[row][i]) {
                             if (piece == 1 || piece == 3) {
@@ -694,10 +737,10 @@ public class Board {
 
                 }
 
-            } else if (!map[row][value].isEmpty()&&map[row][value].get(map[row][value].size() - 1) == -3) {
+            } else if (!map[row][value].isEmpty() && map[row][value].get(map[row][value].size() - 1) == -3) {
                 return null;
             }
-            if (!map[row][value].isEmpty()&&map[row][value].get(map[row][value].size() - 1) == 2) {
+            if (!map[row][value].isEmpty() && map[row][value].get(map[row][value].size() - 1) == 2) {
                 int inStack = 0;
                 for (int piece : map[row][value]) {
                     if (piece == 1 || piece == 3) {
@@ -710,7 +753,7 @@ public class Board {
                 }
             }
 
-            if (!map[row][value].isEmpty()&&Math.abs(map[row][value].get(map[row][value].size() - 1)) == 2) {
+            if (!map[row][value].isEmpty() && Math.abs(map[row][value].get(map[row][value].size() - 1)) == 2) {
                 for (int i = 0; i < map.length; i++) {
                     if (map[i][value].get(map[i][value].size() - 1) == 3) {
                         getDeStack(i, value, needFill, topLevel, row > i, vertical);
@@ -744,30 +787,28 @@ public class Board {
 
         return null;
 
-}
+    }
+
     /* step 1:place top piece on furthest need fill not part of top level
          * step 2:if location 2 needs to be controlled leave appropriate number on 1
          * if 3 leave apropriate number on 2 and so on till end
          *
          * //todo add feasability check(walls and caps)
          */
-    private Move getDeStack(int x, int y, boolean[][] needFill, boolean[][] topLevel, boolean positive, boolean vertical){
-        List<Integer> stack=map[x][y];
-        int pickUp=needFill.length;
-        if (stack.size()<pickUp) {
-            pickUp=stack.size();
+    private Move getDeStack(int x, int y, boolean[][] needFill, boolean[][] topLevel, boolean positive, boolean vertical) {
+        List<Integer> stack = map[x][y];
+        int pickUp = needFill.length;
+        if (stack.size() < pickUp) {
+            pickUp = stack.size();
         }
-        boolean topLevelClone[][]=topLevel.clone();
+        boolean topLevelClone[][] = topLevel.clone();
         int distance;
         if (checkConsistentDirections(x, y, needFill, topLevel)) {
             return null;
         }
-        ArrayList<Integer> leftBehind=new ArrayList<>();
+        ArrayList<Integer> leftBehind = new ArrayList<>();
 
         return getMoveVerticalPositive(x, y, needFill, positive, vertical, stack, pickUp, topLevelClone, leftBehind);
-
-
-
 
 
     }
@@ -775,15 +816,16 @@ public class Board {
 
     /**
      * gets the vertical positive move
-     * @param x starting location
-     * @param y starting location
-     * @param needFill mandatory to fill
-     * @param positive up or down the axis
-     * @param vertical along the y axis?
-     * @param stack starting locations contains
-     * @param pickUp pick up count from stack
+     *
+     * @param x             starting location
+     * @param y             starting location
+     * @param needFill      mandatory to fill
+     * @param positive      up or down the axis
+     * @param vertical      along the y axis?
+     * @param stack         starting locations contains
+     * @param pickUp        pick up count from stack
      * @param topLevelClone clone of the top level to use as a guine pig
-     * @param leftBehind the number of pieces to be left behind on a given square
+     * @param leftBehind    the number of pieces to be left behind on a given square
      * @return
      */
     private Move getMoveVerticalPositive(int x, int y, boolean[][] needFill, boolean positive, boolean vertical, List<Integer> stack, int pickUp, boolean[][] topLevelClone, ArrayList<Integer> leftBehind) {
@@ -791,76 +833,77 @@ public class Board {
         int sign;
         int xChange;
         int yChange;
-        if(positive){
-            sign=1;
-        }else{
-            sign=-1;
+        if (positive) {
+            sign = 1;
+        } else {
+            sign = -1;
         }
-        if(vertical){
-            xChange=0;
-            yChange=1;
-        }else{
-            yChange=0;
-            xChange=1;
+        if (vertical) {
+            xChange = 0;
+            yChange = 1;
+        } else {
+            yChange = 0;
+            xChange = 1;
         }
-        int furthest=y*yChange+x*xChange;
-        for (int i = y*(yChange)+x*(xChange); i < needFill.length&&i>0; i+=sign) {
-            if(needFill[x][y]){
-                furthest=i;
+        int furthest = y * yChange + x * xChange;
+        for (int i = y * (yChange) + x * (xChange); i < needFill.length && i > 0; i += sign) {
+            if (needFill[x][y]) {
+                furthest = i;
             }
         }
-        if(needFill[x][y]){
+        if (needFill[x][y]) {
             int pickUpDown;
             for (pickUpDown = 0;
-                 pickUpDown < pickUp&&
-                         !(stack.get(stack.size()-(pickUp-pickUpDown))==1
-                                 ||stack.get(stack.size()-(pickUp-pickUpDown))==3);
-                 pickUpDown++);
-            pickUp=pickUp-pickUpDown;
-            topLevelClone[x][y]=true;
+                 pickUpDown < pickUp &&
+                         !(stack.get(stack.size() - (pickUp - pickUpDown)) == 1
+                                 || stack.get(stack.size() - (pickUp - pickUpDown)) == 3);
+                 pickUpDown++)
+                ;
+            pickUp = pickUp - pickUpDown;
+            topLevelClone[x][y] = true;
         }
-        int useable=pickUp;
+        int useable = pickUp;
         //int i = 1; i <= y*yChange+x*xChange&&useable>0 && furthest<y-i; i++
-        for (int i = 1; i <= (((-sign)+1)/2)*needFill.length-sign*(y*yChange+x*xChange)&&useable>0&&sign*furthest>sign*(y*yChange+x*xChange+sign*i); i++) {
-            if(Math.abs(map[x+xChange*i][y+yChange*i].get(map[x+xChange*i][y+yChange*i].size()-1))==3){
+        for (int i = 1; i <= (((-sign) + 1) / 2) * needFill.length - sign * (y * yChange + x * xChange) && useable > 0 && sign * furthest > sign * (y * yChange + x * xChange + sign * i); i++) {
+            if (Math.abs(map[x + xChange * i][y + yChange * i].get(map[x + xChange * i][y + yChange * i].size() - 1)) == 3) {
                 return null;
             }
-            if(Math.abs(map[x+xChange*i][y+yChange*i].get(map[x+xChange*i][y+yChange*i].size()-1))==2){
-                if(stack.get(stack.size()-1)==3){
-                    if(needFill[x+xChange*(i-sign)][y+yChange*(i-sign)]){
-                        if(stack.get(stack.size()-2)==1){
+            if (Math.abs(map[x + xChange * i][y + yChange * i].get(map[x + xChange * i][y + yChange * i].size() - 1)) == 2) {
+                if (stack.get(stack.size() - 1) == 3) {
+                    if (needFill[x + xChange * (i - sign)][y + yChange * (i - sign)]) {
+                        if (stack.get(stack.size() - 2) == 1) {
 
-                            int prev=leftBehind.remove(leftBehind.size()-1);
-                            leftBehind.add(useable+prev-1);
+                            int prev = leftBehind.remove(leftBehind.size() - 1);
+                            leftBehind.add(useable + prev - 1);
                             leftBehind.add(1);
-                            useable=0;
-                        }else{
+                            useable = 0;
+                        } else {
                             return null;
                         }
-                    }else{
-                        leftBehind.remove(leftBehind.size()-1);
-                        leftBehind.add(useable-1);
+                    } else {
+                        leftBehind.remove(leftBehind.size() - 1);
+                        leftBehind.add(useable - 1);
                         leftBehind.add(1);
-                        useable=0;
+                        useable = 0;
                     }
-                }else{
+                } else {
                     return null;
                 }
-            }else if(needFill[x+xChange*i][y+yChange*i]){
-                useable = getUsableNeedControl(x+xChange*i, y+yChange*i, stack, topLevelClone, leftBehind, useable);
+            } else if (needFill[x + xChange * i][y + yChange * i]) {
+                useable = getUsableNeedControl(x + xChange * i, y + yChange * i, stack, topLevelClone, leftBehind, useable);
 
-            }else{
-                useable = getUsableNoControl(x+xChange*i, y+yChange*i, stack, topLevelClone, leftBehind, useable);
+            } else {
+                useable = getUsableNoControl(x + xChange * i, y + yChange * i, stack, topLevelClone, leftBehind, useable);
 
             }
         }
-        if(useable!=0) {
+        if (useable != 0) {
             leftBehind.add(useable);
         }
         if (checkRoadEquivalence(needFill, topLevelClone)) {
             return null;
         }
-        return new DeStack(x,y,leftBehind,pickUp,vertical,positive,1);
+        return new DeStack(x, y, leftBehind, pickUp, vertical, positive, 1);
     }
 
 
@@ -868,13 +911,14 @@ public class Board {
 
         int pickUpDown;
         for (pickUpDown = 1;
-             pickUpDown < useable&&
-                     !(stack.get(stack.size()-(useable-pickUpDown))==1
-                             ||stack.get(stack.size()-(useable-pickUpDown))==3);
-             pickUpDown++);
+             pickUpDown < useable &&
+                     !(stack.get(stack.size() - (useable - pickUpDown)) == 1
+                             || stack.get(stack.size() - (useable - pickUpDown)) == 3);
+             pickUpDown++)
+            ;
         leftBehind.add(pickUpDown);
-        useable=useable-pickUpDown;
-        topLevelClone[x][y]=true;
+        useable = useable - pickUpDown;
+        topLevelClone[x][y] = true;
         return useable;
     }
 
@@ -886,9 +930,9 @@ public class Board {
     }
 
     private boolean checkRoadEquivalence(boolean[][] needFill, boolean[][] topLevelClone) {
-        for (int i = 0; i <topLevelClone.length ; i++) {
-            for (int j = 0; j <topLevelClone.length ; j++) {
-                if(needFill[i][j]&&!topLevelClone[i][j]){
+        for (int i = 0; i < topLevelClone.length; i++) {
+            for (int j = 0; j < topLevelClone.length; j++) {
+                if (needFill[i][j] && !topLevelClone[i][j]) {
                     return true;
                 }
             }
@@ -897,14 +941,14 @@ public class Board {
     }
 
     private boolean checkConsistentDirections(int x, int y, boolean[][] needFill, boolean[][] topLevel) {
-        boolean before=false;
-        boolean checktrue=false;
-        for (int i = 0; i <map.length ; i++) {
+        boolean before = false;
+        boolean checktrue = false;
+        for (int i = 0; i < map.length; i++) {
             if ((needFill[x][i] && !topLevel[x][i] && i < y) || (needFill[y][i] && !topLevel[y][i] && i < y)) {
                 before = true;
             }
-            if ((needFill[x][i] && !topLevel[x][i] && i > y && before)||(needFill[y][i]&&!topLevel[y][i]&&i>y&&before)) {
-                checktrue=true;
+            if ((needFill[x][i] && !topLevel[x][i] && i > y && before) || (needFill[y][i] && !topLevel[y][i] && i > y && before)) {
+                checktrue = true;
                 //check for Consistant direction;
             }
 
@@ -913,100 +957,97 @@ public class Board {
     }
 
     /**
-     *
-     * @param x current x cord
-     * @param y current y cord
+     * @param x         current x cord
+     * @param y         current y cord
      * @param visitable can not visit things marked as 1
-     * @param topLevel can not visit things marked as zero
-     * @param row allowed empty row
-     * @param vertical vertical/horizontal
-     * @param needFill returns the positions in a row that need to be filled to get a road
+     * @param topLevel  can not visit things marked as zero
+     * @param row       allowed empty row
+     * @param vertical  vertical/horizontal
+     * @param needFill  returns the positions in a row that need to be filled to get a road
      * @return
      */
     private Move needFill(int x, int y,
-                                 boolean[][] visitable, boolean[][] topLevel,
-                                 int row, boolean vertical, boolean[][] needFill){
+                          boolean[][] visitable, boolean[][] topLevel,
+                          int row, boolean vertical, boolean[][] needFill) {
         Move ret;
         needFill[x][y] = true;
-        boolean forwardVisitable[][]=new boolean[visitable.length][visitable.length];
-        for (int i = 0; i <visitable.length ; i++) {
-            for (int j = 0; j <visitable.length ; j++) {
-                forwardVisitable[i][j]=visitable[i][j];
+        boolean forwardVisitable[][] = new boolean[visitable.length][visitable.length];
+        for (int i = 0; i < visitable.length; i++) {
+            for (int j = 0; j < visitable.length; j++) {
+                forwardVisitable[i][j] = visitable[i][j];
             }
         }
         setSaidNoTrue(x, y, forwardVisitable);
 
 
-
-
-        if(y+1<needFill.length) {
+        if (y + 1 < needFill.length) {
 
 
             if (visitable[x][y + 1] == false && (topLevel[x][y + 1] == true || (x == row && !vertical) || (y + 1 == row && vertical))) {
 
 
-                ret=needFill(x, y + 1, forwardVisitable, topLevel, row, vertical, needFill);
+                ret = needFill(x, y + 1, forwardVisitable, topLevel, row, vertical, needFill);
 
-                if(ret!=null){
+                if (ret != null) {
                     return ret;
                 }
 
             }
-        }else{
+        } else {
 
-            needFill[x][y]=true;
+            needFill[x][y] = true;
             ret = getMove(needFill, topLevel, row, vertical);
             /**for (boolean n[]:
-                    needFill) {
-                for(boolean a:n) {
-                    if(a) {
-                        System.err.print(1 + " ");
-                    }else{
-                        System.err.print(0 + " ");
+             needFill) {
+             for(boolean a:n) {
+             if(a) {
+             System.err.print(1 + " ");
+             }else{
+             System.err.print(0 + " ");
 
-                    }
-                }
-                System.err.println();
+             }
+             }
+             System.err.println();
 
 
              }*/
-            needFill[x][y]=false;
+            needFill[x][y] = false;
 
 
-                return ret;
+            return ret;
 
 
         }
 
-        if(x+1<needFill.length) {
+        if (x + 1 < needFill.length) {
 
             if (visitable[x + 1][y] == false && (topLevel[x + 1][y] == true || (x + 1 == row && !vertical) || (y == row && vertical))) {
 
-                ret=needFill(x + 1, y, forwardVisitable, topLevel, row, vertical, needFill);
-                if(ret!=null){
+                ret = needFill(x + 1, y, forwardVisitable, topLevel, row, vertical, needFill);
+                if (ret != null) {
                     return ret;
                 }
 
             }
         }
-        if(x-1>0) {
+        if (x - 1 > 0) {
 
             if (visitable[x - 1][y] == false && (topLevel[x - 1][y] == true || (x - 1 == row && !vertical) || (y == row && vertical))) {
 
-                ret=needFill(x - 1, y, forwardVisitable, topLevel, row, vertical, needFill);
-                if(ret!=null){
+                ret = needFill(x - 1, y, forwardVisitable, topLevel, row, vertical, needFill);
+                if (ret != null) {
                     return ret;
                 }
 
             }
         }
 
-        if(y-1>=0) {
+        if (y - 1 >= 0) {
 
             if (visitable[x][y - 1] == false && (topLevel[x][y - 1] == true || (x == row && !vertical) || (y - 1 == row && vertical))) {
 
-                ret=needFill(x, y - 1, forwardVisitable, topLevel, row, vertical, needFill);
-                if(ret!=null){
+                ret = needFill(x, y - 1, forwardVisitable, topLevel, row, vertical, needFill);
+                if (ret != null) {
                     return ret;
                 }
 
@@ -1018,35 +1059,34 @@ public class Board {
     }
 
     private void setSaidNoTrue(int x, int y, boolean[][] visitable) {
-        visitable[x][y]=true;
-        if(x+1<visitable.length) {
+        visitable[x][y] = true;
+        if (x + 1 < visitable.length) {
             visitable[x + 1][y] = true;
         }
-        if(x-1>=0) {
-            visitable[x -1][y] = true;
+        if (x - 1 >= 0) {
+            visitable[x - 1][y] = true;
         }
-        if(y+1<visitable.length) {
-            visitable[x][y+1] = true;
+        if (y + 1 < visitable.length) {
+            visitable[x][y + 1] = true;
         }
-        if(y-1>=0) {
-            visitable[x][y-1] = true;
+        if (y - 1 >= 0) {
+            visitable[x][y - 1] = true;
         }
     }
 
 
-
-    public boolean[][] topLevel(boolean control){
-        boolean topLevel[][]=new boolean[map.length][map.length];
-        int sign=-1;
-        if(control){
-            sign=1;
+    public boolean[][] topLevel(boolean control) {
+        boolean topLevel[][] = new boolean[map.length][map.length];
+        int sign = -1;
+        if (control) {
+            sign = 1;
         }
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map.length; j++) {
-                if(!map[i][j].isEmpty()){
+                if (!map[i][j].isEmpty()) {
                     int temp = map[i][j].get(map[i][j].size() - 1);
-                    if(temp==sign*3||temp==sign*1){
-                        topLevel[i][j]=true;
+                    if (temp == sign * 3 || temp == sign * 1) {
+                        topLevel[i][j] = true;
                     }
 
                 }
@@ -1054,26 +1094,27 @@ public class Board {
         }
         return topLevel;
     }
-    public int[][][] getAIMap(boolean control){
-        int sign=-1;
 
-        if(control){
-            sign=1;
+    public int[][][] getAIMap(boolean control) {
+        int sign = -1;
+
+        if (control) {
+            sign = 1;
         }
-        int AIMap[][][]=new int[map.length][map.length][map.length+1];
+        int AIMap[][][] = new int[map.length][map.length][map.length + 1];
 
 
-        for (int i = 0; i <map.length ; i++) {
+        for (int i = 0; i < map.length; i++) {
 
 
-            for (int j = 0; j <map.length ; j++) {
+            for (int j = 0; j < map.length; j++) {
 
 
-                for (int k = 0; k < map.length+1; k++) {
+                for (int k = 0; k <map.length +1 ; k++) {
 
-                    if(map[i][j].size()-1>=k){
+                    if (map[i][j].size() - 1 >= k) {
 
-                        AIMap[i][j][k]=sign*map[i][j].get(k);
+                        AIMap[i][j][k] = sign * map[i][j].get(map[i][j].size()-(k+1));
                     }
 
 
@@ -1086,27 +1127,36 @@ public class Board {
     public List<Move> getAllMoves() {
         return null;
     }
+
     public int getNegativePieceRemain() {
         return negativePieceRemain;
     }
-    public int getPositivePieceRemain(){
+
+    public int getPositivePieceRemain() {
         return positivePieceRemain;
     }
 
-    public int getPositiveCapRemain(){
+    public int getPositiveCapRemain() {
         return positiveCapRemain;
     }
-    public int getNegativeCapRemain(){
+
+    public int getNegativeCapRemain() {
         return negativeCapRemain;
     }
-    public void reducePositiveCapRemain(){
-        positiveCapRemain-=1;
+
+    public void reducePositiveCapRemain() {
+        positiveCapRemain -= 1;
     }
-    public void reduceNegativeCapRemain(){negativeCapRemain=negativeCapRemain-1;}
-    public void reducePositiveFlatRemain(){
+
+    public void reduceNegativeCapRemain() {
+        negativeCapRemain = negativeCapRemain - 1;
+    }
+
+    public void reducePositiveFlatRemain() {
         positivePieceRemain--;
     }
-    public void reduceNegativeFlatRemain(){
+
+    public void reduceNegativeFlatRemain() {
         negativePieceRemain--;
     }
 

@@ -262,7 +262,7 @@ public class ControlClass {
 
 
                             if (StaticGlobals.LOAD_FROM_LAST_RUN) {
-                                testNetwork = loadTesting("networks\\TestNeat\\output\\Network" + size + "x" + size + i + ".takNetwork");
+                                testNetwork = loadTesting("networks\\TestNeat\\outputstats\\Network" + size + "x" + size + i + ".takNetwork");
                                 testNetwork.setWins(0);
                                 testNetwork.setLosses(0);
                             } else {
