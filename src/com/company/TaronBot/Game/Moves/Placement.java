@@ -39,8 +39,8 @@ public class Placement implements Move {
                 }else{
                     board.reducePositiveFlatRemain();
                 }
+                board.filledSquares++;
                 map[x][y].add(type);
-
                 return map;
             }else{
                 if(type==3){
@@ -50,6 +50,7 @@ public class Placement implements Move {
                     board.reduceNegativeFlatRemain();
 
                 }
+                board.filledSquares++;
                 map[x][y].add(-1*type);
                 return map;
             }

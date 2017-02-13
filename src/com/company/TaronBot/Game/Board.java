@@ -27,8 +27,105 @@ public class Board {
     private boolean start;
     private static Move firstPlayer, SecondPlayer = null;
     public int boardNumber;
+    public int filledSquares=0;
     public static List<DeStack> moves = generateMoves.getDestacks(8);
+    private static PerformOnMove b=new PerformOnMove() {
+        @Override
+        public void performOnMove(TakNetwork n, Move m, int depth, Board b) {
 
+            switch (m.getType()){
+                case 0:
+                    StaticGlobals.destackCount++;
+                    break;
+                case 1:
+                    StaticGlobals.flatCount++;
+                    break;
+                case 2:
+                    StaticGlobals.wallCount++;
+                    break;
+                case 3:
+                    StaticGlobals.capCount++;
+                    break;
+                default:
+                    break;
+            }
+            StaticGlobals.moveCount++;
+        }
+    };
+    private static List<Move> emptyList=new ArrayList<>();
+    public static int playGame(TakNetwork Player1, TakNetwork Player2){
+        return playGame(Player1, Player2, b);
+    }
+    public static Integer number=1;
+    public static int playGame(TakNetwork Player1, TakNetwork Player2, PerformOnMove Operator){
+        Board game =new Board(Player1.getWidth(), emptyList, true);
+        List<Move>  moves =Player1.calculate(game.getAIMap(false), game);
+        boolean moveMade=true;
+        for (int i = moves.size()-1 ; i >0  ; i--) {
+            Move m=moves.get(i);
+            if(m.getType()==1&&m.checkFeasible(game, true)) {
+                m.performMove(game, false);
+
+                break;
+            }        }
+        moves =Player2.calculate(game.getAIMap(true), game);
+        for (int i = moves.size()-1 ; i >0  ; i--) {
+
+            Move m=moves.get(i);
+            if(m.getType()==1&&m.checkFeasible(game, true)) {
+                m.performMove(game, true);
+                break;
+            }
+        }
+        boolean control=false;
+        int i=0;
+        int turnCount=0;
+        Move m1 = new Placement("");
+        Move m2 = new Placement("");
+        Move n1 = new Placement("");
+        Move n2 = new Placement("");
+        game: while(!game.checkGameOver()&&moveMade&&turnCount<1000
+                &&
+                !(m1.looped(m2)&&n1.looped(n2))
+                ){
+            moveMade=false;
+            moves = Player1.calculate(game.getAIMap(true), game);
+            i=0;
+            for (Move m:moves) {
+
+                if(m.checkFeasible(game, true)) {
+                    m.performMove(game, true);
+                    Operator.performOnMove(Player1,m,i,game);
+                    moveMade=true;
+                    m2=m1;
+                    m1=m;
+                    break;
+                }
+                i++;
+            }
+            if(game.checkGameOver()||!moveMade){
+                control=true;
+                break game;
+            }
+            moveMade=false;
+            moves = Player2.calculate(game.getAIMap(false), game);
+            i=0;
+            for (Move m:moves) {
+                if(m.checkFeasible(game, false)) {
+                    m.performMove(game, false);
+                    Operator.performOnMove(Player2,m,i,game);
+                    moveMade=true;
+                    n2=n1;
+                    n1=m;
+                    break;
+                }
+                i++;
+            }
+            ++turnCount;
+        }
+        return game.victoryValue(control);
+
+    }
     public static int playGame(TakNetwork Player1, TakNetwork Player2, int sideLength) {
 
         Board game = new Board(sideLength, new LinkedList<>(), true);
@@ -64,39 +161,7 @@ public class Board {
         int i = 1;
         for (int j = 0; j < 1000; j++) {
             //input data needs to be 9x8x8
-            if (StaticGlobals.PRINT_GAME_MOVES) {
-                System.out.println(i + ": " + firstPlayer + " " + SecondPlayer);
-                if (StaticGlobals.PRINT_GAME_BOARD) {
-                    for (boolean n[] :
-                            game.topLevel(true)) {
-                        for (boolean a : n) {
-                            if (a) {
-                                System.err.print(1 + " ");
-                            } else {
-                                System.err.print(0 + " ");
 
-                            }
-                        }
-                        System.err.println();
-
-
-                    }//*/
-                    System.err.println();
-
-                    for (boolean n[] :
-                            game.topLevel(false)) {
-                        for (boolean a : n) {
-                            if (a) {
-                                System.err.print(1 + " ");
-                            } else {
-                                System.err.print(0 + " ");
-
-                            }
-                        }
-                        System.err.println();
-                    }
-                }
-            }
             i++;
             moves = Player1.calculate(game.getAIMap(true), game);
             for (Move m : moves) {
@@ -118,6 +183,7 @@ public class Board {
                     break;
                 }
             }
+
             check1 = game.checkVictory(true);
 
             if (check1 != 500) {
@@ -214,13 +280,9 @@ public class Board {
                 negativeCapRemain = 2;
                 break;
         }
-        map = new List[sideLength][sideLength];
-        for (List[] e : map) {
-            for (List here : e) {
-                here = new ArrayList();
-            }
 
-        }
+        map = new List[sideLength][sideLength];
+
         for (int i = 0; i < sideLength; i++) {
             for (int j = 0; j < sideLength; j++) {
                 map[i][j] = new ArrayList<>();
@@ -234,7 +296,8 @@ public class Board {
     }
 
     public int checkVictory(boolean cont) {
-        boolean topLevel[][] = this.topLevel(cont);
+        if (FastRoadFinder.RoadChecker(topLevelBoard(!cont))) return -32;
+
         if (FastRoadFinder.RoadChecker(topLevelBoard(cont))) return 32;
 
         //todo
@@ -262,7 +325,9 @@ public class Board {
                 }
             }
             if (cont) {
+
                 return positiveSum - negativeSum;
+
             } else {
 
             }
@@ -356,37 +421,6 @@ public class Board {
         return ret;
     }
 
-    public Integer checkRoadWin(boolean cont, boolean[][] topLevel) {
-
-        for (int i = 0; i < topLevel.length; i++) {
-            topLevel = this.topLevel(true);
-            if (RoadCheck(0, i, topLevel, new boolean[topLevel.length][topLevel.length], false)) {
-                //System.err.println("road");
-                StaticGlobals.roadCount++;
-
-                return 32;
-            }
-            if (RoadCheck(i, 0, topLevel, new boolean[topLevel.length][topLevel.length], true)) {
-                //System.err.println("road");
-                StaticGlobals.roadCount++;
-
-                return 32;
-            }
-            topLevel = this.topLevel(!cont);
-            if (RoadCheck(0, i, topLevel, new boolean[topLevel.length][topLevel.length], false)) {
-                StaticGlobals.roadCount++;
-                //System.err.println("road");
-                return -32;
-            }
-            if (RoadCheck(i, 0, topLevel, new boolean[topLevel.length][topLevel.length], true)) {
-                //System.err.println("road");
-                StaticGlobals.roadCount++;
-
-                return -32;
-            }
-        }
-        return null;
-    }
 
     private boolean RoadCheck(int x, int y, boolean topLevel[][], boolean saidNo[][], boolean vertical) {
         /*System.err.println(x+" "+y);
@@ -477,121 +511,6 @@ public class Board {
         return ret;
     }
 
-    public void addMove(Move m) {
-
-    }
-
-    public boolean tryMove(Move e, boolean positive) {
-        e.performMove(this, positive);
-
-        return false;
-    }
-
-    public List<Move> generateAllMoves(List<Integer> i) {
-        List<Move> moves = new LinkedList<>();
-
-        return null;
-    }
-
-    public Move checkForVictory(boolean cont) {
-
-        for (int i = 0; i < this.map.length; i++) {
-            for (int j = 0; j < this.map.length; j++) {
-                if (!topLevel(cont)[i][j]) {
-
-                    if (map[i][j].isEmpty()) {
-                        boolean b[][] = topLevel(cont);
-                        b[i][j] = true;
-                        if (checkForRoad(b)) {
-                            System.out.println("Road victory found: " + (new Placement(i, j, 1, 0).toPlayTakString()));
-
-                            return new Placement(i, j, 1, 0);
-                        }
-                    }
-                }
-            }
-        }
-
-
-        return null;
-    }
-
-    private Move getMoves(boolean[][] needFill, boolean[][] topLevel) {
-        for (int i = 0; i < map.length; i++) {
-            for (int j = 0; i < map.length; j++) {
-                int pickup = 0;
-                if (topLevel[i][j]) {
-                    if (needFill[i][j]) {//gets the depth to pick up
-                        for (int k = 0; k < map[i][j].size(); k++) {
-                            if (map[i][j].get(k) > 0) {
-                                pickup = k;
-                            }
-                        }
-
-                    }
-                }
-
-            }
-        }
-        return null;
-    }
-
-    private Move getDirectionalMove(int x, int y, boolean[][] needFill, boolean vertical, boolean positive, int pickup) {
-        int xActive;
-        int dropcount;
-        int dropSum = 0;
-        int yActive;
-        int sign;
-        int distance = 1;
-        if (vertical) {
-            xActive = 0;
-            yActive = 1;
-        } else {
-            xActive = 1;
-            yActive = 0;
-        }
-        if (positive) {
-            sign = 1;
-        } else {
-            sign = -1;
-        }
-        List<Integer> leftOnStack = new LinkedList<Integer>();
-        for (int i = 1; i <= pickup; i++) {
-            leftOnStack.add(map[x][y].get(map[x][y].size() - i));
-        }
-        ArrayList<Integer> leftBehind = new ArrayList<>();
-
-
-        for (int i = 1; i < ((1 + sign) * 2) * (map.length - (x * xActive + y * yActive) * (1 + sign) / 2) && !leftOnStack.isEmpty(); i++) {
-            if (needFill[x + i * xActive * (1 + sign) / 2][y + i * yActive * (1 + sign) / 2]) {
-                int topLevel = map[x + i * xActive * (1 + sign) / 2][y + i * yActive * (1 + sign) / 2].get(map[x + i * xActive * (1 + sign) / 2][y + i * yActive * (1 + sign) / 2].size() - 1);
-                if (Math.abs(topLevel) == 2) {
-                    //todo check if top of drop=3 {
-                    //todo check for need control previous and relevant other conditions}
-                    //else{
-                    //todo drop all at previous break out conditions met}
-                }
-                if (Math.abs(topLevel) == 3) {
-                    //todo drop all at previous break out condition met
-
-                } else {
-                    //todo leave behind enough to control
-                }
-            } else {
-                int topLevel = map[x + i * xActive * (1 + sign) / 2][y + i * yActive * (1 + sign) / 2].get(map[x + i * xActive * (1 + sign) / 2][y + i * yActive * (1 + sign) / 2].size() - 1);
-                if (Math.abs(topLevel) == 2) {
-                    //todo drop at all on previous break out conditions met
-                }
-                if (Math.abs(topLevel) == 3) {
-                    //todo drop all at previous break out condition met
-                } else {
-                    leftBehind.add(1);
-                }
-            }
-
-        }
-        return new DeStack(x, y, leftBehind, pickup, vertical, positive, 0);
-    }
 
     private Move getMove(boolean[][] needFill, boolean[][] topLevel, int row, boolean vertical) {
         if (vertical) {
@@ -1158,6 +1077,106 @@ public class Board {
 
     public void reduceNegativeFlatRemain() {
         negativePieceRemain--;
+    }
+
+    /**
+     * this is a game over calculator that is fairly efficient the order of checks is such that the quickest is done first and slowest last
+     * @return
+     */
+    public boolean checkGameOver(){
+
+
+        if(this.positivePieceRemain<=0||this.negativePieceRemain<=0){
+
+            return true;
+
+        }
+        /*
+        boolean broke=false;
+        broken: for(List<Integer>[] l:map){
+            for(List<Integer> ls:l){
+                if(ls.isEmpty()){
+                    broke=true;
+                    break broken;
+                }
+            }
+        }
+        //*/
+        if(filledSquares==map.length*map.length){
+
+            return true;
+        }
+        if(FastRoadFinder.RoadChecker(topLevelBoard())){
+
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Tournament rules are: board size for a road flat difference for flats
+     * @param b weather the first player was in control or not
+     * @return the weight of the win as done by tournament style rules
+     */
+    public int victoryValue(boolean b){
+        if(FastRoadFinder.RoadChecker(topLevelBoard(b))){
+            StaticGlobals.roadCount++;
+            return map.length;
+        }else if(FastRoadFinder.RoadChecker(topLevelBoard(!b))){
+            StaticGlobals.roadCount++;
+            return -map.length;
+        }
+        int flatCount1=0;
+        int flatCount2=0;
+        int check;
+       for(List<Integer>[] l:map){
+            for(List<Integer> ls:l){
+               if((!ls.isEmpty()&&ls.get(0)!=0)){
+                   check=ls.get(ls.size()-1);
+                   if(check==1){
+                       flatCount1++;
+                   }else if(check==-1){
+                       flatCount2++;
+                   }
+               }
+            }
+        }
+        if(b){
+            return flatCount1-flatCount2;
+        }else{
+            return flatCount2-flatCount1;
+        }
+
+    }
+    public long[] topLevelBoard() {
+        List<Integer> l[] = null;
+        long[] ret = new long[map.length];
+        long altmultiply= 1024;
+        long farMultiply= 1048576;
+        for (int i = 0; i < map.length; i++) {
+            l = map[i];
+            long multiply = 1;
+            long farthermultiply=1073741824;
+                for (int j=0;j<map.length;j++) {
+                    List<Integer> ls=l[j];
+                    if(!ls.isEmpty()) {
+                        int checkValue= ls.get(ls.size() - 1);
+                        if ( checkValue > 0 && checkValue != 2) {
+                            ret[i] = ret[i] | multiply;
+                            ret[j] = ret[j] | altmultiply;
+                        }else if(checkValue < 0 && checkValue != -2){
+                            ret[i] = ret[i] | farMultiply;
+                            ret[j] = ret[j] | farthermultiply;
+                        }
+
+                    }
+                    multiply = multiply << 1;
+                    farthermultiply = farthermultiply << 1;
+                }
+            farMultiply=farMultiply<<1;
+            altmultiply=altmultiply<<1;
+        }
+        return ret;
     }
 
 }

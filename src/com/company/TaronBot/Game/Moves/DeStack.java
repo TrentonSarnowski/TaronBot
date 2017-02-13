@@ -344,6 +344,9 @@ public class DeStack implements Move {
             for (int j = 0; j < leftBehind.get(i - 1); j++) {
 
                 try {
+                    if(map[x + i * (sign * xChange)][y + i * (sign * yChange)].isEmpty()){
+                        board.filledSquares++;
+                    }
                     map[x + i * (sign * xChange)][y + i * (sign * yChange)].add(pickUp.get(sum));
 
                     sum++;
@@ -354,6 +357,9 @@ public class DeStack implements Move {
         }
         for (int i = 0; i < pickUpC; i++) {
             map[x][y].remove(map[x][y].size() - 1);
+        }
+        if(map[x][y].isEmpty()){
+            board.filledSquares--;
         }
 
         return map;
@@ -473,4 +479,22 @@ public class DeStack implements Move {
         return true;
     }
 
+    public int getY() {
+        return y;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getXend() {
+        return xend;
+    }
+    public int getYend(){
+        return yend;
+    }
+
+    public Integer getPickUpC() {
+        return pickUpC;
+    }
 }

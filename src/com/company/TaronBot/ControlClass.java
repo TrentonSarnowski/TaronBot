@@ -48,17 +48,17 @@ public class ControlClass {
     /**
      * This begins the Remote Control Structure: Reduced functionality to prevent harm to computer because my secruity is low
      * stakbot
-     *      ping: Sends a ping message to chat
-     *      online: Begins generating AI(see generate for AI specs), Brings up Demo games(vs self) for playTak, Brings up sTAKbot for challenge on Playtak
-     *      cleanup: Brings the AI down from online play. does not stop generation
-     *      pause: pauses offline generation
-     *      unpause: unpuases offline generation
-     *      depth i: sets the depth of the networks generated  with i
-     *      rungens i: sets the gens to be run to i
-     *      size i: sets the size of the board to be run
-     *      gensize i: sets the size of the generation to i:
-
-     * @param r: Scanner of the output from the site
+     * ping: Sends a ping message to chat
+     * online: Begins generating AI(see generate for AI specs), Brings up Demo games(vs self) for playTak, Brings up sTAKbot for challenge on Playtak
+     * cleanup: Brings the AI down from online play. does not stop generation
+     * pause: pauses offline generation
+     * unpause: unpuases offline generation
+     * depth i: sets the depth of the networks generated  with i
+     * rungens i: sets the gens to be run to i
+     * size i: sets the size of the board to be run
+     * gensize i: sets the size of the generation to i:
+     *
+     * @param r:   Scanner of the output from the site
      * @param out: output to the site
      */
     public static void StartOnlineControl(Scanner r, PrintWriter out) {
@@ -156,7 +156,7 @@ public class ControlClass {
 
                                     @Override
                                     public void run() {
-                                        for (int i = 0; i < 100; i++) {
+                                        for (int i = 0; i < 1; i++) {
                                             if (ServerCommunication.cont) {
                                                 GenerateNetworksOnline(genSizes, runGenst, coreCounts, sizes);
                                             }
@@ -245,7 +245,7 @@ public class ControlClass {
         int coreCount = 8;
 
         String input = "";
-        Scanner reader=new Scanner(System.in);
+        Scanner reader = new Scanner(System.in);
         while (true) {
             System.out.println("\nWaiting for input: ");
             input = reader.next();
@@ -272,7 +272,7 @@ public class ControlClass {
                                 Random rand = new Random(RandomNumber);
                                 testNetwork.randomize(rand);
                             }
-                        }catch (Exception e){
+                        } catch (Exception e) {
 
                             testNetwork = new TakNetwork(size + 1, size, size, StaticGlobals.DEPTH, 0, i);
                             RandomNumber = random.nextInt();
@@ -282,7 +282,7 @@ public class ControlClass {
                         n.add(testNetwork);
                     }
                     System.err.println("Nets loaded");
-                    ArrayList listOfItems=n;
+                    ArrayList listOfItems = n;
                     Thread NEAT = new Thread() {
                         @Override
                         public void run() {
@@ -291,17 +291,15 @@ public class ControlClass {
                     };
                     NEAT.start();
                     break;
-                case "loadonline":{
+                case "loadonline": {
 
                     n = new ArrayList<>();
                     for (int i = 0; i < genSize; i++) {
 
 
-
-
-                                testNetwork = loadTesting("networks\\TestNeat\\output\\Network" + size + "x" + size + i + ".takNetwork");
-                                testNetwork.setWins(0);
-                                testNetwork.setLosses(0);
+                        testNetwork = loadTesting("networks\\TestNeat\\output\\Network" + size + "x" + size + i + ".takNetwork");
+                        testNetwork.setWins(0);
+                        testNetwork.setLosses(0);
 
 
                         n.add(testNetwork);
@@ -309,7 +307,7 @@ public class ControlClass {
 
                 }
                 ArrayList inner = n;
-                (new Thread(){
+                (new Thread() {
                     @Override
                     public void run() {
                         ServerCommunication.playGame(inner);
@@ -373,8 +371,8 @@ public class ControlClass {
 
                         @Override
                         public void run() {
-                            for(int i=0;i<100;i++){
-                                if(ServerCommunication.cont) {
+                            for (int i = 0; i < 100; i++) {
+                                if (ServerCommunication.cont) {
                                     GenerateNetworksOnline(genSizes, runGenst, coreCounts, sizes);
                                 }
                             }
@@ -476,6 +474,7 @@ public class ControlClass {
 
     /**
      * In progress will replace generate eventually working on good format for it
+     *
      * @param objects
      * @param size
      * @param genSize
@@ -498,7 +497,7 @@ public class ControlClass {
         int GameSize = StaticGlobals.SIZE;
         int NetworkDepth = StaticGlobals.DEPTH;
         int generationQuantity = 64;
-        int complexity = GameSize*GameSize * 4;
+        int complexity = GameSize * GameSize * 4;
         int seed = (new Random()).nextInt();
         String name = "";
                 /*
@@ -594,10 +593,11 @@ public class ControlClass {
 
     /**
      * Generates networks offline
+     *
      * @param generationSize
      * @param generations
      * @param cores
-     * @param dimns side length
+     * @param dimns          side length
      */
     private static void GenerateNetworks(int generationSize, int generations, int cores, int dimns) {
 
@@ -652,7 +652,7 @@ public class ControlClass {
 
                         FileOutputStream fout;
                         try {
-                            fout = new FileOutputStream(output + "\\"+"Network"+networks.get(s).getWidth()+"x"+networks.get(s).getWidth() + s + ".takNetwork");
+                            fout = new FileOutputStream(output + "\\" + "Network" + networks.get(s).getWidth() + "x" + networks.get(s).getWidth() + s + ".takNetwork");
                             ObjectOutputStream oos = new ObjectOutputStream(fout);
                             oos.writeObject(networks.get(s));
                             oos.close();
@@ -665,7 +665,7 @@ public class ControlClass {
 
                     System.out.println("Networks Saved");
                     if (StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT) {
-                        StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT=false;
+                        StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT = false;
                         return;
                     }
                 }
@@ -794,16 +794,25 @@ public class ControlClass {
         }
 
     }
+
     /**
      * Generates networks offline while bringing online functionality up(demo games and bot seeks games)
+     *
      * @param generationSize
      * @param generations
      * @param cores
-     * @param dimns side length
+     * @param dimns          side length
      */
     private static void GenerateNetworksOnline(int generationSize, int generations, int cores, int dimns) {
 
+        PrintWriter w = null;
+        try {
 
+
+            w = new PrintWriter("stats" + ".csv");
+        } catch (Exception e) {
+
+        }
         Logger logger = Logger.getLogger("MyLog");
 
 
@@ -817,10 +826,20 @@ public class ControlClass {
         int RandomNumber = 0;
         for (int j = 0; j < generationSize; j++) {
             TakNetwork testNetwork;
+
             if (StaticGlobals.LOAD_FROM_LAST_RUN) {
-                testNetwork = loadTesting("networks\\TestGenerationalGrowth\\output\\Network" + dimns + "x" + dimns + j + ".takNetwork");
-                testNetwork.setWins(0);
-                testNetwork.setLosses(0);
+                try {
+
+
+                    testNetwork = loadTesting("networks\\TestGenerationalGrowth\\output\\Network" + dimns + "x" + dimns + j + ".takNetwork");
+                    testNetwork.setWins(0);
+                    testNetwork.setLosses(0);
+                } catch (Exception e) {
+                    testNetwork = new TakNetwork(dimns + 1, dimns, dimns, StaticGlobals.DEPTH, 0, j);
+                    RandomNumber = random.nextInt();
+                    Random rand = new Random(RandomNumber);
+                    testNetwork.randomize(rand);
+                }
             } else {
 
                 testNetwork = new TakNetwork(dimns + 1, dimns, dimns, StaticGlobals.DEPTH, 0, j);
@@ -855,7 +874,6 @@ public class ControlClass {
 
 
                 if (StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT || i % 100 == 99) {
-
                     String output = "networks\\TestGenerationalGrowth\\output";
                     System.out.println("Saving Networks");
 
@@ -877,7 +895,7 @@ public class ControlClass {
 
                     System.out.println("Networks Saved");
                     if (StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT) {
-                        StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT=false;
+                        StaticGlobals.SAVE_NETWORKS_OUT_AND_EXIT = false;
 
                         return;
                     }
@@ -954,7 +972,47 @@ public class ControlClass {
                 network2.set(0, networks.get(0));
                 network2.set(1, networks.get(1));
 
+
+                boolean exit = true;
+                long lastMoveCount = 1;
+                long twoMoveCountBack = 1;
+
+
+                System.err.println("Cleanup in progress");
+                System.err.println("Road Count: " + StaticGlobals.roadCount);
+                System.err.println("game Count: " + StaticGlobals.gameCount);
+                System.err.println("plys Count: " + StaticGlobals.moveCount);
+                System.err.println("flat Count: " + StaticGlobals.flatCount);
+                System.err.println("wall Count: " + StaticGlobals.wallCount);
+                System.err.println("caps Count: " + StaticGlobals.capCount);
+                System.err.println("stak Count: " + StaticGlobals.destackCount);
+                if ((lastMoveCount == twoMoveCountBack) && (lastMoveCount == StaticGlobals.moveCount)) {
+                    exit = false;
+                }
+                twoMoveCountBack = lastMoveCount;
+                lastMoveCount = StaticGlobals.moveCount;
+                if (w != null) {
+                    w.write(StaticGlobals.roadCount + ","
+                            + StaticGlobals.gameCount + "," +
+                            StaticGlobals.moveCount + "," +
+                            StaticGlobals.flatCount + "," +
+                            StaticGlobals.wallCount + "," +
+                            StaticGlobals.capCount + "," +
+                            StaticGlobals.destackCount + "\n");
+                    w.flush();
+                }
+                StaticGlobals.roadCount = 0;
+                StaticGlobals.gameCount = 0;
+                StaticGlobals.flatCount = 0;
+                StaticGlobals.moveCount = 0;
+                StaticGlobals.destackCount = 0;
+                StaticGlobals.wallCount = 0;
+                StaticGlobals.capCount = 0;
+
+
             }
+            w.close();
+
 
             String output = "networks\\TestGenerationalGrowth\\output";
             new File(output).mkdirs();
@@ -1002,7 +1060,7 @@ public class ControlClass {
 
             System.out.println("Networks Saved");
             while (thread.isAlive())
-            return;
+                return;
 
 
         }

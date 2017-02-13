@@ -199,15 +199,43 @@ public class TakNetwork implements Serializable{
 	public List<Move> calculate(int[][][] board, Board b){
 				
 		double[] output;
-		
+		double[] output2;
+		double[] output3;
+		double[] output4;
+
 		//inital calculation. 
-		output = network.get(0).calculate(convertArray(board));
+		output = network.get(0).calculate(convertArray(board, true, true));
+		output2 = network.get(0).calculate(convertArray(board, true, false));
+		output3 = network.get(0).calculate(convertArray(board, false, false));
+		output4 = network.get(0).calculate(convertArray(board, false, true));
+
 		for(int i = 1; i < network.size(); i++){
 			output = network.get(i).calculate(output); //do all other layers but the last 2
+			output2 = network.get(i).calculate(output2); //do all other layers but the last 2
+			output3 = network.get(i).calculate(output3); //do all other layers but the last 2
+			output4 = network.get(i).calculate(output4); //do all other layers but the last 2
+
 		}
+		List<Move> midway=new ArrayList<>();
+		midway.addAll(sortedMoves(ConvertToOutputMoveArray(output), b, true, true));
+		midway.addAll(sortedMoves(ConvertToOutputMoveArray(output2), b, true, false));
+		midway.addAll(sortedMoves(ConvertToOutputMoveArray(output3), b , false, false));
+		midway.addAll(sortedMoves(ConvertToOutputMoveArray(output4), b, false, true));
+		Collections.sort(midway, new Comparator<Move>() {
+			@Override
+			public int compare(Move o1, Move o2) {
+				if(o1.getWeight()==o2.getWeight()){
+					return 0;
+				}
+				if(o1.getWeight()>o2.getWeight()){
+					return 1;
+				}
+				return -1;
+			}
+		});
+
 		
-		
-		return sortedMoves(ConvertToOutputMoveArray(output), b);
+		return midway;
 				
 	}
 
@@ -235,20 +263,50 @@ public class TakNetwork implements Serializable{
 	 * @param board int[][][]
 	 * @return double[][][]
 	 */
-	private double[] convertArray(int[][][] board) {
+	private double[] convertArray(int[][][] board, boolean x, boolean y) {
 		
 		double[] output = new double[board.length *board[0].length*board[0][0].length];
 		//create an array of the correct size to house the input values.
 
 		int tracker = 0;
-		for(int i = 0; i < board.length; i++){
-			for(int j = 0; j < board[0].length; j++){
-				for(int k = 0; k < board[0][0].length; k++){
-					output[tracker] = (double) board[i][j][k];
-					tracker++;
+		if(x && y){
+			for(int i = 0; i < board.length; i++){
+				for(int j = 0; j < board[0].length; j++){
+					for(int k = 0; k < board[0][0].length; k++){
+						output[tracker] = (double) board[i][j][k];
+						tracker++;
+					}
+				}
+			}
+		}else if(x){
+			for(int i = board.length-1; i >=0; i--){
+				for(int j = 0; j < board[0].length; j++){
+					for(int k = 0; k < board[0][0].length; k++){
+						output[tracker] = (double) board[i][j][k];
+						tracker++;
+					}
+				}
+			}
+		}else if(y){
+			for(int i = board.length-1; i >=0; i--){
+				for(int j = board[0].length-1; j >= 0; j--){
+					for(int k = 0; k < board[0][0].length; k++){
+						output[tracker] = (double) board[i][j][k];
+						tracker++;
+					}
+				}
+			}
+		}else{
+			for(int i = 0; i < board.length; i++){
+				for(int j = board[0].length-1; j >= 0; j--){
+					for(int k = 0; k < board[0][0].length; k++){
+						output[tracker] = (double) board[i][j][k];
+						tracker++;
+					}
 				}
 			}
 		}
+
 		
 		return output;
 	}
@@ -261,35 +319,46 @@ public class TakNetwork implements Serializable{
 	 * @param placements double[][][][] output from the final layer
 	 * @return ArrayList<Move>
 	 */
-	private List<Move> sortedMoves(double[][][] placements, Board board) {
-		List<Move> moves = new ArrayList<Move>(width * height * 4);
-		
-		for(int i = 0; i < width; i++){
-			for(int j = 0; j < depth; j++){
+	private ArrayList<Move> sortedMoves(double[][][] placements, Board board, boolean x, boolean y) {
+		ArrayList<Move> moves = new ArrayList<Move>(width * height * 4);
+		int xR=0;
+		if(!x){
+			xR=1;
+		}
+		int yR=0;
+		if(!y){
+			yR=1;
+		}
+		for(int i = width*xR; (xR*-2+1)*i < (xR*-2+1)*width; i+=(xR*-2+1)){
+			for(int j = width*yR; (yR*-2+1)*j < (yR*-2+1)*width; j+=(yR*-2+1)){
 				moves.add(new Placement(i,j,1,placements[i][j][0]));
 			}
 		}
-		
+
 		for(int i = 0; i < width; i++){
 			for(int j = 0; j < depth; j++){
 				moves.add(new Placement(i,j,2,placements[i][j][1]));
 			}
 		}
-		
+
 		for(int i = 0; i < width; i++){
 			for(int j = 0; j < depth; j++){
 				moves.add(new Placement(i,j,3,placements[i][j][2]));
 			}
 		}
-		
+
 		for(int i = 0; i < width; i++){
 			for(int j = 0; j < depth; j++){
-
-				Move m=createPlacement(i,j, true, true, placements[i][j][7], placements[i][j][6], board.getMap()[i][j].size());
-				if(m!=null) {
+				Move m;
+				try {
+					m= createPlacement(i, j, true, true, placements[i][j][7], placements[i][j][6], board.getMap()[i][j].size());
+				}catch (Exception e){
+					System.err.println(i+", "+j);
+					m=null;
+				}
+					if(m!=null) {
 					moves.add(m);
 				}
-				// todo, figure out how the move output is created. set it up so that I can pass an array 3 times. 
 			}
 		}
 		for(int i = 0; i < width; i++){

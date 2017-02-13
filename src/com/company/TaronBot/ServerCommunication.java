@@ -150,7 +150,7 @@ public class ServerCommunication {
 				if (sc.hasNext() && sc.next().equals("Start")) {
 					int no = sc.nextInt();
 					int size = sc.nextInt();
-					if (size > 9 || size < 5) {
+					if (size > 9 || size < 4) {
 						out.println("Game#" + no + " Resign");
 						//Game#no Resign
 					} else {
@@ -424,7 +424,7 @@ public class ServerCommunication {
 		System.err.println("Seeking Game");
 		String s = "";
 		Board b = null;
-		out.println("Seek " + player.getWidth() + " 600 0");
+		out.println("Seek " + player.getWidth() + " 60 0");
 		while ((b) == null) {
 			if (!cont) {
 				return new Board(player.getWidth(), new LinkedList<Move>(), true);

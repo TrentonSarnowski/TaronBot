@@ -300,7 +300,7 @@ public class RunGames {
 
                         count++;
                         if (one.getWidth() == two.getWidth()) {
-                            int result = Board.playGame(one, two, one.getWidth());
+                            int result = Board.playGame(one, two);
                             addValuesForSort(one, two, net1Num, net2Num, result);
 
 
@@ -372,7 +372,7 @@ public class RunGames {
 
                         count++;
                         if (one.getWidth() == two.getWidth()) {
-                            int result = Board.playGame(one, two, one.getWidth());
+                            int result = Board.playGame(one, two);
                             if (result > 0) {
                                 bots[net1Num].addLife();
                                 bots[net2Num].subtractLife();
@@ -645,4 +645,6 @@ public class RunGames {
         winLossWeightedPage[net2Num][net1Num] += result;
         winLossWeightedPage[net1Num][net2Num] +=result;
     }
+
+
 }

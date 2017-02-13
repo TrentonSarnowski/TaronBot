@@ -1,6 +1,7 @@
 package com.company.TaronBot.Game;
 
 import com.company.TaronBot.Game.Moves.DeStack;
+import sun.security.krb5.internal.crypto.Des;
 
 import java.util.List;
 
@@ -18,6 +19,22 @@ public interface Move {
 
     boolean checkVictory(Board map, boolean cont);
 
+    /**
+     *
+     * @param b
+     * @return
+     */
+    default boolean looped(Move b){
+        if(b instanceof DeStack && this instanceof DeStack){
+            DeStack d = (DeStack)b;
+            DeStack f = (DeStack) this;
+            if(d.getX()==f.getXend()&&f.getYend()==d.getY()&&f.getPickUpC()==d.getPickUpC()){
+                return true;
+            }
+
+        }
+        return false;
+    }
 
 
     default public boolean isEqual(Object b){
