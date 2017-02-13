@@ -127,7 +127,7 @@ public class ComputeGenWithRandomSuplement {
                 }
 
                 try{
-                    winner = Board.playGame(net1, net2, 8);
+                    winner = Board.playGame(net1, net2);
                 }catch(ArrayIndexOutOfBoundsException e){
 
                     if(StaticGlobals.LOGGING_ENABLED){

@@ -461,7 +461,7 @@ public class ControlClass {
                     //	Scanner r=new Scanner(line);
 
                     System.out.println("Player1: " + net1 + " Player2: " + net2);
-                    Board.playGame(loadTesting(".\\networks\\TestGenerationalGrowth\\output\\Network" + size + "x" + size + net1 + ".taknetwork"), loadTesting("networks\\TestGenerationalGrowth\\output\\Network" + size + "x" + size + net2 + ".taknetwork"), size);
+                    Board.playGame(loadTesting(".\\networks\\TestGenerationalGrowth\\output\\Network" + size + "x" + size + net1 + ".taknetwork"), loadTesting("networks\\TestGenerationalGrowth\\output\\Network" + size + "x" + size + net2 + ".taknetwork"));
                     StaticGlobals.PRINT_GAME_MOVES = false;
                     break;
                 default:

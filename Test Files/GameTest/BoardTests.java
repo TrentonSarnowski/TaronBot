@@ -45,13 +45,13 @@ public class BoardTests extends TestCase{
         Random rand = new Random(0);
         testNetwork.randomize(rand);
         long time;
-        Board.playGame(testNetwork,testNetwork,size);
+        Board.playGame(testNetwork,testNetwork);
 
         List<TakNetwork> n =new ArrayList<>();
 
         time=System.currentTimeMillis();
         for (int i = 0; i <100 ; i++) {
-            Board.playGame(testNetwork,testNetwork,6);
+            Board.playGame(testNetwork,testNetwork);
         }
 
         System.err.println((System.currentTimeMillis()-time)/100);
