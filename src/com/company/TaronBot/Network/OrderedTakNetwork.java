@@ -20,6 +20,12 @@ public class OrderedTakNetwork {
         }
     }
 
+    /**
+     * returns a page rank ordering of networks based off of the given weights
+     * @param networks
+     * @param weights
+     * @return
+     */
     public static List<TakNetwork> PageRankOrdering(List<TakNetwork> networks, int[][] weights) {
         //System.err.println(" into ordering");
         pagerank = new double[networks.size()];

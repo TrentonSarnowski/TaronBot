@@ -8,7 +8,6 @@ import java.util.List;
 import com.company.TaronBot.Game.Moves.*;
 
 
-import com.company.TaronBot.NEAT.FastRoadFinder;
 import com.company.TaronBot.Network.TakNetwork;
 import com.company.TaronBot.Network.generateMoves;
 import tech.deef.Tools.StaticGlobals;

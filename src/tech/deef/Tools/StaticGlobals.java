@@ -6,7 +6,7 @@ import java.util.Random;
 public class StaticGlobals {
 	public static String Password = "";
 	public static boolean LOAD_FROM_LAST_RUN = true;
-	public static  boolean PRINT_GAME_BOARD = false;
+	public static boolean PRINT_GAME_BOARD = false;
 	public static final int SIZE=5;
 	public static int DEPTH = 32;
 	public static final boolean PRINT_LOOPING = false;

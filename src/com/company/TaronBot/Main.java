@@ -2,6 +2,7 @@ package com.company.TaronBot;
 
 import com.company.TaronBot.Game.RunGames;
 import com.company.TaronBot.Network.TakNetwork;
+import com.sun.org.apache.bcel.internal.generic.IINC;
 import tech.deef.Tools.StaticGlobals;
 
 import java.io.BufferedReader;
@@ -14,11 +15,12 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
+    /**
+     *
+     * @param args
+     */
 	public static void main(String[] args){
-        if(false){
-            statGather();
-            return;
-        }
+
         Scanner s = null;
         try {
             s = new Scanner(new File("Password\\Password"));
@@ -28,7 +30,7 @@ public class Main {
         StaticGlobals.Password = s.next();
         Thread commands = new Thread() {
             @Override
-            public void run() {
+            public void run() {//makes playtak command thread
                 try {
                     Socket socket = new Socket("www.playtak.com", 10000);
                     PrintWriter out = new PrintWriter(socket.getOutputStream(), true);

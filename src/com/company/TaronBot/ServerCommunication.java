@@ -20,6 +20,10 @@ public class ServerCommunication {
 
 	public static Boolean cont = true;
 
+	/**
+	 * used to brin bots online for gameplay
+	 * @param bots
+	 */
 	public static void online(RunGames.bot[] bots) {
 		try {
 			Socket socket = new Socket("www.playtak.com", 10000);
@@ -77,6 +81,11 @@ public class ServerCommunication {
 			e.printStackTrace();
 		}
 	}
+
+	/**
+	 * plays a game online with a set of networks
+	 * @param l
+	 */
 	public static void playGame(List<TakNetwork> l) {
 		// TODO Create examples of how to communicate with the server
 
@@ -138,6 +147,13 @@ public class ServerCommunication {
 	}
 //Game Start 128608 5 Guest5068 vs Guest5069 white 600
 
+	/**
+	 * parses the output for game creation
+	 * @param s
+	 * @param out
+	 * @param playerName
+	 * @return
+	 */
 	public static Board parseToGame(String s, PrintWriter out, String playerName) {
 		Scanner sc = new Scanner(s);
 		try {
@@ -172,6 +188,13 @@ public class ServerCommunication {
 		return null;
 	}
 
+	/**
+	 * creates a thread to wait for a game on playtak
+	 * @param player
+	 * @param in
+	 * @param out
+	 * @param id
+	 */
 	private static void WaitForGame(TakNetwork player, BufferedReader in, PrintWriter out, String id) {
 		Board b = seekGame(player, in, out, id);
 
@@ -214,6 +237,13 @@ public class ServerCommunication {
 		}
 	}
 
+	/**
+	 * accepts a seek on playtak
+	 * @param in
+	 * @param o
+	 * @return
+	 * @throws Exception
+	 */
 	private static int findSeek(BufferedReader in, String o) throws Exception {
 		Integer i = null;
 		while (true) {
@@ -233,6 +263,13 @@ public class ServerCommunication {
 		}
 	}
 
+	/**
+	 * Accepts a game on playtak
+	 * @param player
+	 * @param in
+	 * @param out
+	 * @param opponent
+	 */
 	private static void acceptGame(TakNetwork player, BufferedReader in, PrintWriter out, String opponent) {
 		int no;
 		try {
@@ -295,6 +332,13 @@ public class ServerCommunication {
 
 	}
 
+	/**
+	 * plays a game on playtak
+	 * @param player
+	 * @param in
+	 * @param out
+	 * @param b
+	 */
 	private static void playGame(TakNetwork player, BufferedReader in, PrintWriter out, Board b) {
 		System.err.println("Game Started");
 		Move l;
@@ -420,6 +464,14 @@ public class ServerCommunication {
 		}
 	}
 
+	/**
+	 * seeks a game on playtak
+	 * @param player
+	 * @param in
+	 * @param out
+	 * @param id
+	 * @return
+	 */
 	private static Board seekGame(TakNetwork player, BufferedReader in, PrintWriter out, String id) {
 		System.err.println("Seeking Game");
 		String s = "";
@@ -442,7 +494,13 @@ public class ServerCommunication {
 		return b;
 	}
 
-
+	/**
+	 * parses a move from playtak
+	 * @param s
+	 * @param number
+	 * @return
+	 * @throws GameOverException
+	 */
 	public static Move parseMove(String s, int number) throws GameOverException {
 
 		Scanner n = new Scanner(s);
@@ -476,6 +534,11 @@ public class ServerCommunication {
 		return null;
 	}
 
+	/**
+	 * parses placement from playtak
+	 * @param s
+	 * @return
+	 */
 	public static Placement parsePlacement(Scanner s) {
 
 
@@ -496,6 +559,11 @@ public class ServerCommunication {
 		return new Placement(p.x, p.y, type, 0);
 	}
 
+	/**
+	 * parses a destak from playtak
+	 * @param s
+	 * @return
+	 */
 	public static DeStack parseDestack(Scanner s) {
 		position p = new position(s.next());
 		position e = new position(s.next());
@@ -604,6 +672,10 @@ public class ServerCommunication {
 		}
 	}
 
+	/**
+	 * sets networks to play self on playtak
+	 * @param nets
+	 */
 	public static void playSelf(List<TakNetwork> nets) {
 
 		Random r = new Random();
@@ -662,6 +734,10 @@ public class ServerCommunication {
 
 	}
 
+	/**
+	 * sets bots to ply eachother on playtak
+	 * @param bots
+	 */
 	public static void playSelf(RunGames.bot[] bots) {
 
 		Random r = new Random();
