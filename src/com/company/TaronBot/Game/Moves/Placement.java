@@ -14,14 +14,21 @@ public class Placement implements Move {
     protected int type;
     protected double weight;
     boolean checkFeasible;
-    public Placement(String move){
 
-    }
+    /**
+     * creates a placemnt object a position
+     * @param x x position
+     * @param y Y position
+     * @param type piece to be placed
+     * @param weight Quality of the move
+     */
     public Placement(int x, int y, int type, double weight){
         this.weight=weight;
         this.x=x;
         this.y=y;
         this.type=type;
+    }
+    public Placement(String s){
     }
 
     @Override
@@ -65,97 +72,12 @@ public class Placement implements Move {
             return false;
 
         }
-        boolean b[][] = topLevelAfterMove(map, cont);
-        for (int i = 0; i < b.length; i++) {
-            if (RoadCheck(i, 0, b, new boolean[b.length][b.length], false)) {
-                return true;
-            }
-            if (RoadCheck(0, i, b, new boolean[b.length][b.length], true)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean RoadCheck(int x, int y, boolean topLevel[][], boolean saidNo[][], boolean vertical) {
-        /*System.err.println(x+" "+y);
-    	for( boolean[] b:saidNo){
-    		for(boolean b2:b){
-                if(b2){
-                    System.err.print("0 ");
-                }else {
-                    System.err.print("_ ");
-                }
-    		}
-    		System.err.println();
-    	}
-    	System.err.println();
-         //*/
-        int xActive = 0;
-        int yActive = 0;
-        if (vertical) {
-            yActive = 1;
-        } else {
-            xActive = 1;
-        }
-        //System.err.println(x+" "+y);
-
-        if (x < topLevel.length && y < topLevel.length && x >= 0 && y >= 0) {
-            if (!topLevel[x][y]) {
-                //System.err.println("Broke1");
-                return false;
-            } else if (topLevel.length - 1 == x * xActive + y * yActive) {
-                return true;
-            } else {
-                boolean saidNoSendDown[][] = new boolean[saidNo.length][saidNo.length];
-                for (int i = 0; i < saidNo.length; i++) {
-                    for (int j = 0; j < saidNo.length; j++) {
-                        saidNoSendDown[i][j] = saidNo[i][j];
-
-                    }
-                }
-                if (x > 0) {
-                    saidNoSendDown[x - 1][y] = true;
-                }
-                if (x < saidNo.length - 1) {
-                    saidNoSendDown[x + 1][y] = true;
-                }
-                if (y > 0) {
-                    saidNoSendDown[x][y - 1] = true;
-                }
-                if (y < saidNo.length - 1) {
-                    saidNoSendDown[x][y + 1] = true;
-                }
-
-                if (x + 1 < saidNo.length && !saidNo[x + 1][y] && topLevel[x + 1][y] && RoadCheck(x + 1, y, topLevel, saidNoSendDown, vertical)) {
-                    return true;
-                }
-                if (y + 1 < saidNo.length && !saidNo[x][y + 1] && topLevel[x][y + 1] && RoadCheck(x, y + 1, topLevel, saidNoSendDown, vertical)) {
-                    return true;
-                }
-                if (x - 1 >= 0 && !saidNo[x - 1][y] && topLevel[x - 1][y] && RoadCheck(x - 1, y, topLevel, saidNoSendDown, vertical)) {
-                    return true;
-                }
-                if (y - 1 >= 0 && !saidNo[x][y - 1] && topLevel[x][y - 1] && RoadCheck(x, y - 1, topLevel, saidNoSendDown, vertical)) {
-                    return true;
-                }
-
-
-            }
-        }
-        //System.err.println("Broke2");
 
         return false;
     }
 
-    private boolean[][] topLevelAfterMove(Board map, boolean cont) {
-        boolean[][] ret = map.topLevel(cont);
-        if (this.type == 1 || this.type == 3) {
-            ret[this.x][this.y] = true;
-        }
 
-        return ret;
-    }
+
 
     @Override
     public boolean checkFeasible(Board map, boolean cont) {
@@ -182,6 +104,10 @@ public class Placement implements Move {
         //return map.getMap()[x][y].isEmpty();
     }
 
+    /**
+     * Human readable string
+     * @return
+     */
     public String toString(){
         String ret="";
         switch (type){
@@ -229,6 +155,12 @@ public class Placement implements Move {
 
         return ret;
     }
+
+    /**
+     * String for playtak.com
+     * @return
+     */
+    @Override
     public String toPlayTakString(){
         String ret = "P ";
 

@@ -286,7 +286,7 @@ public class ControlClass {
                     Thread NEAT = new Thread() {
                         @Override
                         public void run() {
-                            RunGames.NEATGAMEPLAY(listOfItems, 5, 6000000, "stats", listOfItems.size());
+                            RunGames.poolGamePlay(listOfItems, 5, 6000000, "stats", listOfItems.size());
                         }
                     };
                     NEAT.start();

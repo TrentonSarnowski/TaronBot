@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
-import static com.company.TestingMain.loadTesting;
-
 public class Main {
 	public static void main(String[] args){
         if(false){
@@ -69,11 +67,11 @@ public class Main {
         }
 
 
-        RunGames.NEATGAMEPLAY(n,5,100000,"Count8Stats",8);
-        RunGames.NEATGAMEPLAY(n,5,100000,"Count16Stats",16);
-        RunGames.NEATGAMEPLAY(n,5,100000,"Count32Stats",32);
-        RunGames.NEATGAMEPLAY(n,5,100000,"Count64Stats",64);
-        RunGames.NEATGAMEPLAY(n,5,100000,"Count128Stats",128);
+        RunGames.poolGamePlay(n,5,100000,"Count8Stats",8);
+        RunGames.poolGamePlay(n,5,100000,"Count16Stats",16);
+        RunGames.poolGamePlay(n,5,100000,"Count32Stats",32);
+        RunGames.poolGamePlay(n,5,100000,"Count64Stats",64);
+        RunGames.poolGamePlay(n,5,100000,"Count128Stats",128);
 
 
 

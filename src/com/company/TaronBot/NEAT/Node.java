@@ -111,5 +111,19 @@ public class Node {
 	public int getReferencedByNodesSize(){
 		return inputNodes.size();
 	}
-	
+	@Override
+	public boolean equals(Object b){
+		if(b instanceof Node&&((Node) b).inputNodes.size()==inputNodes.size()){
+
+			for (int i = 0; i <inputNodes.size() ; i++) {
+				if(inputNodes.get(i).getUniqueUniversalNodeIdentificationNumber()!=
+						((Node) b).inputNodes.get(i).getUniqueUniversalNodeIdentificationNumber()){
+					return false;
+				}
+			}
+			return true;
+		}else{
+			return false;
+		}
+	}
 }

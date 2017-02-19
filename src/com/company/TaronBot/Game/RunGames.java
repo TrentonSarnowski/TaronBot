@@ -29,6 +29,9 @@ public class RunGames {
     int winOneTwoWeightPage[][];
     public static victoryType weightType = victoryType.WIN_NO_WEIGHT;
 
+    /**
+     * the way networks are orginized
+     */
     public enum victoryType {
         WIN_NO_WEIGHT,//Wins all qualify as 1
         WIN_WEIGHTED,//Wins based on flat count difference or sideLength for road win
@@ -48,6 +51,9 @@ public class RunGames {
 
     }
 
+    /**
+     * External storage for network data and sorting
+     */
     public static class bot {
         TakNetwork net;
         int lifeCount;
@@ -74,7 +80,18 @@ public class RunGames {
         }
     }
 
-    public static TakNetwork[] NEATGAMEPLAY(List<TakNetwork> networks, int lifeCount, int games, String OutputFile, int poolSize) {
+    /**
+     * Plays game in a pool based off of a life value system
+     * Randomly picks two networks, The looser looses some amount of life, And thw inner gains some amount of life
+     * If a network reaches zero life it is replaced with a newly generated network based off of group generation
+     * @param networks
+     * @param lifeCount
+     * @param games
+     * @param OutputFile
+     * @param poolSize
+     * @return
+     */
+    public static TakNetwork[] poolGamePlay(List<TakNetwork> networks, int lifeCount, int games, String OutputFile, int poolSize) {
         Random r = new Random();
         StaticGlobals.GAMESTOPLAY = games;
         bot[] bots = new bot[networks.size()];
@@ -204,6 +221,11 @@ public class RunGames {
     }
     int count;
 
+    /**
+     * takes in a list of networks and creates a run games object
+     * @param networks
+     * @return
+     */
     public static RunGames RunGames(ArrayList<TakNetwork> networks) {
         TakNetwork nets[] = new TakNetwork[networks.size()];
         for (int i = 0; i < nets.length; i++) {
@@ -213,6 +235,10 @@ public class RunGames {
 
     }
 
+    /**
+     * creates a new rungames object
+     * @param networks
+     */
     public RunGames(TakNetwork[] networks) {
         this.networks = new TakNetwork[networks.length];
         for (int i = 0; i < networks.length; i++) {
@@ -221,7 +247,7 @@ public class RunGames {
         player1 = new LinkedList<>();
         player2 = new LinkedList<>();
         int c = networks.length;
-
+        //different data for potential sorting algorithms
         winNoWeight = new int[c];
         winWeighted = new int[c];
         winRoadOnly = new int[c];
@@ -236,6 +262,12 @@ public class RunGames {
         winOneTwoWeightPage = new int[c][c];
     }
 
+    /**
+     * adds a game to the list of games to be played
+     * @param one
+     * @param two
+     * @return
+     */
     public boolean addGame(int one, int two) {
         if (one >= 0 && one < networks.length && two >= 0 && two < networks.length) {
             player1.add(one);
@@ -273,7 +305,7 @@ public class RunGames {
         Iterator<Integer> player2 = this.player2.iterator();
         List<Thread> threads=new ArrayList<>();
         for (int i = 0; i <= cores; i++) {
-
+        //generates cores +1 threads
 
             Thread t = new Thread() {
 
@@ -595,7 +627,7 @@ public class RunGames {
      * @param result
      */
     public void addValuesForSort(TakNetwork one, TakNetwork two, int net1Num, int net2Num, int result) {
-        //todo legalMoveDepth;
+        //TODO legalMoveDepth;
 
         if (result > 0) {
             one.addWins();

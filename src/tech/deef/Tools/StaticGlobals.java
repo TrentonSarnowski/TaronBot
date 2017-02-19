@@ -1,6 +1,7 @@
 package tech.deef.Tools;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class StaticGlobals {
 	public static String Password = "";
@@ -31,5 +32,6 @@ public class StaticGlobals {
 	public static long WHITEFLATWINS=0;
 	public static long BLACKFLATWINS=0;
 	public static long DRAWS=0;
+	public static Random RANDOM=new Random();
 
 }

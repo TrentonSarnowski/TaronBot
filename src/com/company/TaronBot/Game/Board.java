@@ -29,7 +29,10 @@ public class Board {
     public int boardNumber;
     public int filledSquares=0;
     public static List<DeStack> moves = generateMoves.getDestacks(8);
-    private static PerformOnMove b=new PerformOnMove() {
+    /**
+     * What happens on a move
+     */
+    private static PerformOnMove onMove =new PerformOnMove() {
         @Override
         public void performOnMove(TakNetwork n, Move m, int depth, Board b) {
 
@@ -53,10 +56,24 @@ public class Board {
         }
     };
     private static List<Move> emptyList=new ArrayList<>();
+
+    /**
+     * plays a game between two networks
+     * @param Player1
+     * @param Player2
+     * @return
+     */
     public static int playGame(TakNetwork Player1, TakNetwork Player2){
-        return playGame(Player1, Player2, b);
+        return playGame(Player1, Player2, onMove);
     }
-    public static Integer number=1;
+
+    /**
+     * plays a game between two networks
+     * @param Player1
+     * @param Player2
+     * @param Operator used to do actions for every move
+     * @return
+     */
     public static int playGame(TakNetwork Player1, TakNetwork Player2, PerformOnMove Operator){
         Board game =new Board(Player1.getWidth(), emptyList, true);
         List<Move>  moves =Player1.calculate(game.getAIMap(false), game);
@@ -127,10 +144,22 @@ public class Board {
 
     }
 
+    /**
+     * returns wether the AI controls the board durning a human game
+     * @return
+     */
     public boolean control() {
         return start;
     }
 
+    /**
+     * creates a board for PlayTak Usage
+     * @param sideLength board size
+     * @param boardState moves that lead to the current board state
+     * @param start who started the game(AI or not)
+     * @param boardID ID of the board on playtak
+     * @return
+     */
     public static Board PlayTakBoard(int sideLength, List<Move> boardState, boolean start, int boardID) {
         Board rv = new Board(sideLength, boardState, start);
         rv.boardNumber = boardID;
@@ -188,6 +217,11 @@ public class Board {
         }
     }
 
+    /**
+     * returns the current state a road on the board, or the flat difference of board
+     * @param cont who moved last to calculate ties
+     * @return
+     */
     public int checkVictory(boolean cont) {
         if (FastRoadFinder.RoadChecker(topLevelBoard(!cont))) return -32;
 
@@ -229,56 +263,11 @@ public class Board {
         return 500;
     }
 
-    public boolean checkForRoad(boolean[][] topLevel) {
-        for (int i = 0; i < topLevel.length; i++) {
-            if (checkForRoad(i, 0, new boolean[topLevel.length][topLevel.length], new boolean[topLevel.length][topLevel.length], topLevel, true)) {
-                return true;
-            }
-            if (checkForRoad(0, i, new boolean[topLevel.length][topLevel.length], new boolean[topLevel.length][topLevel.length], topLevel, false)) {
-                return true;
-            }
-
-        }
-        return false;
-    }
-
-    private boolean checkForRoad(int x, int y, boolean[][] triedPrevious, boolean[][] tried, boolean[][] topLevel, boolean vertical) {
-        if (x >= tried.length || y >= tried.length || x < 0 || y < 0) {
-            return false;
-        }
-        if (triedPrevious[x][y] || (!topLevel[x][y])) {
-            return false;
-        }
-        if ((vertical && (y == tried.length - 1)) || (!vertical && (x == tried.length - 1))) {
-            return true;
-        }
-        boolean sendTried[][] = new boolean[tried.length][tried.length];
-        for (int i = 0; i < tried.length; i++) {
-            for (int j = 0; j < tried.length; j++) {
-                sendTried[i][j] = tried[i][j];
-            }
-        }
-        if (x > 0) {
-            sendTried[x - 1][y] = true;
-        }
-        if (x < tried.length - 1) {
-            sendTried[x + 1][y] = true;
-        }
-        if (y > 0) {
-            sendTried[x][y - 1] = true;
-        }
-        if (y < tried.length - 1) {
-            sendTried[x][y + 1] = true;
-        }
-        //*/
-        sendTried[x][y] = true;
-        return checkForRoad(x + 1, y, tried, sendTried, topLevel, vertical) ||
-                checkForRoad(x - 1, y, tried, sendTried, topLevel, vertical) ||
-                checkForRoad(x, y + 1, tried, sendTried, topLevel, vertical) ||
-                checkForRoad(x, y - 1, tried, sendTried, topLevel, vertical);
-
-    }
-
+    /**
+     * returns the board as relitive to road state as an integer array,
+     * @param b
+     * @return
+     */
     public int[] topLevelBoard(boolean b) {
         List<Integer> l[] = null;
         int[] ret = new int[map.length];
@@ -317,6 +306,11 @@ public class Board {
         return map;
     }
 
+    /**
+     * returns the same board as anew object
+     * @param b
+     * @return
+     */
     public Board deepCopy(Board b) {
         Board ret = new Board(b.getMap().length, new LinkedList<>(), b.start);
         List<Integer> value[][] = b.getMap();
@@ -331,26 +325,11 @@ public class Board {
         return ret;
     }
 
-    public boolean[][] topLevel(boolean control) {
-        boolean topLevel[][] = new boolean[map.length][map.length];
-        int sign = -1;
-        if (control) {
-            sign = 1;
-        }
-        for (int i = 0; i < map.length; i++) {
-            for (int j = 0; j < map.length; j++) {
-                if (!map[i][j].isEmpty()) {
-                    int temp = map[i][j].get(map[i][j].size() - 1);
-                    if (temp == sign * 3 || temp == sign * 1) {
-                        topLevel[i][j] = true;
-                    }
-
-                }
-            }
-        }
-        return topLevel;
-    }
-
+    /**
+     * returns the board in an AI readble state as 3 d array
+     * @param control
+     * @return
+     */
     public int[][][] getAIMap(boolean control) {
         int sign = -1;
 
@@ -421,23 +400,9 @@ public class Board {
 
 
         if(this.positivePieceRemain<=0||this.negativePieceRemain<=0){
-
             return true;
-
         }
-        /*
-        boolean broke=false;
-        broken: for(List<Integer>[] l:map){
-            for(List<Integer> ls:l){
-                if(ls.isEmpty()){
-                    broke=true;
-                    break broken;
-                }
-            }
-        }
-        //*/
         if(filledSquares==map.length*map.length){
-
             return true;
         }
         if(FastRoadFinder.RoadChecker(topLevelBoard())){
@@ -482,6 +447,11 @@ public class Board {
         }
 
     }
+
+    /**
+     * The full board state as relative to roads
+     * @return
+     */
     public long[] topLevelBoard() {
         List<Integer> l[] = null;
         long[] ret = new long[map.length];
