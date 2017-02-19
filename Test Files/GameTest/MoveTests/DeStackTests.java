@@ -1,6 +1,8 @@
 package GameTest.MoveTests;
 import com.company.TaronBot.Game.Board;
+import com.company.TaronBot.Game.Move;
 import com.company.TaronBot.Game.Moves.DeStack;
+import com.company.TaronBot.Network.generateMoves;
 import junit.framework.*;
 
 import java.util.ArrayList;
@@ -12,7 +14,11 @@ import java.util.List;
  */
 public class DeStackTests extends TestCase {
 
-
+    public void testGenerateDestack(){
+        for(boolean m[] :generateMoves.getMoves(3)){
+            System.err.println((new DeStack(m,true,true,0,0,0)).toPlayTakString());
+        };
+    }
     public void testCreate()throws Exception{
         Integer[] array={1,1,1,1,0};
         DeStack test = DeStack.DeStack(0,0,array, 4,true,true,1);
@@ -28,6 +34,13 @@ public class DeStackTests extends TestCase {
         assertTrue(test.checkFeasible(testBoard,true));
 
     }
+
+    public void testCreateBoolean() throws Exception {
+        boolean[] array = {true, true, false, true, false};
+        DeStack test = new DeStack(array, true, true, 1, 0, 0);
+
+
+    }
     public void testUnEncumberedMoveNorth()throws Exception{
         Integer[] array={1,1,3,2,0};
         DeStack test = DeStack.DeStack(0,0,array, 7,true,true,1);
@@ -41,7 +54,7 @@ public class DeStackTests extends TestCase {
 
         if(null==test.performMove(testBoard,true)){
             assertTrue(false);
-        };
+        }
         assertTrue(testBoard.getMap()[0][0].isEmpty());
         assertTrue(testBoard.getMap()[0][1].get(0)==1);
         assertTrue(testBoard.getMap()[0][2].get(0)==-1);
@@ -67,7 +80,7 @@ public class DeStackTests extends TestCase {
 
         if(null==test.performMove(testBoard,true)){
             assertTrue(false);
-        };
+        }
         assertTrue(testBoard.getMap()[0][0].isEmpty());
 
         assertTrue(testBoard.getMap()[1][0].get(0)==1);
@@ -94,7 +107,7 @@ public class DeStackTests extends TestCase {
 
         if(null==test.performMove(testBoard,true)){
             assertTrue(false);
-        };
+        }
         assertTrue(testBoard.getMap()[7][0].isEmpty());
         assertTrue(testBoard.getMap()[6][0].get(0)==1);
         assertTrue(testBoard.getMap()[5][0].get(0)==-1);
@@ -120,7 +133,7 @@ public class DeStackTests extends TestCase {
 
         if(null==test.performMove(testBoard,true)){
             assertTrue(false);
-        };
+        }
         //theroeticly should add testing to other areas as well but that is alot of asserts
         assertTrue(testBoard.getMap()[0][7].isEmpty());
         assertTrue(testBoard.getMap()[0][6].get(0)==1);
@@ -165,10 +178,7 @@ public class DeStackTests extends TestCase {
 
         if(null==test.performMove(testBoard,true)){
             assertTrue(true);
-        };
-
-
-
+        }
 
 
     }
@@ -187,10 +197,7 @@ public class DeStackTests extends TestCase {
 
         if(null==test.performMove(testBoard,true)){
             assertTrue(true);
-        };
-
-
-
+        }
 
 
     }
@@ -209,10 +216,7 @@ public class DeStackTests extends TestCase {
 
         if(null==test.performMove(testBoard,true)){
             assertTrue(true);
-        };
-
-
-
+        }
 
 
     }
@@ -277,6 +281,16 @@ public class DeStackTests extends TestCase {
 
 
 
+
+    }
+    public void testCrush(){
+        Board b =new Board(5,new LinkedList<>(),true);
+
+        b.getMap()[0][0].add(3);
+        b.getMap()[1][0].add(3);
+        LinkedList c =new LinkedList();
+        c.add(1);
+        System.err.println((new DeStack(1,0,c,1, false, false, 0)).checkFeasible(b,true));
 
     }
 }

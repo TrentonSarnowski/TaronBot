@@ -8,6 +8,6 @@ import java.io.Serializable;
  *
  */
 public interface nonLinearFunction extends Serializable {
-	public double operation(double input);
+	double operation(double input);
 
 }

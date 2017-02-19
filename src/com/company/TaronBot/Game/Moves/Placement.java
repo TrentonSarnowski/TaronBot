@@ -14,14 +14,21 @@ public class Placement implements Move {
     protected int type;
     protected double weight;
     boolean checkFeasible;
-    public Placement(String move){
 
-    }
+    /**
+     * creates a placemnt object a position
+     * @param x x position
+     * @param y Y position
+     * @param type piece to be placed
+     * @param weight Quality of the move
+     */
     public Placement(int x, int y, int type, double weight){
         this.weight=weight;
         this.x=x;
         this.y=y;
         this.type=type;
+    }
+    public Placement(String s){
     }
 
     @Override
@@ -39,15 +46,18 @@ public class Placement implements Move {
                 }else{
                     board.reducePositiveFlatRemain();
                 }
+                board.filledSquares++;
                 map[x][y].add(type);
-
                 return map;
             }else{
                 if(type==3){
                     board.reduceNegativeCapRemain();
+                    //System.out.println(board.getNegativeCapRemain());
                 }else{
                     board.reduceNegativeFlatRemain();
+
                 }
+                board.filledSquares++;
                 map[x][y].add(-1*type);
                 return map;
             }
@@ -57,18 +67,31 @@ public class Placement implements Move {
     }
 
     @Override
+    public boolean checkVictory(Board map, boolean cont) {
+        if (!checkFeasible(map, cont)) {
+            return false;
+
+        }
+
+        return false;
+    }
+
+
+
+
+    @Override
     public boolean checkFeasible(Board map, boolean cont) {
-        if(map.getAIMap(cont)[x][y][0]!=0||!map.getMap()[x][y].isEmpty()){
+        if (map.getAIMap(cont)[x][y][0] != 0 || (!map.getMap()[x][y].isEmpty())) {
 
             checkFeasible=false;
             return false;
         }
 
-        if(type!=3){
+        if(Math.abs(type)!=3){
             checkFeasible=true;
             return true;
 
-        }else if( type==3&&(cont && (map.getPositiveCapRemain()>0)||(!cont&&map.getNegativeCapRemain()>0))){
+        }else if( type==3&&((cont && (map.getPositiveCapRemain()>0))||(!cont&&map.getNegativeCapRemain()>0))){
             checkFeasible=true;
             return true;
         }else{
@@ -81,6 +104,10 @@ public class Placement implements Move {
         //return map.getMap()[x][y].isEmpty();
     }
 
+    /**
+     * Human readable string
+     * @return
+     */
     public String toString(){
         String ret="";
         switch (type){
@@ -94,7 +121,7 @@ public class Placement implements Move {
                 ret+="C";
                 break;
             default:
-                return "";
+                return "fail type";
         }
         switch (x){
             case 0:
@@ -122,14 +149,64 @@ public class Placement implements Move {
                 ret+="h";
                 break;
             default:
-                return "";
+                return "fail position: " + x;
         }
         ret+=""+(y+1);
 
         return ret;
     }
+
+    /**
+     * String for playtak.com
+     * @return
+     */
+    @Override
     public String toPlayTakString(){
-        return toString();
+        String ret = "P ";
+
+        switch (x) {
+            case 0:
+                ret += "A";
+                break;
+            case 1:
+                ret += "B";
+                break;
+            case 2:
+                ret += "C";
+                break;
+            case 3:
+                ret += "D";
+                break;
+            case 4:
+                ret += "E";
+                break;
+            case 5:
+                ret += "F";
+                break;
+            case 6:
+                ret += "G";
+                break;
+            case 7:
+                ret += "H";
+                break;
+            default:
+                return "fail position: " + x;
+        }
+        ret += "" + (y + 1) + " ";
+        switch (type) {
+            case 1:
+                ret += "";
+                break;
+            case 2:
+                ret += "W";
+                break;
+            case 3:
+                ret += "C";
+                break;
+            default:
+                return "fail type";
+        }
+        return ret;
     }
     @Override
     public double getWeight() {
