@@ -1,5 +1,11 @@
 package com.company.TaronBot.NEAT.Mating;
 
-public class RandomlyAlterNetwork {
+import com.company.TaronBot.NEAT.Network.Network;
 
+public class RandomlyAlterNetwork {
+	public Network AlterNetwork(Network net, AlterNetworkHelper outline){
+		return net;
+		
+		
+	}
 }
