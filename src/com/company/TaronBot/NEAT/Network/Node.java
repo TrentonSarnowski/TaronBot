@@ -1,4 +1,4 @@
-package com.company.TaronBot.NEAT;
+package com.company.TaronBot.NEAT.Network;
 
 import java.util.ArrayList;
 
