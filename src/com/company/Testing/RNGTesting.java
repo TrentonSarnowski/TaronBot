@@ -13,6 +13,25 @@ public class RNGTesting {
 	// the purpose of this class is to test and reverse engineer the the value
 	// from a
 	public static void main(String[] args) {
+		int num = 0;
+		num = RNGTool.RNGInput(num);
+		int first = num;
+		
+		for (int i = 0; i < 100000;i++){
+			num = RNGTool.RNGInput(num);
+			System.out.println(num);
+			if(num ==first){
+				System.out.println("Looped after " + i + " runs.");
+				break;
+			}
+		}
+		
+		
+		//RNGTest();
+	}
+
+
+	private static void RNGTest() {
 		//network lists
 		ArrayList<Network> networks = new ArrayList<Network>(100);
 		ArrayList<Network> network = new ArrayList<Network>(100);
@@ -21,7 +40,7 @@ public class RNGTesting {
 		ArrayList<Double> results = new ArrayList<Double>(100);
 		
 		//single network mutator
-		Mutator m = new Mutator();
+		//Mutator m = new Mutator();
 		
 		//create inital networks
 		for (int i = 0; i < 100; i++) {
@@ -63,7 +82,7 @@ public class RNGTesting {
 				//mutating the nth 0object where n is calculated by
 				//finding a number on a sin curve, where a random number has a higher 
 				//chance of being closer to 1 than anything else, with 0 being the lowest probability
-				network.add(m.mutate(networks.get(((int)Math.sin(Math.random()*Math.PI/2))*networks.size())));
+				//network.add(m.mutate(networks.get(((int)Math.sin(Math.random()*Math.PI/2))*networks.size())));
 			}
 			
 			//add new nets.

@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.apache.commons.math3.distribution.NormalDistribution;
-import org.apache.commons.math3.random.ISAACRandom;
-import org.apache.commons.math3.random.RandomGenerator;
-import org.apache.commons.math3.stat.descriptive.moment.Mean;
-import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
+//import org.apache.commons.math3.distribution.NormalDistribution;
+//import org.apache.commons.math3.random.ISAACRandom;
+//import org.apache.commons.math3.random.RandomGenerator;
+//import org.apache.commons.math3.stat.descriptive.moment.Mean;
+//import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 
 public class MateNetworks {
 
@@ -23,7 +23,7 @@ public class MateNetworks {
 	 * @return TakNetwork a single network based on the the group mating process. 
 	 */
 	public static ArrayList<TakNetwork> GroupMateNetworks(List<TakNetwork> networks, Random rand, int numNetworks, int generation){
-		
+		/*
 		RandomGenerator random = null;
 		
 		TakNetwork net0 = networks.get(0);
@@ -97,6 +97,9 @@ public class MateNetworks {
 		
 		
 		return outputNetworks;
+		 */
+		return null;
+	
 	}
 	
 	/**
