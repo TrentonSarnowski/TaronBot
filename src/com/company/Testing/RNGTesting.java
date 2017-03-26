@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-import com.company.TaronBot.NEAT.Network;
+import com.company.TaronBot.NEAT.Network.Network;
 
 import tech.deef.Tools.RNGTool;
 
