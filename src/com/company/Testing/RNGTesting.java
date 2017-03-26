@@ -9,86 +9,112 @@ import com.company.TaronBot.NEAT.Network;
 import tech.deef.Tools.RNGTool;
 
 public class RNGTesting {
-	
-	//the purpose of this class is to test and reverse engineer the the value from a 
-	public static void main(String[] args){
+
+	// the purpose of this class is to test and reverse engineer the the value
+	// from a
+	public static void main(String[] args) {
 		ArrayList<Network> networks = new ArrayList<Network>(100);
-		
-		
-		for(int i = 0; i < 100; i++){
+
+		for (int i = 0; i < 100; i++) {
 			networks.set(i, generateNetwork());
 		}
-		
+
 		ArrayList<Double> results = new ArrayList<Double>(100);
-		for(int i = 0; i < 1000 ; i++){
-			
-			//run generation for 
-			for(int j = 0; j < 100; j++){
+		for (int i = 0; i < 1000; i++) {
+
+			// run generation for
+			for (int j = 0; j < 100; j++) {
 				results.set(j, DetermineCorrectPercentage(networks.get(j)));
 			}
-			
-			
-			
-			
-			
+
+			networks = sortNetworks(results, networks);
+
 		}
 	}
+
 	
-	//TODO generate the networks for 16 inputs and 16 outputs.
-	private static Network generateNetwork(){
-		return null;
-		
+	public static ArrayList<Network> sortNetworks(ArrayList<Double> results, ArrayList<Network> nets) {
+		Network tmp2;
+		Double tmp;
+		for (int k = 0; k < nets.size() - 1; k++) {
+
+			boolean isSorted = true;
+			for (int i = 1; i < nets.size() - k; i++) {
+
+				if (results.get(i) > results.get(i - 1)) {
+					tmp = results.get(i);
+					results.set(i, results.get(i - 1));
+					results.set(i - 1, tmp);
+
+					tmp2 = nets.get(i);
+					nets.set(i, nets.get(i - 1));
+					nets.set(i - 1, tmp2);
+
+					isSorted = false;
+				}
+			}
+			if (isSorted)
+				break;
+		}
+		return nets;
+
 	}
-	
-	private static double DetermineCorrectPercentage(Network net){
+
+	// TODO generate the networks for 16 inputs and 16 outputs.
+	private static Network generateNetwork() {
+		return null;
+
+	}
+
+	private static double DetermineCorrectPercentage(Network net) {
 		Random random = new Random();
 		int games = 100;
 		double correctPercentage = 0;
-		
+
 		int input = 0;
 		int output = 0;
 		double inputArr[];
 		double outputArr[];
 		double netOutput[];
 		int correct = 0;
-		//run 100 trials
-		for(int i = 0; i < games; i++){
-			//get the numbers and arrays required to run the trials
-			input = (random.nextInt()&0xffff);
+		// run 100 trials
+		for (int i = 0; i < games; i++) {
+			// get the numbers and arrays required to run the trials
+			input = (random.nextInt() & 0xffff);
 			output = RNGTool.RNGInput(input);
 			inputArr = getBinaryArray(input);
 			outputArr = getBinaryArray(output);
-			
-			//run the net
+
+			// run the net
 			netOutput = net.RunNetwork(inputArr);
 			correct = 0;
-			
-			for(int j = 0; j < 16; j++){
-				if(netOutput[j]*outputArr[j] >0){
-					correct++; //test the same sign
+
+			for (int j = 0; j < 16; j++) {
+				if (netOutput[j] * outputArr[j] > 0) {
+					correct++; // test the same sign
 				}
 			}
-			
-			correctPercentage += correct/16.0;
-			//increase the correct percentage by the number that were correct. 
-			
+
+			correctPercentage += correct / 16.0;
+			// increase the correct percentage by the number that were correct.
+
 		}
-		
-		//return the correct percentage. 
-		return correctPercentage/games;
+
+		// return the correct percentage.
+		return correctPercentage / games;
 	}
-	
-	private static double[] getBinaryArray(int in){
+
+	private static double[] getBinaryArray(int in) {
 		double array[] = new double[16];
-		
-		for(int i = 0; i < 16; i++){
-			if(((in >> i) & 1) == 1){
+
+		for (int i = 0; i < 16; i++) {
+			if (((in >> i) & 1) == 1) {
 				array[i] = 1.0;
-			}else{
+			} else {
 				array[i] = -1.0;
 			}
 		}
 		return array;
 	}
-	
+
 }
