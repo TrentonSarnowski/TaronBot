@@ -2,7 +2,7 @@ package com.company.TaronBot;
 
 import com.company.TaronBot.Game.RunGames;
 import com.company.TaronBot.Network.TakNetwork;
-import com.sun.org.apache.bcel.internal.generic.IINC;
+
 import tech.deef.Tools.StaticGlobals;
 
 import java.io.BufferedReader;
@@ -20,8 +20,11 @@ public class Main {
      * @param args
      */
 	public static void main(String[] args){
+        startup();
+    }
 
-        Scanner s = null;
+	private static void startup() {
+		Scanner s = null;
         try {
             s = new Scanner(new File("Password\\Password"));
         } catch (Exception e) {
@@ -51,7 +54,12 @@ public class Main {
         } catch (InterruptedException e) {
 
         }
-    }
+	}
+	
+	
+	
+	
+	
     private static void statGather(){
         Random random= new Random(0);
         TakNetwork testNetwork;

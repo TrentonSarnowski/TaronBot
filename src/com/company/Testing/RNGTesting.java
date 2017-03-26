@@ -13,6 +13,15 @@ public class RNGTesting {
 	// the purpose of this class is to test and reverse engineer the the value
 	// from a
 	public static void main(String[] args) {
+		//RNGToolTest();
+		
+		
+		RNGTest();
+	}
+
+
+
+	private static void RNGToolTest() {
 		int num = 0;
 		num = RNGTool.RNGInput(num);
 		int first = num;
@@ -25,12 +34,10 @@ public class RNGTesting {
 				break;
 			}
 		}
-		
-		
-		//RNGTest();
 	}
 
 
+	
 	private static void RNGTest() {
 		//network lists
 		ArrayList<Network> networks = new ArrayList<Network>(100);
