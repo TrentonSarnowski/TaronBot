@@ -13,13 +13,22 @@ public class RNGTesting {
 	// the purpose of this class is to test and reverse engineer the the value
 	// from a
 	public static void main(String[] args) {
+		//network lists
 		ArrayList<Network> networks = new ArrayList<Network>(100);
-
+		ArrayList<Network> network = new ArrayList<Network>(100);
+		
+		//result list
+		ArrayList<Double> results = new ArrayList<Double>(100);
+		
+		//single network mutator
+		Mutator m = new Mutator();
+		
+		//create inital networks
 		for (int i = 0; i < 100; i++) {
 			networks.set(i, generateNetwork());
 		}
 
-		ArrayList<Double> results = new ArrayList<Double>(100);
+		//main loop
 		for (int i = 0; i < 1000; i++) {
 
 			// run generation for
@@ -27,8 +36,41 @@ public class RNGTesting {
 				results.set(j, DetermineCorrectPercentage(networks.get(j)));
 			}
 
+			//////////////////////////////////////
+			//									//
+			//									//
+			//									//
+			// TODO analysis of output results. //
+			//									//
+			//									//
+			//									//
+			//////////////////////////////////////
+			
+			//sor networks based on accuracy
 			networks = sortNetworks(results, networks);
-
+			
+			//randomly remove based on the result of sorting. prioritize removing worse nets
+			for (int j = 0; j < 50; j++){
+				//remove the nth 0object where n is calculated by
+				//finding a number on a cosine curve, where the lower number 
+				networks.remove(((int)Math.cos(Math.random()*Math.PI/2))*networks.size());
+			}
+			
+			
+			network.clear();
+			//randomly duplicate based on the results of sorting. prioritize duplicating better nets
+			for (int j = 0; j < 50; j++){
+				//mutating the nth 0object where n is calculated by
+				//finding a number on a sin curve, where a random number has a higher 
+				//chance of being closer to 1 than anything else, with 0 being the lowest probability
+				network.add(m.mutate(networks.get(((int)Math.sin(Math.random()*Math.PI/2))*networks.size())));
+			}
+			
+			//add new nets.
+			networks.addAll(network);
+			
+			
+			
 		}
 	}
 
