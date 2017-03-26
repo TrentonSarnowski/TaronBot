@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+import com.company.TaronBot.NEAT.Mating.AlterNetworkHelper;
+import com.company.TaronBot.NEAT.Mating.RandomlyAlterNetwork;
 import com.company.TaronBot.NEAT.Network.Network;
 
 import tech.deef.Tools.RNGTool;
@@ -42,12 +44,12 @@ public class RNGTesting {
 		//network lists
 		ArrayList<Network> networks = new ArrayList<Network>(100);
 		ArrayList<Network> network = new ArrayList<Network>(100);
-		
+		Network temp;
 		//result list
 		ArrayList<Double> results = new ArrayList<Double>(100);
 		
 		//single network mutator
-		//Mutator m = new Mutator();
+		AlterNetworkHelper helper = new AlterNetworkHelper();
 		
 		//create inital networks
 		for (int i = 0; i < 100; i++) {
@@ -89,7 +91,8 @@ public class RNGTesting {
 				//mutating the nth 0object where n is calculated by
 				//finding a number on a sin curve, where a random number has a higher 
 				//chance of being closer to 1 than anything else, with 0 being the lowest probability
-				//network.add(m.mutate(networks.get(((int)Math.sin(Math.random()*Math.PI/2))*networks.size())));
+				temp = networks.get(((int)Math.sin(Math.random()*Math.PI/2))*networks.size());
+				network.add(RandomlyAlterNetwork.AlterNewNetwork(temp , helper));
 			}
 			
 			//add new nets.
