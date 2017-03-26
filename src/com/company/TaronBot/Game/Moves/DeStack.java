@@ -9,6 +9,8 @@ import java.util.List;
 
 /**
  * Created by sarnowskit on 10/28/2016.
+ * A Destack is a Movement Operation.
+ * this involves direction, and the number left behind at each location in that direction
  */
 public class DeStack implements Move {
 
@@ -18,18 +20,15 @@ public class DeStack implements Move {
     boolean positive;// positive goes up, else goes down
     int x;//inside of bounds
     int y;//inside of bounds
-    int xend;
-    int yend;
-    double weight;
+    int xend;//end x position
+    int yend;//end y position
+    double weight;//the quality of the move
 
 
-    public double getWeight() {
-        return weight;
-    }
 
 
     /**
-     * Initilizes destack with the properties
+     * Initilizes destack with the properties:
      *
      * @param x                 x cord
      * @param y                 y cord
@@ -59,7 +58,7 @@ public class DeStack implements Move {
     }
 
     /**
-     * Destack inilization based off boolean iterations for future AI generations and all move generation
+     * Destack inilization based off boolean iterations for AI Generation and all move generation
      *
      * @param map               represents whether the next piece is left on the same square or moves to the next square--includes starting position
      * @param verticalAxis      moving along the vertical axis
@@ -107,7 +106,7 @@ public class DeStack implements Move {
     }
 
     /**
-     * Standard usage init
+     * Standard usage init(Most legeble from a human perspective)
      *
      * @param x                 starting x
      * @param y                 starting y
@@ -126,24 +125,24 @@ public class DeStack implements Move {
         this.up = verticalAxis;
         this.positive = positiveDirection;
         int dif = left.size();
-        if (verticalAxis && positiveDirection) {
-            xend = x;
-            yend = y + dif;
-        } else if (verticalAxis) {
-            xend = x;
-            yend = y - dif;
-        } else if (positiveDirection) {
-            xend = x + dif;
-            yend = y;
-        } else {
-            xend = x - dif;
-            yend = y;
+        int xActive = 0;
+        int yActive = 1;
+        if (!verticalAxis) {
+            xActive = 1;
+            yActive = 0;
         }
+        int sign = -1;
+
+        if (positiveDirection) {
+            sign = 1;
+        }
+        this.xend = x + sign * xActive * dif;
+        this.yend = y + sign * yActive * dif;
 
     }
 
     /**
-     * Turns the move into a playtakstring(the format for playtak to read it
+     * Turns the move into a playtak.com string(the format for playtak to read it)
      * "M " + sq1+" " +sq2+" " +left+ " " +left + ect.
      * sq1= starting square in format s=letter(x), q=number(y+1)
      * sq2= ending position se sq1
@@ -218,8 +217,8 @@ public class DeStack implements Move {
     }
 
     /**
-     * turns the move to ahuman readable string
-     * M + sq + direction(><+-)+ left+left
+     * turns the move to a human readable string
+     * M + sq + direction(><+-) + left + left + ...
      *
      * @return
      */
@@ -344,6 +343,9 @@ public class DeStack implements Move {
             for (int j = 0; j < leftBehind.get(i - 1); j++) {
 
                 try {
+                    if (map[x + i * (sign * xChange)][y + i * (sign * yChange)].isEmpty()) {
+                        board.filledSquares++;
+                    }
                     map[x + i * (sign * xChange)][y + i * (sign * yChange)].add(pickUp.get(sum));
 
                     sum++;
@@ -355,47 +357,62 @@ public class DeStack implements Move {
         for (int i = 0; i < pickUpC; i++) {
             map[x][y].remove(map[x][y].size() - 1);
         }
+        if (map[x][y].isEmpty()) {
+            board.filledSquares--;
+        }
 
         return map;
     }
 
-
+    @Override
     public boolean checkFeasible(Board board, boolean control) {
         //System.err.println(toString());
+        if (leftBehind.size() <= 0) {
+            return false;
+        }
         if (x >= board.getMap().length || y >= board.getMap().length) {
+            return false;
+        }
+
+        if (x < 0 || y < 0) {
+            return false;
+        }
+        if (xend >= board.getMap().length || yend >= board.getMap().length) {
+            return false;
+        }
+
+        if (xend < 0 || yend < 0) {
             return false;
         }
         if (board.getMap()[x][y].isEmpty()) {
             return false;
         }
-        if (board.getMap()[x][y].get(board.getMap()[x][y].size() - 1) > 0 && !control) {
+        if (board.getMap()[x][y].get(board.getMap()[x][y].size() - 1) >= 0 && !control) {
             return false;
         }
-        if (board.getMap()[x][y].get(board.getMap()[x][y].size() - 1) < 0 && control) {
+        if (board.getMap()[x][y].get(board.getMap()[x][y].size() - 1) <= 0 && control) {
             return false;
         }
         if (board.getMap()[x][y].size() < pickUpC) {
             return false;
         }
-        int size = leftBehind.size();
-
-        if (positive && up) {
-            if (y + size >= board.getMap()[0].length) {
-                return false;
-            }
-        } else if (positive) {
-            if (x + size >= board.getMap()[0].length) {
-                return false;
-            }
-        } else if (!positive && up) {
-            if (y - size < 0) {
-                return false;
-            }
-        } else {
-            if (x - size > 0) {
-                return false;
-            }
+        if (capCheck(board)) {
+            return true;
         }
+        if (yend >= board.getMap()[0].length) {
+            return false;
+        }
+        if (xend >= board.getMap()[0].length) {
+            return false;
+        }
+        if (yend < 0) {
+            return false;
+        }
+
+        if (xend < 0) {
+            return false;
+        }
+
         List<Integer>[][] map = board.getMap();
         List<Integer> pickUp = map[x][y];
         int xChange;
@@ -414,55 +431,80 @@ public class DeStack implements Move {
             sign = -1;
         }
 
-        int sum = pickUp.size() - pickUpC;
-        int sum2 = 0;
-        int sum3 = 0;
-
-        for (Integer left : leftBehind) {
-            sum2 += (left != null ? left : 0);
-        }
-        for (Integer left : pickUp) {
-            sum3 += 1;
-        }
+        int sum3 = pickUp.size();
 
         if (sum3 < pickUpC) {
 
             return false;
         }
-
-        if (sign * (sign * leftBehind.size() + y * yChange + x * xChange) > map.length * ((1 + sign) / 2)) {
-            //System.err.println("3");
-
-            return false;
-            //edge check
-        }
-
-        for (int i = 1; i <= leftBehind.size(); i++) {
-            int xTrue = x + (i * xChange * sign);
-            int yTrue = y + (i * yChange * sign);
-            try {
-                if (map[xTrue][yTrue].size() != 0) {
-                    int topValue = Math.abs(board.getMap()[xTrue][yTrue].get(board.getMap()[xTrue][yTrue].size() - 1));
-                    if (topValue <= 1) {
-
-                    } else if (topValue <= 2) {
-                        return Math.abs(pickUp.get(pickUp.size() - 1)) == 3 && leftBehind.get(i) == 1 && i == leftBehind.size() - 1;
-                    } else if (topValue <= 3) {
-                        return false;
-
-                    } else {
-                        return false;
-                    }
-
-                }
-
-            } catch (Exception e) {
+        int distance = Math.abs((xend - x) + yend - y);
+        for (int i = 1; i <= distance; i++) {
+            if (!map[x + sign * xChange * i][y + sign * yChange * i].isEmpty() && Math.abs(map[x + sign * xChange * i][y + sign * yChange * i].get(map[x + sign * xChange * i][y + sign * yChange * i].size() - 1)) >= 2) {
                 return false;
             }
-            //wall/cap check
-
         }
         return true;
     }
 
+    /**
+     * This Checks if a move is feasible on a board with a cap ontop of the stack
+     * @param b
+     * @return
+     */
+    private boolean capCheck(Board b) {
+        List<Integer> map[][] = b.getMap();
+        if (map[x][y].get(map[x][y].size() - 1) != 3) {
+            return false;
+        }
+
+        int distance = leftBehind.size() - 1;
+        if (!map[xend][yend].isEmpty() &&
+                ((Math.abs(map[xend][yend].get(map[xend][yend].size() - 1)) == 2 && leftBehind.get(distance) != 1)
+                        || Math.abs(map[xend][yend].get(map[xend][yend].size() - 1)) == 3)) {
+            return false;
+        }
+        int sign = -1;
+        if (positive) {
+            sign = 1;
+        }
+        int xChange = 1;
+        int yChange = 0;
+        if (up) {
+            yChange = 1;
+            xChange = 0;
+        }
+
+        for (int i = 1; i < distance; i++) {
+            if (!map[x + sign * xChange * i][y + sign * yChange * i].isEmpty()) {
+                if (Math.abs(map[x + sign * xChange * i][y + sign * yChange * i].get(map[x + sign * xChange * i][y + sign * yChange * i].size() - 1)) >= 2) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getXend() {
+        return xend;
+    }
+
+    public int getYend() {
+        return yend;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public Integer getPickUpC() {
+        return pickUpC;
+    }
 }

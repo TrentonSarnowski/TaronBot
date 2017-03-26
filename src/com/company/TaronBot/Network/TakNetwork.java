@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
+import com.company.TaronBot.Game.Board;
 import com.company.TaronBot.Game.Move;
 import com.company.TaronBot.Game.Moves.DeStack;
 import com.company.TaronBot.Game.Moves.Placement;
@@ -195,18 +196,46 @@ public class TakNetwork implements Serializable{
 	 * @param board int[][][] input 3d board
 	 * @return list<Move> containing all possible moves ordered best to worst. 
 	 */
-	public List<Move> calculate(int[][][] board){
+	public List<Move> calculate(int[][][] board, Board b){
 				
 		double[] output;
-		
+		double[] output2;
+		double[] output3;
+		double[] output4;
+
 		//inital calculation. 
-		output = network.get(0).calculate(convertArray(board));
+		output = network.get(0).calculate(convertArray(board, true, true));
+		output2 = network.get(0).calculate(convertArray(board, true, false));
+		output3 = network.get(0).calculate(convertArray(board, false, false));
+		output4 = network.get(0).calculate(convertArray(board, false, true));
+
 		for(int i = 1; i < network.size(); i++){
 			output = network.get(i).calculate(output); //do all other layers but the last 2
+			output2 = network.get(i).calculate(output2); //do all other layers but the last 2
+			output3 = network.get(i).calculate(output3); //do all other layers but the last 2
+			output4 = network.get(i).calculate(output4); //do all other layers but the last 2
+
 		}
+		List<Move> midway=new ArrayList<>();
+		midway.addAll(sortedMoves(ConvertToOutputMoveArray(output), b, true, true));
+		midway.addAll(sortedMoves(ConvertToOutputMoveArray(output2), b, true, false));
+		midway.addAll(sortedMoves(ConvertToOutputMoveArray(output3), b , false, false));
+		midway.addAll(sortedMoves(ConvertToOutputMoveArray(output4), b, false, true));
+		Collections.sort(midway, new Comparator<Move>() {
+			@Override
+			public int compare(Move o1, Move o2) {
+				if(o1.getWeight()==o2.getWeight()){
+					return 0;
+				}
+				if(o1.getWeight()>o2.getWeight()){
+					return 1;
+				}
+				return -1;
+			}
+		});
+
 		
-		
-		return sortedMoves(ConvertToOutputMoveArray(output));
+		return midway;
 				
 	}
 
@@ -234,20 +263,50 @@ public class TakNetwork implements Serializable{
 	 * @param board int[][][]
 	 * @return double[][][]
 	 */
-	private double[] convertArray(int[][][] board) {
+	private double[] convertArray(int[][][] board, boolean x, boolean y) {
 		
 		double[] output = new double[board.length *board[0].length*board[0][0].length];
 		//create an array of the correct size to house the input values.
 
 		int tracker = 0;
-		for(int i = 0; i < board.length; i++){
-			for(int j = 0; j < board[0].length; j++){
-				for(int k = 0; k < board[0][0].length; k++){
-					output[tracker] = (double) board[i][j][k];
-					tracker++;
+		if(x && y){
+			for(int i = 0; i < board.length; i++){
+				for(int j = 0; j < board[0].length; j++){
+					for(int k = 0; k < board[0][0].length; k++){
+						output[tracker] = (double) board[i][j][k];
+						tracker++;
+					}
+				}
+			}
+		}else if(x){
+			for(int i = board.length-1; i >=0; i--){
+				for(int j = 0; j < board[0].length; j++){
+					for(int k = 0; k < board[0][0].length; k++){
+						output[tracker] = (double) board[i][j][k];
+						tracker++;
+					}
+				}
+			}
+		}else if(y){
+			for(int i = board.length-1; i >=0; i--){
+				for(int j = board[0].length-1; j >= 0; j--){
+					for(int k = 0; k < board[0][0].length; k++){
+						output[tracker] = (double) board[i][j][k];
+						tracker++;
+					}
+				}
+			}
+		}else{
+			for(int i = 0; i < board.length; i++){
+				for(int j = board[0].length-1; j >= 0; j--){
+					for(int k = 0; k < board[0][0].length; k++){
+						output[tracker] = (double) board[i][j][k];
+						tracker++;
+					}
 				}
 			}
 		}
+
 		
 		return output;
 	}
@@ -260,41 +319,90 @@ public class TakNetwork implements Serializable{
 	 * @param placements double[][][][] output from the final layer
 	 * @return ArrayList<Move>
 	 */
-	private List<Move> sortedMoves(double[][][] placements) {		
-		List<Move> moves = new ArrayList<Move>(width * height * 4);
-		
-		for(int i = 0; i < width; i++){
-			for(int j = 0; j < depth; j++){
+	private ArrayList<Move> sortedMoves(double[][][] placements, Board board, boolean x, boolean y) {
+		ArrayList<Move> moves = new ArrayList<Move>(width * height * 4);
+		int xR=0;
+		if(!x){
+			xR=1;
+		}
+		int yR=0;
+		if(!y){
+			yR=1;
+		}
+		for(int i = width*xR; (xR*-2+1)*i < (xR*-2+1)*width; i+=(xR*-2+1)){
+			for(int j = width*yR; (yR*-2+1)*j < (yR*-2+1)*width; j+=(yR*-2+1)){
 				moves.add(new Placement(i,j,1,placements[i][j][0]));
 			}
 		}
-		
+
 		for(int i = 0; i < width; i++){
 			for(int j = 0; j < depth; j++){
 				moves.add(new Placement(i,j,2,placements[i][j][1]));
 			}
 		}
-		
+
 		for(int i = 0; i < width; i++){
 			for(int j = 0; j < depth; j++){
 				moves.add(new Placement(i,j,3,placements[i][j][2]));
 			}
 		}
-		
+
 		for(int i = 0; i < width; i++){
 			for(int j = 0; j < depth; j++){
-				Move m=createPlacement(i,j, Arrays.copyOfRange(placements[i][j], 4, placements[i][j].length), placements[i][j][3]);
+				Move m;
+				try {
+					m= createPlacement(i, j, true, true, placements[i][j][7], placements[i][j][6], board.getMap()[i][j].size());
+				}catch (Exception e){
+					System.err.println(i+", "+j);
+					m=null;
+				}
+					if(m!=null) {
+					moves.add(m);
+				}
+			}
+		}
+		for(int i = 0; i < width; i++){
+			for(int j = 0; j < depth; j++){
+
+				Move m=createPlacement(i,j, true, false, placements[i][j][1], placements[i][j][0], board.getMap()[i][j].size());
 				if(m!=null) {
 					moves.add(m);
 				}
-				// todo, figure out how the move output is created. set it up so that I can pass an array 3 times. 
+				// todo, figure out how the move output is created. set it up so that I can pass an array 3 times.
 			}
 		}
-		
+		for(int i = 0; i < width; i++){
+			for(int j = 0; j < depth; j++){
+
+				Move m=createPlacement(i,j, false, true, placements[i][j][3], placements[i][j][2], board.getMap()[i][j].size());
+				if(m!=null) {
+					moves.add(m);
+				}
+				// todo, figure out how the move output is created. set it up so that I can pass an array 3 times.
+			}
+		}
+		for(int i = 0; i < width; i++){
+			for(int j = 0; j < depth; j++){
+
+				Move m=createPlacement(i,j, false, false, placements[i][j][5], placements[i][j][4], board.getMap()[i][j].size());
+				if(m!=null) {
+					moves.add(m);
+				}
+				// todo, figure out how the move output is created. set it up so that I can pass an array 3 times.
+			}
+		}
+		Collections.shuffle(moves);
 		Collections.sort(moves, 
 						new Comparator<Move>() {
         					public int compare(Move m1, Move m2) {
-        						return (m1.getWeight() < m2.getWeight() ? 1 : (m1.getWeight() == m2.getWeight() ? 0 : -1));
+								if(m1.getWeight() <m2.getWeight()){
+									return 1;
+								}else if(m1.getWeight()==m2.getWeight()){
+									return 0;
+								}else{
+									return (m1.getWeight() < m2.getWeight() ? 1 : (m1.getWeight() == m2.getWeight() ? 0 : -1));
+
+								}
         					}
     					}
 						);
@@ -307,11 +415,11 @@ public class TakNetwork implements Serializable{
 	 * creates a placement for a specific location
 	 * @param XInput int x location
 	 * @param YInput int y location
-	 * @param moveOutput double[] the output array of the network
+
 	 * @param weight double weight of the specific move. 
 	 * @return Move the movement created
 	 */
-	private Move createPlacement(int XInput, int YInput, double[] moveOutput, double weight) {
+	private Move createPlacement(int XInput, int YInput, boolean positive, boolean vertical, double move, double weight, int height) {
 		//x location input
 		//y location input
 		//what move it is
@@ -327,33 +435,15 @@ public class TakNetwork implements Serializable{
 		 * get the remaning total
 		 * get the output number in the space
 		 * get the percentage
-		 * multiply by remaning peices
+		 * multiply by remaning Fpeices
 		 * round up
-		 * */ 
-		double d =  Math.abs(moveOutput[2]*width/(range/2));
-		int pickedUp = (int) d;
-		
-		double remaningTotal = 0;
-		double percentage;
-		for(int i = 3; i < moveOutput.length; i++){
-			remaningTotal = 0;
-			for(int j = i; j < moveOutput.length; j++){
-				remaningTotal += Math.abs((moveOutput[j])); 
-			}
-			
-			percentage = Math.abs(moveOutput[i])/remaningTotal;
-			left[i-3] = (int) (Math.floor(percentage*pickedUp)+1);
-			
-			pickedUp -= left[i-3];
-			if(pickedUp <= 0 ){
-				break;
-			}
-		} 
+		 * */
+
 		try {
 			int number = 0; //needs to equal a number form 0 to 256.
 			//currently using a random number from the moveoutput (6) do to uncertanty on how the move was created.
-			boolean map[] = generateMoves.toArray((int)((moveOutput[6]+3)*256/6), height);
-			movement = new DeStack(map, (moveOutput[0] > 0), (moveOutput[1] > 0), weight,XInput, YInput);
+			boolean map[] = generateMoves.toArray((int)((move+3)*256/6), height);
+			movement = new DeStack(map,vertical, positive, weight,XInput, YInput);
 
 			//movement = DeStack.DeStack(XInput, YInput, left, (int) d, (moveOutput[0] > 0), (moveOutput[1] > 0), weight);
 		}catch (Exception e){

@@ -590,7 +590,7 @@ public class TestingMain {
             TakNetwork net1 = networks.get(i);
             TakNetwork net2 = networks.get(j);
 
-            int winner = Board.playGame(net1, net2, 8);
+            int winner = Board.playGame(net1, net2);
             if (winner == 1) {
                 net1.setWins(net1.getWins() + 1);
                 net2.setLosses(net1.getLosses() + 1);
@@ -651,7 +651,7 @@ public class TestingMain {
         rand = new Random();
         net2.randomize(rand);
 
-        System.out.println("game 1:2 " + Board.playGame(net1, net2, 8));
+        System.out.println("game 1:2 " + Board.playGame(net1, net2));
 
     }
 
@@ -937,7 +937,7 @@ public class TestingMain {
         PrintColor(time / 1000.0 / 1000.0 + " mS in a build\n", "green");
 
         time = System.nanoTime();
-        testNetwork.calculate(createTestBlank());
+        //testNetwork.calculate(createTestBlank());
         time = System.nanoTime() - time;
         PrintColor(time / 1000.0 / 1000.0 + " mS in a calculate", "green");
         PrintColor("\n\nTESTING DATA BELOW\n", "blue");
@@ -963,7 +963,7 @@ public class TestingMain {
             genTime = System.nanoTime();
             genData = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
             moves.clear();
-            moves = testNetwork.calculate(blank);
+            //moves = testNetwork.calculate(blank);
             endTime = System.nanoTime();
             endData = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
 

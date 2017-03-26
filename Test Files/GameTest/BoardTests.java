@@ -3,14 +3,20 @@ import com.company.TaronBot.Game.Board;
 import com.company.TaronBot.Game.Move;
 import com.company.TaronBot.Game.Moves.DeStack;
 import com.company.TaronBot.Game.Moves.Placement;
+import com.company.TaronBot.NEAT.FastRoadFinder;
+import com.company.TaronBot.Network.TakNetwork;
 import com.company.TaronBot.Network.generateMoves;
 import com.sun.org.apache.xpath.internal.SourceTree;
 import junit.framework.*;
 import org.junit.*;
+import org.junit.Assert;
+import tech.deef.Tools.StaticGlobals;
 
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by sarnowskit on 11/1/2016.
@@ -21,6 +27,42 @@ public class BoardTests extends TestCase{
         board=null;
     }
 
+    public void testRoadFinder(){
+        int b[] = {
+                1,
+                1,
+                2,
+                2,
+                2,
+        };
+        Assert.assertTrue(FastRoadFinder.RoadChecker(b));
+
+    }
+    public void testPlayGame(){
+        TakNetwork testNetwork;
+        int size = 6;
+        testNetwork = new TakNetwork(size + 1, size, size, StaticGlobals.DEPTH, 0, 0);
+        Random rand = new Random(0);
+        testNetwork.randomize(rand);
+        long time;
+        Board.playGame(testNetwork,testNetwork);
+
+        List<TakNetwork> n =new ArrayList<>();
+
+        time=System.currentTimeMillis();
+        for (int i = 0; i <100 ; i++) {
+            Board.playGame(testNetwork,testNetwork);
+        }
+
+        System.err.println((System.currentTimeMillis()-time)/100);
+        time=System.currentTimeMillis();
+        for (int i = 0; i <100 ; i++) {
+            Board.playGame(testNetwork,testNetwork);
+        }
+        System.err.println((System.currentTimeMillis()-time)/100);
+
+
+    }
     public void testVictoryFound() {
         boolean b[][] = {
                 {true, true, true, true, false},

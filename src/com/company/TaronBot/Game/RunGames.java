@@ -29,6 +29,9 @@ public class RunGames {
     int winOneTwoWeightPage[][];
     public static victoryType weightType = victoryType.WIN_NO_WEIGHT;
 
+    /**
+     * the way networks are orginized
+     */
     public enum victoryType {
         WIN_NO_WEIGHT,//Wins all qualify as 1
         WIN_WEIGHTED,//Wins based on flat count difference or sideLength for road win
@@ -48,6 +51,9 @@ public class RunGames {
 
     }
 
+    /**
+     * External storage for network data and sorting
+     */
     public static class bot {
         TakNetwork net;
         int lifeCount;
@@ -74,15 +80,25 @@ public class RunGames {
         }
     }
 
-    public static TakNetwork[] NEATGAMEPLAY(List<TakNetwork> networks, int lifeCount, int lifeCap, int mateSize, int games) {
+    /**
+     * Plays game in a pool based off of a life value system
+     * Randomly picks two networks, The looser looses some amount of life, And thw inner gains some amount of life
+     * If a network reaches zero life it is replaced with a newly generated network based off of group generation
+     * @param networks
+     * @param lifeCount
+     * @param games
+     * @param OutputFile
+     * @param poolSize
+     * @return
+     */
+    public static TakNetwork[] poolGamePlay(List<TakNetwork> networks, int lifeCount, int games, String OutputFile, int poolSize) {
         Random r = new Random();
         StaticGlobals.GAMESTOPLAY = games;
         bot[] bots = new bot[networks.size()];
-        for (int i = 0; i < networks.size(); i++) {
+        for (int i = 0; i < networks.size()&&i < poolSize; i++) {
             bots[i] = new bot(networks.get(i), lifeCount);
         }
         RunGames g = (new RunGames((new TakNetwork[0])).RunGames((ArrayList<TakNetwork>) networks));
-
         Thread t = new Thread() {
             @Override
             public void run() {
@@ -90,11 +106,14 @@ public class RunGames {
                 try {
 
 
-                    w = new PrintWriter("stats.txt");
+                    w = new PrintWriter(OutputFile+".csv");
                 } catch (Exception e) {
 
                 }
-                while (true) {
+                boolean exit=true;
+                long lastMoveCount=1;
+                long twoMoveCountBack=1;
+                while (exit) {
                     for (int i = 0; i < bots.length; i++) {
                         if (bots[i].lifeCount <= 0) {
                             if(r.nextInt(100)<100) {
@@ -123,13 +142,18 @@ public class RunGames {
                         System.err.println("wall Count: " + StaticGlobals.wallCount);
                         System.err.println("caps Count: " + StaticGlobals.capCount);
                         System.err.println("stak Count: " + StaticGlobals.destackCount);
+                        if((lastMoveCount==twoMoveCountBack)&&(lastMoveCount==StaticGlobals.moveCount)){
+                            exit=false;
+                        }
+                        twoMoveCountBack=lastMoveCount;
+                        lastMoveCount=StaticGlobals.moveCount;
                         if (w != null) {
-                            w.write(StaticGlobals.roadCount + "\t"
-                                    + StaticGlobals.gameCount + "\t" +
-                                    StaticGlobals.moveCount + "\t" +
-                                    StaticGlobals.flatCount + "\t" +
-                                    StaticGlobals.wallCount + "\t" +
-                                    StaticGlobals.capCount + "\t" +
+                            w.write(StaticGlobals.roadCount + ","
+                                    + StaticGlobals.gameCount + "," +
+                                    StaticGlobals.moveCount + "," +
+                                    StaticGlobals.flatCount + "," +
+                                    StaticGlobals.wallCount + "," +
+                                    StaticGlobals.capCount + "," +
                                     StaticGlobals.destackCount + "\n");
                             w.flush();
                         }
@@ -140,10 +164,13 @@ public class RunGames {
                         StaticGlobals.destackCount = 0;
                         StaticGlobals.wallCount = 0;
                         StaticGlobals.capCount = 0;
+
                     } catch (InterruptedException e) {
 
                     }
+
                 }
+                w.close();
             }
         };
         Thread online = new Thread() {
@@ -153,7 +180,7 @@ public class RunGames {
             }
         };
 
-
+        online.start();
         t.start();
 
         //online.start();
@@ -168,13 +195,13 @@ public class RunGames {
 
         g.playGamesSetThreadsBlocks(5, bots);
 
-        String output = "networks\\TestNeat\\output";
+        String output = "networks\\TestNeat\\output"+OutputFile;
 
 
         System.out.println("Saving Networks");
 
         new File(output).mkdirs();
-        for (int s = 0; s < networks.size(); s++) {
+        for (int s = 0; s < bots.length; s++) {
 
             FileOutputStream fout;
             try {
@@ -194,6 +221,11 @@ public class RunGames {
     }
     int count;
 
+    /**
+     * takes in a list of networks and creates a run games object
+     * @param networks
+     * @return
+     */
     public static RunGames RunGames(ArrayList<TakNetwork> networks) {
         TakNetwork nets[] = new TakNetwork[networks.size()];
         for (int i = 0; i < nets.length; i++) {
@@ -203,6 +235,10 @@ public class RunGames {
 
     }
 
+    /**
+     * creates a new rungames object
+     * @param networks
+     */
     public RunGames(TakNetwork[] networks) {
         this.networks = new TakNetwork[networks.length];
         for (int i = 0; i < networks.length; i++) {
@@ -211,7 +247,7 @@ public class RunGames {
         player1 = new LinkedList<>();
         player2 = new LinkedList<>();
         int c = networks.length;
-
+        //different data for potential sorting algorithms
         winNoWeight = new int[c];
         winWeighted = new int[c];
         winRoadOnly = new int[c];
@@ -226,6 +262,12 @@ public class RunGames {
         winOneTwoWeightPage = new int[c][c];
     }
 
+    /**
+     * adds a game to the list of games to be played
+     * @param one
+     * @param two
+     * @return
+     */
     public boolean addGame(int one, int two) {
         if (one >= 0 && one < networks.length && two >= 0 && two < networks.length) {
             player1.add(one);
@@ -263,7 +305,7 @@ public class RunGames {
         Iterator<Integer> player2 = this.player2.iterator();
         List<Thread> threads=new ArrayList<>();
         for (int i = 0; i <= cores; i++) {
-
+        //generates cores +1 threads
 
             Thread t = new Thread() {
 
@@ -290,7 +332,7 @@ public class RunGames {
 
                         count++;
                         if (one.getWidth() == two.getWidth()) {
-                            int result = Board.playGame(one, two, one.getWidth());
+                            int result = Board.playGame(one, two);
                             addValuesForSort(one, two, net1Num, net2Num, result);
 
 
@@ -362,7 +404,7 @@ public class RunGames {
 
                         count++;
                         if (one.getWidth() == two.getWidth()) {
-                            int result = Board.playGame(one, two, one.getWidth());
+                            int result = Board.playGame(one, two);
                             if (result > 0) {
                                 bots[net1Num].addLife();
                                 bots[net2Num].subtractLife();
@@ -585,7 +627,7 @@ public class RunGames {
      * @param result
      */
     public void addValuesForSort(TakNetwork one, TakNetwork two, int net1Num, int net2Num, int result) {
-        //todo legalMoveDepth;
+        //TODO legalMoveDepth;
 
         if (result > 0) {
             one.addWins();
@@ -635,4 +677,6 @@ public class RunGames {
         winLossWeightedPage[net2Num][net1Num] += result;
         winLossWeightedPage[net1Num][net2Num] +=result;
     }
+
+
 }

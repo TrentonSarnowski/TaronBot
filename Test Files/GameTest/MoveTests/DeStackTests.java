@@ -1,6 +1,8 @@
 package GameTest.MoveTests;
 import com.company.TaronBot.Game.Board;
+import com.company.TaronBot.Game.Move;
 import com.company.TaronBot.Game.Moves.DeStack;
+import com.company.TaronBot.Network.generateMoves;
 import junit.framework.*;
 
 import java.util.ArrayList;
@@ -12,7 +14,11 @@ import java.util.List;
  */
 public class DeStackTests extends TestCase {
 
-
+    public void testGenerateDestack(){
+        for(boolean m[] :generateMoves.getMoves(3)){
+            System.err.println((new DeStack(m,true,true,0,0,0)).toPlayTakString());
+        };
+    }
     public void testCreate()throws Exception{
         Integer[] array={1,1,1,1,0};
         DeStack test = DeStack.DeStack(0,0,array, 4,true,true,1);
@@ -275,6 +281,16 @@ public class DeStackTests extends TestCase {
 
 
 
+
+    }
+    public void testCrush(){
+        Board b =new Board(5,new LinkedList<>(),true);
+
+        b.getMap()[0][0].add(3);
+        b.getMap()[1][0].add(3);
+        LinkedList c =new LinkedList();
+        c.add(1);
+        System.err.println((new DeStack(1,0,c,1, false, false, 0)).checkFeasible(b,true));
 
     }
 }
