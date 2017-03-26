@@ -1,6 +1,7 @@
 package com.company.Testing;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
@@ -15,10 +16,10 @@ public class RNGTesting {
 	// the purpose of this class is to test and reverse engineer the the value
 	// from a
 	public static void main(String[] args) {
-		//RNGToolTest();
+		RNGToolTest();
 		
 		
-		RNGTest();
+		//RNGTest();
 	}
 
 
@@ -30,7 +31,7 @@ public class RNGTesting {
 		
 		for (int i = 0; i < 100000;i++){
 			num = RNGTool.RNGInput(num);
-			System.out.println(num);
+			System.out.println(num + " : " + Arrays.toString(getBinaryArray(num)));
 			if(num ==first){
 				System.out.println("Looped after " + i + " runs.");
 				break;
@@ -64,15 +65,16 @@ public class RNGTesting {
 				results.set(j, DetermineCorrectPercentage(networks.get(j)));
 			}
 
-			//////////////////////////////////////
-			//									//
-			//									//
-			//									//
-			// TODO analysis of output results. //
-			//									//
-			//									//
-			//									//
-			//////////////////////////////////////
+			
+			//output results
+			double sum = 0;
+			for(int j = 0; j < 100; j++){
+				sum += results.get(j);
+			}
+			
+			System.out.println("Round " + i + ": " + (sum/100.0));
+			
+			
 			
 			//sor networks based on accuracy
 			networks = sortNetworks(results, networks);
