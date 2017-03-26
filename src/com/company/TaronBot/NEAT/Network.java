@@ -70,5 +70,29 @@ public class Network {
 	//geting the number of nodes in the network
 	//connesting the nodes. 
 	
+	public void addNodeLinkage(Node giver, Node reciever, double weight){
+		//TODO generate method
+	}
 	
+	public void removeNodeLinkage(Node giver, Node reciever){
+		//TODO generate method
+	}
+	
+	public void adjustNodeLinkage(Node giver, Node reciever, double weight){
+		//TODO generate method
+	}
+	
+	public void addNode(Node node){
+		//TODO generate method
+	}
+	
+	public void removeNode(Node node){
+		//TODO generate method
+	}
+	
+	public void cleanupNodeTree(){
+		//TODO go through every node and if 
+		//the number of referencing nodes is zero, remove it. 
+	}
 }
+
