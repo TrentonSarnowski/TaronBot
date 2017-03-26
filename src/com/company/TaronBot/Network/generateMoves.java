@@ -15,6 +15,11 @@ public class generateMoves {
         System.out.println(System.currentTimeMillis() - time);
     }
 
+    /**
+     * Generates Every Destack for A board of a given state
+     * @param i
+     * @return
+     */
     public static List<DeStack> getDestacks(int i) {
         List<DeStack> returnVal = new ArrayList<>();
 

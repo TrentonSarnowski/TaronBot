@@ -11,8 +11,13 @@ import com.company.TaronBot.Game.RunGames;
 import tech.deef.Tools.StaticGlobals;
 
 public class ComputeGeneration {
-	private static ArrayList<TakNetwork> randNets=new ArrayList<>();
-
+	/**
+	 * Plays games and returns a sorted list of networks
+	 * @param networks
+	 * @param Threads
+	 * @param logger
+	 * @return
+	 */
 	public static List<TakNetwork> compute(List<TakNetwork> networks, int Threads, Logger logger) {
 		StaticGlobals.destackCount = 0;
 		StaticGlobals.flatCount = 0;

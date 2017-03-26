@@ -2,6 +2,9 @@ package com.company.TaronBot.NEAT;
 
 import java.util.ArrayList;
 
+/**
+ * THe tail and exit nodes of a network
+ */
 public class OutputNode extends Node{
 	
 	public OutputNode(int nodeUUNIN, int nodeOrderNumber){
@@ -10,9 +13,13 @@ public class OutputNode extends Node{
 	
 	@Override
 	public double getValue(){
-		return 0;
+		return super.getValue();
 	}
-	
+
+	/**
+	 * TODO enforce documentation
+	 * @return
+	 */
 	@Override
 	public ArrayList<Node> getReferencedByNodes(){
 		return null;

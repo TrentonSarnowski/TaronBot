@@ -6,18 +6,33 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+/**
+ * A one directional network of nodes that calculates a known
+ * number of output based on a known number of inputs
+ */
 public class Network {
 
 	int intputNodes;
 	int outputNodes;
 	
 	protected ArrayList<Node> NetworkNodes;
-	static Random rand = new Random();
+	static Random rand = new Random();//TODO initilize in constructors
 
+	/**
+	 * creates Network with no middle nodes
+	 * @param inputNodes
+	 * @param outputNodes
+	 */
 	public Network(int inputNodes, int outputNodes) {
 		this(inputNodes, outputNodes, 0);
 	}
 
+	/**
+	 * COnstructor for a network with staring number of middle nodes
+	 * @param inputNodes
+	 * @param outputNodes
+	 * @param startingNodes
+	 */
 	public Network(int inputNodes, int outputNodes, int startingNodes) {
 		NetworkNodes = new ArrayList<Node>();
 
@@ -39,29 +54,21 @@ public class Network {
 		}
 	}
 
-	public Network(Network one, Network two){
-		for (int i = 0; i <one.NetworkNodes.size()||i<two.NetworkNodes.size() ; i++) {
-			Node nodeOne=one.NetworkNodes.get(i);
-			Node nodeTwo=two.NetworkNodes.get(i);
-			if(!nodeOne.equals(nodeTwo)){
-				//perform mutation involving both
-				int r=StaticGlobals.RANDOM.nextInt(100);
-				if(r<90){
-					//find path
-				}else{
-					//mutate affected connection randomly
-					//may need to break this up further
-					//add include both at half weight
-
-				}
-				//get simlar paths if they exist(provide depth variable)
-
-			}else{
-				//check for random mutation
-			}
-		}
+	/**
+	 * Calls the mating algorithm on two networks with default values
+	 * @param one
+	 * @param two
+	 * @return
+	 */
+	public Network Network(Network one, Network two){
+		return null;//TODO
 	}
-	
+
+	/**
+	 * Takes in an array of doubles representing a state and returns an array of output values
+	 * @param inputValues
+	 * @return
+	 */
 	public double[] RunNetwork(double[] inputValues){
 		Collections.sort(NetworkNodes, (Node n1, Node n2) -> {
 			return n1.getNodeOrderNumber()-n2.getNodeOrderNumber();

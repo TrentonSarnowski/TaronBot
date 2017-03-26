@@ -1,4 +1,4 @@
-package com.company.TaronBot.NEAT;
+package com.company.TaronBot.Game;
 
 import com.company.TaronBot.Game.Move;
 import com.company.TaronBot.Game.Moves.Placement;
@@ -78,6 +78,13 @@ public class FastRoadFinder {
 
         return empty[empty.length-1]!=0;// will equal zero if empty
     }
+
+    /**
+     * Not working don't use
+     * REturns a move that leads to victory if able
+     * @param b
+     * @return
+     */
     public static Move RoadFinder(long[] b){
         long mult2=1024;
         for (int i = 0; i <b.length ; i++) {
