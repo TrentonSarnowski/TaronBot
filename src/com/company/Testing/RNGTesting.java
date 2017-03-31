@@ -23,6 +23,7 @@ public class RNGTesting {
 		RNGAITest();
 	}
 
+
 	private static void RNGGenerationTest() {
 		int num = 0;
 		num = RNGTool.RNGInput(num);
@@ -37,6 +38,7 @@ public class RNGTesting {
 			}
 		}
 	}
+
 
 	private static void RNGAITest() {
 		// network lists
@@ -72,6 +74,7 @@ public class RNGTesting {
 			// sor networks based on accuracy
 			networks = sortNetworks(results, networks);
 
+
 			// randomly remove based on the result of sorting. prioritize removing worse nets
 			for (int j = 0; j < 50; j++) {
 				// remove the nth 0object where n is calculated by
@@ -96,6 +99,7 @@ public class RNGTesting {
 
 		}
 	}
+
 
 	public static ArrayList<Network> sortNetworks(ArrayList<Double> results, ArrayList<Network> nets) {
 		Network tmp2;// TODO may have to change one or more signs.
@@ -124,11 +128,13 @@ public class RNGTesting {
 
 	}
 
+
 	// TODO generate the networks for 16 inputs and 16 outputs.
 	private static Network generateNetwork() {
 		return null;
 
 	}
+
 
 	private static double DetermineCorrectPercentage(Network net) {
 		Random random = new Random();
@@ -167,6 +173,7 @@ public class RNGTesting {
 		// return the correct percentage.
 		return correctPercentage / games;
 	}
+
 
 	private static double[] getBinaryArray(int in) {
 		double array[] = new double[16];

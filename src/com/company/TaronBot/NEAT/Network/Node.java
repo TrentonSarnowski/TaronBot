@@ -15,9 +15,11 @@ public class Node {
 	double value; // updated by caluclate
 	int operationID;
 
+
 	public long getUniqueUniversalNodeIdentificationNumber() {
 		return uniqueUniversalNodeIdentificationNumber;
 	}
+
 
 	/**
 	 *
@@ -28,6 +30,7 @@ public class Node {
 		this.nodeOrderNumber = nodeOrderNumber;
 	}
 
+
 	/**
 	 * returns the order number of the node.
 	 *
@@ -36,6 +39,7 @@ public class Node {
 	public int getNodeOrderNumber() {
 		return nodeOrderNumber;
 	}
+
 
 	/**
 	 * creates a node with an id number and a UUNIN
@@ -52,6 +56,7 @@ public class Node {
 		value = 0;
 	}
 
+
 	/**
 	 * adds a node to the input nodes of this node. //this node will set itself as an output node of Node n //sets weight as weight
 	 */
@@ -61,6 +66,7 @@ public class Node {
 		node.addOutputNode(this);
 	}
 
+
 	/**
 	 * adds a node to the input nodes of this node. //this node will set itself as an output node of Node n //default weight 0
 	 */
@@ -69,12 +75,14 @@ public class Node {
 		// adds the node with a weight of 0;
 	}
 
+
 	/**
 	 * will add a node to the list of nodes referencing this node. //to be used in conjunction with mating and pruning algorithms.
 	 */
 	private void addOutputNode(Node node) {
 		outputNodes.add(node);
 	}
+
 
 	/**
 	 * //removes a node from the list of nodes to use.
@@ -86,6 +94,7 @@ public class Node {
 		node.removeOutputNode(this);
 	}
 
+
 	/**
 	 * remove a node from the list of nodes that it is used by
 	 *
@@ -94,6 +103,7 @@ public class Node {
 	private void removeOutputNode(Node node) {
 		outputNodes.remove(node);
 	}
+
 
 	/**
 	 * goes through every node in the list and adds it multiplied by it's respective weight to the sum //this sum is then run through the tansig function.
@@ -107,29 +117,36 @@ public class Node {
 		value = Math.tanh(sum);
 	}
 
+
 	public double getValue() {
 		return value;
 	}
+
 
 	public void changeNodeWeight(Node node, double newWeight) {
 		inputNodeWeights.set(inputNodes.indexOf(node), newWeight);
 	}
 
+
 	public ArrayList<Node> getReferencingNodes() {
 		return outputNodes;
 	}
+
 
 	public ArrayList<Node> getReferencedByNodes() {
 		return inputNodes;
 	}
 
+
 	public int getReferencingNodesSize() {
 		return outputNodes.size();
 	}
 
+
 	public int getReferencedByNodesSize() {
 		return inputNodes.size();
 	}
+
 
 	@Override
 	public boolean equals(Object b) {
