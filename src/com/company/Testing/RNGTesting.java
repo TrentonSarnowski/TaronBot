@@ -16,9 +16,10 @@ public class RNGTesting {
 	// the purpose of this class is to test and reverse engineer the the value
 	// from a
 	public static void main(String[] args) {
+		//test the random number generator to make sure that it loops after a certain number of calls
 		//RNGGenerationTest();
 		
-		
+		//test the code of the AI system.
 		RNGAITest();
 	}
 
@@ -94,7 +95,7 @@ public class RNGTesting {
 				//finding a number on a sin curve, where a random number has a higher 
 				//chance of being closer to 1 than anything else, with 0 being the lowest probability
 				temp = networks.get(((int)Math.sin(Math.random()*Math.PI/2))*networks.size());
-				networksToBeAdded.add(RandomlyAlterNetwork.AlterNewNetwork(temp , helper));
+				networksToBeAdded.add(RandomlyAlterNetwork.AlterAsNewNetwork(temp , helper));
 			}
 			
 			//add new nets.
