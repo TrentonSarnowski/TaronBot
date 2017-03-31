@@ -16,47 +16,44 @@ public class RNGTesting {
 	// the purpose of this class is to test and reverse engineer the the value
 	// from a
 	public static void main(String[] args) {
-		//test the random number generator to make sure that it loops after a certain number of calls
-		//RNGGenerationTest();
-		
-		//test the code of the AI system.
+		// test the random number generator to make sure that it loops after a certain number of calls
+		// RNGGenerationTest();
+
+		// test the code of the AI system.
 		RNGAITest();
 	}
-
-
 
 	private static void RNGGenerationTest() {
 		int num = 0;
 		num = RNGTool.RNGInput(num);
 		int first = num;
-		
-		for (int i = 0; i < 100000;i++){
+
+		for (int i = 0; i < 100000; i++) {
 			num = RNGTool.RNGInput(num);
 			System.out.println(num + " : " + Arrays.toString(getBinaryArray(num)));
-			if(num ==first){
+			if (num == first) {
 				System.out.println("Looped after " + i + " runs.");
 				break;
 			}
 		}
 	}
-	
-	
+
 	private static void RNGAITest() {
-		//network lists
+		// network lists
 		ArrayList<Network> networks = new ArrayList<Network>(100);
 		ArrayList<Network> networksToBeAdded = new ArrayList<Network>(100);
 		Network temp;
-		//result list
+		// result list
 		ArrayList<Double> results = new ArrayList<Double>(100);
-		//single network mutator
+		// single network mutator
 		AlterNetworkHelper helper = new AlterNetworkHelper();
-		
-		//create inital networks
+
+		// create inital networks
 		for (int i = 0; i < 100; i++) {
 			networks.set(i, generateNetwork());
 		}
 
-		//main loop
+		// main loop
 		for (int i = 0; i < 1000; i++) {
 
 			// run generation for
@@ -64,51 +61,44 @@ public class RNGTesting {
 				results.set(j, DetermineCorrectPercentage(networks.get(j)));
 			}
 
-			
-			//output results
+			// output results
 			double sum = 0;
-			for(int j = 0; j < 100; j++){
+			for (int j = 0; j < 100; j++) {
 				sum += results.get(j);
 			}
-			
-			System.out.println("Round " + i + ": " + (sum/100.0));
-			
-			
-			
-			//sor networks based on accuracy
+
+			System.out.println("Round " + i + ": " + (sum / 100.0));
+
+			// sor networks based on accuracy
 			networks = sortNetworks(results, networks);
-			
-			//randomly remove based on the result of sorting. prioritize removing worse nets
-			for (int j = 0; j < 50; j++){
-				//remove the nth 0object where n is calculated by
-				//finding a number on a cosine curve, where the lower number 
-				temp = networks.get(((int)Math.cos(Math.random()*Math.PI/2))*networks.size());
+
+			// randomly remove based on the result of sorting. prioritize removing worse nets
+			for (int j = 0; j < 50; j++) {
+				// remove the nth 0object where n is calculated by
+				// finding a number on a cosine curve, where the lower number
+				temp = networks.get(((int) Math.cos(Math.random() * Math.PI / 2)) * networks.size());
 				results.remove(networks.indexOf(temp));
 				networks.remove(temp);
 			}
-			
-			
+
 			networksToBeAdded.clear();
-			//randomly duplicate based on the results of sorting. prioritize duplicating better nets
-			for (int j = 0; j < 50; j++){
-				//mutating the nth 0object where n is calculated by
-				//finding a number on a sin curve, where a random number has a higher 
-				//chance of being closer to 1 than anything else, with 0 being the lowest probability
-				temp = networks.get(((int)Math.sin(Math.random()*Math.PI/2))*networks.size());
-				networksToBeAdded.add(RandomlyAlterNetwork.AlterAsNewNetwork(temp , helper));
+			// randomly duplicate based on the results of sorting. prioritize duplicating better nets
+			for (int j = 0; j < 50; j++) {
+				// mutating the nth 0object where n is calculated by
+				// finding a number on a sin curve, where a random number has a higher
+				// chance of being closer to 1 than anything else, with 0 being the lowest probability
+				temp = networks.get(((int) Math.sin(Math.random() * Math.PI / 2)) * networks.size());
+				networksToBeAdded.add(RandomlyAlterNetwork.AlterAsNewNetwork(temp, helper));
 			}
-			
-			//add new nets.
+
+			// add new nets.
 			networks.addAll(networksToBeAdded);
-			
-			
-			
+
 		}
 	}
 
-	
 	public static ArrayList<Network> sortNetworks(ArrayList<Double> results, ArrayList<Network> nets) {
-		Network tmp2;//TODO may have to change one or more signs. 
+		Network tmp2;// TODO may have to change one or more signs.
 		Double tmp;
 		for (int k = 0; k < nets.size() - 1; k++) {
 

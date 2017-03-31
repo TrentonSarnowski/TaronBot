@@ -10,66 +10,73 @@ import java.util.List;
  */
 public interface Move {
 
-    String toString();
+	String toString();
 
-    /**
-     * Performs a move ona boardstate
-     * @param map
-     * @param control
-     * @return
-     */
-    List<Integer>[][] performMove(Board map, boolean control);
+	/**
+	 * Performs a move ona boardstate
+	 * 
+	 * @param map
+	 * @param control
+	 * @return
+	 */
+	List<Integer>[][] performMove(Board map, boolean control);
 
-    /**
-     * checks if a move is feasible for a board stae
-     * @param map
-     * @param cont
-     * @return
-     */
-    boolean checkFeasible(Board map, boolean cont);
-    double getWeight();
+	/**
+	 * checks if a move is feasible for a board stae
+	 * 
+	 * @param map
+	 * @param cont
+	 * @return
+	 */
+	boolean checkFeasible(Board map, boolean cont);
 
-    /**
-     * returns move type
-     * @return
-     */
-    int  getType();
+	double getWeight();
 
-    /**
-     * returns playtak readable string
-     * @return
-     */
-    String toPlayTakString();
+	/**
+	 * returns move type
+	 * 
+	 * @return
+	 */
+	int getType();
 
-    boolean checkVictory(Board map, boolean cont);
+	/**
+	 * returns playtak readable string
+	 * 
+	 * @return
+	 */
+	String toPlayTakString();
 
-    /**
-     * checks if a move is the idrect inverse of another
-     * @param b
-     * @return
-     */
-    default boolean looped(Move b){
-        if(b instanceof DeStack && this instanceof DeStack){
-            DeStack d = (DeStack)b;
-            DeStack f = (DeStack) this;
-            if(d.getX()==f.getXend()&&f.getYend()==d.getY()&&f.getPickUpC()==d.getPickUpC()){
-                return true;
-            }
+	boolean checkVictory(Board map, boolean cont);
 
-        }
-        return false;
-    }
+	/**
+	 * checks if a move is the idrect inverse of another
+	 * 
+	 * @param b
+	 * @return
+	 */
+	default boolean looped(Move b) {
+		if (b instanceof DeStack && this instanceof DeStack) {
+			DeStack d = (DeStack) b;
+			DeStack f = (DeStack) this;
+			if (d.getX() == f.getXend() && f.getYend() == d.getY() && f.getPickUpC() == d.getPickUpC()) {
+				return true;
+			}
 
-    /**
-     * checks to see if to Moves are equal based on playtakstring
-     * @param b
-     * @return
-     */
-    default public boolean isEqual(Object b){
-        if(b instanceof Move){
-            return((Move) b).toPlayTakString().equals(this.toPlayTakString());
-        }
-        return false;
-    }
+		}
+		return false;
+	}
+
+	/**
+	 * checks to see if to Moves are equal based on playtakstring
+	 * 
+	 * @param b
+	 * @return
+	 */
+	default public boolean isEqual(Object b) {
+		if (b instanceof Move) {
+			return ((Move) b).toPlayTakString().equals(this.toPlayTakString());
+		}
+		return false;
+	}
 
 }

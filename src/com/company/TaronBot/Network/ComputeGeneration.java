@@ -13,6 +13,7 @@ import tech.deef.Tools.StaticGlobals;
 public class ComputeGeneration {
 	/**
 	 * Plays games and returns a sorted list of networks
+	 * 
 	 * @param networks
 	 * @param Threads
 	 * @param logger
@@ -22,14 +23,12 @@ public class ComputeGeneration {
 		StaticGlobals.destackCount = 0;
 		StaticGlobals.flatCount = 0;
 		StaticGlobals.moveCount = 0;
-		StaticGlobals.roadCount=0;
+		StaticGlobals.roadCount = 0;
 
-		for(TakNetwork net: networks){
+		for (TakNetwork net : networks) {
 			net.setWins(0);
 			net.setLosses(0);
 		}
-
-
 
 		RunGames games = RunGames.RunGames((ArrayList) networks);
 
@@ -40,7 +39,6 @@ public class ComputeGeneration {
 		}
 		games.playGamesSetThreadsBlocks(Threads);
 
-
 		System.out.println("Road Ratio: " + StaticGlobals.roadCount + " / " + (games.getCount()));
 		System.out.println("Flat Count: " + StaticGlobals.flatCount);
 		System.out.println("DeStack Count: " + StaticGlobals.destackCount);
@@ -49,9 +47,6 @@ public class ComputeGeneration {
 
 		return games.GetSortedNetworks(RunGames.victoryType.WIN_NO_WEIGHT);
 
-
-
 	}
-
 
 }

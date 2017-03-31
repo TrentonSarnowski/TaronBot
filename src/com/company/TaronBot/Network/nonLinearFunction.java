@@ -3,7 +3,8 @@ package com.company.TaronBot.Network;
 import java.io.Serializable;
 
 /**
- * simple interface for passing functions through the Networks. 
+ * simple interface for passing functions through the Networks.
+ * 
  * @author deef0000dragon1
  *
  */

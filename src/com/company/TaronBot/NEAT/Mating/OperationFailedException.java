@@ -6,5 +6,5 @@ public class OperationFailedException extends Exception {
 		// TODO Auto-generated constructor stub
 		super(string);
 	}
-	
+
 }

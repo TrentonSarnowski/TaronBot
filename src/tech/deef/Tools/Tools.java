@@ -1,7 +1,7 @@
 package tech.deef.Tools;
 
 public class Tools {
-	
+
 	private static final String ANSI_RESET = "\u001B[0m";
 	private static final String ANSI_BLACK = "\u001B[30m";
 	private static final String ANSI_RED = "\u001B[31m";
@@ -11,13 +11,13 @@ public class Tools {
 	private static final String ANSI_PURPLE = "\u001B[35m";
 	private static final String ANSI_CYAN = "\u001B[36m";
 	private static final String ANSI_WHITE = "\u001B[37m";
-	
-	public static void Print(String string){
+
+	public static void Print(String string) {
 		System.out.print(string + ANSI_RESET);
 	}
-	
-	public static void PrintColor(String string, String color){
-		switch(color.toLowerCase()){
+
+	public static void PrintColor(String string, String color) {
+		switch (color.toLowerCase()) {
 		case "black":
 			System.out.print(ANSI_BLACK + string + ANSI_RESET);
 			break;
@@ -46,10 +46,5 @@ public class Tools {
 			System.out.print(string + ANSI_RESET);
 		}
 	}
-	
-	
-	
-	
-	
-	
+
 }
