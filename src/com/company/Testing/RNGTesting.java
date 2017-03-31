@@ -16,15 +16,15 @@ public class RNGTesting {
 	// the purpose of this class is to test and reverse engineer the the value
 	// from a
 	public static void main(String[] args) {
-		RNGToolTest();
+		//RNGGenerationTest();
 		
 		
-		//RNGTest();
+		RNGAITest();
 	}
 
 
 
-	private static void RNGToolTest() {
+	private static void RNGGenerationTest() {
 		int num = 0;
 		num = RNGTool.RNGInput(num);
 		int first = num;
@@ -38,17 +38,15 @@ public class RNGTesting {
 			}
 		}
 	}
-
-
 	
-	private static void RNGTest() {
+	
+	private static void RNGAITest() {
 		//network lists
 		ArrayList<Network> networks = new ArrayList<Network>(100);
-		ArrayList<Network> network = new ArrayList<Network>(100);
+		ArrayList<Network> networksToBeAdded = new ArrayList<Network>(100);
 		Network temp;
 		//result list
 		ArrayList<Double> results = new ArrayList<Double>(100);
-		
 		//single network mutator
 		AlterNetworkHelper helper = new AlterNetworkHelper();
 		
@@ -83,22 +81,24 @@ public class RNGTesting {
 			for (int j = 0; j < 50; j++){
 				//remove the nth 0object where n is calculated by
 				//finding a number on a cosine curve, where the lower number 
-				networks.remove(((int)Math.cos(Math.random()*Math.PI/2))*networks.size());
+				temp = networks.get(((int)Math.cos(Math.random()*Math.PI/2))*networks.size());
+				results.remove(networks.indexOf(temp));
+				networks.remove(temp);
 			}
 			
 			
-			network.clear();
+			networksToBeAdded.clear();
 			//randomly duplicate based on the results of sorting. prioritize duplicating better nets
 			for (int j = 0; j < 50; j++){
 				//mutating the nth 0object where n is calculated by
 				//finding a number on a sin curve, where a random number has a higher 
 				//chance of being closer to 1 than anything else, with 0 being the lowest probability
 				temp = networks.get(((int)Math.sin(Math.random()*Math.PI/2))*networks.size());
-				network.add(RandomlyAlterNetwork.AlterNewNetwork(temp , helper));
+				networksToBeAdded.add(RandomlyAlterNetwork.AlterNewNetwork(temp , helper));
 			}
 			
 			//add new nets.
-			networks.addAll(network);
+			networks.addAll(networksToBeAdded);
 			
 			
 			
@@ -107,7 +107,7 @@ public class RNGTesting {
 
 	
 	public static ArrayList<Network> sortNetworks(ArrayList<Double> results, ArrayList<Network> nets) {
-		Network tmp2;
+		Network tmp2;//TODO may have to change one or more signs. 
 		Double tmp;
 		for (int k = 0; k < nets.size() - 1; k++) {
 
