@@ -15,6 +15,7 @@ public class Node {
 	ArrayList<Double> inputNodeWeights;
 	double value; // updated by caluclate
 	int operationID;
+	int NodeHeight;
 
 
 	public long getUniqueUniversalNodeIdentificationNumber() {
@@ -105,27 +106,29 @@ public class Node {
 		outputNodes.remove(node);
 	}
 
+
 	/**
-	 * this will add the entire list of nodes for a network, or required nodes to 
-	 * the given list. 
+	 * this will add the entire list of nodes for a network, or required nodes to the given list.
 	 * 
-	 * recursion and overlap is prevented by setting the operation ID as required. 
+	 * recursion and overlap is prevented by setting the operation ID as required.
 	 * 
-	 * @param list			List<Node> 	list of nodes to add this and all recursice nodes to.
-	 * @param operationID	int 		value checked to prevent overlap
+	 * @param list
+	 *            List<Node> list of nodes to add this and all recursice nodes to.
+	 * @param operationID
+	 *            int value checked to prevent overlap
 	 */
-	public void addToListRecursivly(List<Node> list, int operationID){
-		//if have not run the operation on this node yet, do.
-		if(this.operationID != operationID){
+	public void addToListRecursivly(List<Node> list, int operationID) {
+		// if have not run the operation on this node yet, do.
+		if (this.operationID != operationID) {
 			this.operationID = operationID;
 			list.add(this);
-			for(Node n: inputNodes){
+			for (Node n : inputNodes) {
 				n.addToListRecursivly(list, operationID);
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * goes through every node in the list and adds it multiplied by it's respective weight to the sum //this sum is then run through the tansig function.
 	 */
@@ -182,5 +185,20 @@ public class Node {
 		} else {
 			return false;
 		}
+	}
+
+
+	public int getOperationID() {
+		return operationID;
+	}
+
+
+	public int getNodeHeight() {
+		return NodeHeight;
+	}
+
+
+	public void setNodeHeight(int nodeHeight) {
+		NodeHeight = nodeHeight;
 	}
 }
