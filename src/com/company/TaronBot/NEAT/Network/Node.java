@@ -15,7 +15,7 @@ public class Node {
 	ArrayList<Double> inputNodeWeights;
 	double value; // updated by caluclate
 	int operationID;
-	int NodeHeight;
+	int NodeDepth;
 
 
 	public long getUniqueUniversalNodeIdentificationNumber() {
@@ -193,12 +193,31 @@ public class Node {
 	}
 
 
-	public int getNodeHeight() {
-		return NodeHeight;
+	public int getNodeDepth() {
+		return NodeDepth;
 	}
 
 
-	public void setNodeHeight(int nodeHeight) {
-		NodeHeight = nodeHeight;
+	public void calculateNodeDepth(int operationID) {
+		if (this.operationID != operationID) {
+			
+			if (this.getClass().equals(InputNode.class)) {
+				NodeDepth = 0;
+				return;
+			}
+
+			int val = 0;
+			int largest = 0;
+			// look through the inputNodes and for every node
+			// get the node depth. then get the largest nodeDepth. if
+			for (Node n : inputNodes) {
+				n.calculateNodeDepth(operationID);
+				val = n.getNodeDepth();
+				if(val > largest){
+					largest = val;
+				}
+			}
+			NodeDepth = largest + 10;
+		}
 	}
 }

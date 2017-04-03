@@ -4,6 +4,7 @@ import tech.deef.Tools.StaticGlobals;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -123,10 +124,21 @@ public class Network {
 	public void addNodesToListSorted(List<Node> nodes, int operationID) {
 		List<Node> allNodes = new ArrayList<Node>();
 
+		//add all of the nodes to the list, unsorted. 
 		addNodesToList(allNodes, outputNodes.get(0).getOperationID() + 1);
-		while (nodes.size() < allNodes.size()) {
-			// TODO generate method for grabing nodes in decreasing order.
+		for(Node n: outputNodes){
+			n.calculateNodeDepth(operationID);
 		}
+		
+		Collections.sort(allNodes, new Comparator<Node>() {
+            @Override
+            public int compare(Node lhs, Node rhs) {
+                // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
+                return lhs.getNodeDepth() > rhs.getNodeDepth() ? -1 : (lhs.getNodeDepth() < rhs.getNodeDepth() ) ? 1 : 0;
+            }
+        });
+		
+		nodes.addAll(allNodes);
 	}
 
 
