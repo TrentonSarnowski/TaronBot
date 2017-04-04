@@ -62,10 +62,57 @@ public class Node {
 	/**
 	 * adds a node to the input nodes of this node. //this node will set itself as an output node of Node n //sets weight as weight
 	 */
-	public void addInputNode(Node node, double weight) {
-		inputNodes.add(node);
+	public boolean addInputNode(Node inputNode, double weight) {
+		// TODO make sure that recursion does not occur.
+		
+		if(inputNode.equals(this)){
+			//would recurse and loop.
+			return false;
+		}
+		
+		if (inputNode.getNodeDepth() > this.getNodeDepth()) {
+			// if the node is lower than the net, fail
+			return false;
+		}
+
+		// if the node is on the same level or above, and
+		if (inputNode.getNodeDepth() == this.getNodeDepth()) {
+			// the node fails and recurses
+			if (!recursivePrevention()) {
+				// then fail.
+				return false;
+			}
+		}
+
+		// else add the node as a node.
+		inputNodes.add(inputNode);
 		inputNodeWeights.add(weight);
-		node.addOutputNode(this);
+		inputNode.addOutputNode(this);
+		
+		return true;
+	}
+
+
+	// check the
+	private boolean recursivePrevention() {
+		for (Node inputs : inputNodes) {
+			// if there is a depth of one on the node depth
+			if (inputs.getNodeDepth() == this.getNodeDepth()) {
+				for (Node secondairy : inputs.getInputNodes()) {
+					if (secondairy.getNodeDepth() == this.getNodeDepth()) {
+						return false;
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+
+	// retuns the list of input nodes for reference.
+	private List<Node> getInputNodes() {
+		return inputNodes;
 	}
 
 
@@ -200,7 +247,7 @@ public class Node {
 
 	public void calculateNodeDepth(int operationID) {
 		if (this.operationID != operationID) {
-			
+
 			if (this.getClass().equals(InputNode.class)) {
 				NodeDepth = 0;
 				return;
@@ -213,7 +260,7 @@ public class Node {
 			for (Node n : inputNodes) {
 				n.calculateNodeDepth(operationID);
 				val = n.getNodeDepth();
-				if(val > largest){
+				if (val > largest) {
 					largest = val;
 				}
 			}

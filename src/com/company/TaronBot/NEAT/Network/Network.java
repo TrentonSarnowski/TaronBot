@@ -147,7 +147,7 @@ public class Network {
 	// connesting the nodes.
 
 	public void addNodeLinkage(Node giver, Node reciever, double weight) {
-		// TODO generate method
+		reciever.addInputNode(giver, weight);
 	}
 
 
