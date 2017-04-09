@@ -118,9 +118,13 @@ public class Network {
 	}
 
 
-	// orders all nodes with respect to a top down perspective.
-	// input nodes are given height of 0, and all nodes that all upon oly input nodes
-	// are given height 10, etc.
+	/**
+	 * orders all nodes with respect to a top down perspective.
+	 * input nodes are given height of 0, and all nodes that rely upon only input nodes
+	 * are given height 10, etc.
+	 * 
+	 * 
+	**/
 	public void addNodesToListSorted(List<Node> nodes, int operationID) {
 		List<Node> allNodes = new ArrayList<Node>();
 

@@ -1,22 +1,26 @@
 package com.company.TaronBot.NEAT.Mating;
 
+import java.util.Random;
+
 public class AlterNetworkHelper {
-	private double numberOfNewNodesPercentage;
-	private int minimumNumberOfNewNodes;
-	private int maximumNumberOfNewNodes;
 
 	private double chanceToChangeCurrentInputLinkage;
 	private double chanceToAddLinkagePerNode;
 	private double chanceToRemoveLinkagePerNode;
 
-	private double chanceToReplaceLinkageWithNewNode;
-
 	private double chanceToChangeMutatorValue;
 	private double maximumChangeToMutator;
 	private double maximumIncreaseInMutator;
 	private double maximumDecreaseInMutator;
-
 	private double chanceToReRandomizeMutatorValue;
+
+	private double chanceToReplaceLinkageWithNewNode;
+
+	private double numberOfNewNodesPercentage;
+	private int minimumNumberOfNewNodes;
+	private int maximumNumberOfNewNodes;
+	public Random randomGenerator;
+
 
 	public AlterNetworkHelper() {
 		numberOfNewNodesPercentage = 0.01;
@@ -35,55 +39,70 @@ public class AlterNetworkHelper {
 		maximumDecreaseInMutator = 0.1;
 
 		chanceToReRandomizeMutatorValue = 0.003;
+
+		randomGenerator = new Random();
 	}
+
 
 	public double getNumberOfNewNodesPercentage() {
 		return numberOfNewNodesPercentage;
 	}
 
+
 	public int getMinimumNumberOfNewNodes() {
 		return minimumNumberOfNewNodes;
 	}
+
 
 	public int getMaximumNumberOfNewNodes() {
 		return maximumNumberOfNewNodes;
 	}
 
+
 	public double getChanceToChangeCurrentInputLinkage() {
 		return chanceToChangeCurrentInputLinkage;
 	}
+
 
 	public double getChanceToAddLinkagePerNode() {
 		return chanceToAddLinkagePerNode;
 	}
 
+
 	public double getChanceToRemoveLinkagePerNode() {
 		return chanceToRemoveLinkagePerNode;
 	}
+
 
 	public double getChanceToReplaceLinkageWithNewNode() {
 		return chanceToReplaceLinkageWithNewNode;
 	}
 
+
 	public double getChanceToChangeMutatorValue() {
 		return chanceToChangeMutatorValue;
 	}
+
 
 	public double getMaximumChangeToMutator() {
 		return maximumChangeToMutator;
 	}
 
+
 	public double getMaximumIncreaseInMutator() {
 		return maximumIncreaseInMutator;
 	}
+
 
 	public double getMaximumDecreaseInMutator() {
 		return maximumDecreaseInMutator;
 	}
 
+
 	public double getChanceToReRandomizeMutatorValue() {
 		return chanceToReRandomizeMutatorValue;
 	}
+
 
 	public void setNumberOfNewNodesPercentage(double numberOfNewNodesPercentage) {
 		if ((numberOfNewNodesPercentage <= 1 && numberOfNewNodesPercentage >= 0)) {
@@ -91,11 +110,13 @@ public class AlterNetworkHelper {
 		}
 	}
 
+
 	public void setMinimumNumberOfNewNodes(int minimumNumberOfNewNodes) {
 		if (minimumNumberOfNewNodes > 0 && minimumNumberOfNewNodes < maximumNumberOfNewNodes) {
 			this.minimumNumberOfNewNodes = minimumNumberOfNewNodes;
 		}
 	}
+
 
 	public void setMaximumNumberOfNewNodes(int maximumNumberOfNewNodes) {
 		if (maximumNumberOfNewNodes > minimumNumberOfNewNodes) {
@@ -103,11 +124,13 @@ public class AlterNetworkHelper {
 		}
 	}
 
+
 	public void setChanceToChangeCurrentInputLinkage(double chanceToChangeCurrentInputLinkage) {
 		if (chanceToChangeCurrentInputLinkage <= 1 && chanceToChangeCurrentInputLinkage >= 0) {
 			this.chanceToChangeCurrentInputLinkage = chanceToChangeCurrentInputLinkage;
 		}
 	}
+
 
 	public void setChanceToAddLinkagePerNode(double chanceToAddLinkagePerNode) {
 		if (chanceToAddLinkagePerNode <= 1 && chanceToAddLinkagePerNode >= 0) {
@@ -115,11 +138,13 @@ public class AlterNetworkHelper {
 		}
 	}
 
+
 	public void setChanceToRemoveLinkagePerNode(double chanceToRemoveLinkagePerNode) {
 		if (chanceToRemoveLinkagePerNode <= 1 && chanceToRemoveLinkagePerNode >= 0) {
 			this.chanceToRemoveLinkagePerNode = chanceToRemoveLinkagePerNode;
 		}
 	}
+
 
 	public void setChanceToReplaceLinkageWithNewNode(double chanceToReplaceLinkageWithNewNode) {
 		if (chanceToReplaceLinkageWithNewNode <= 1 && chanceToReplaceLinkageWithNewNode >= 0) {
@@ -127,11 +152,13 @@ public class AlterNetworkHelper {
 		}
 	}
 
+
 	public void setChanceToChangeMutatorValue(double chanceToChangeMutatorValue) {
 		if (chanceToChangeMutatorValue <= 1 && chanceToChangeMutatorValue >= 0) {
 			this.chanceToChangeMutatorValue = chanceToChangeMutatorValue;
 		}
 	}
+
 
 	// overrides increase and decrease in mutators.
 	public void setMaximumChangeToMutator(double maximumChangeToMutator) {
@@ -142,11 +169,13 @@ public class AlterNetworkHelper {
 		}
 	}
 
+
 	public void setMaximumIncreaseInMutator(double maximumIncreaseInMutator) {
 		if (maximumIncreaseInMutator <= 1 && maximumIncreaseInMutator >= 0) {
 			this.maximumIncreaseInMutator = maximumIncreaseInMutator;
 		}
 	}
+
 
 	public void setMaximumDecreaseInMutator(double maximumDecreaseInMutator) {
 		if (maximumDecreaseInMutator <= 1 && maximumDecreaseInMutator >= 0) {
@@ -154,9 +183,22 @@ public class AlterNetworkHelper {
 		}
 	}
 
+
 	public void setChanceToReRandomizeMutatorValue(double chanceToReRandomizeMutatorValue) {
 		if (chanceToReRandomizeMutatorValue <= 1 && chanceToReRandomizeMutatorValue >= 0) {
 			this.chanceToReRandomizeMutatorValue = chanceToReRandomizeMutatorValue;
+		}
+	}
+
+
+	public Random getRandomGenerator() {
+		return randomGenerator;
+	}
+
+
+	public void setRandomGenerator(Random randomGenerator) {
+		if (randomGenerator != null) {
+			this.randomGenerator = randomGenerator;
 		}
 	}
 

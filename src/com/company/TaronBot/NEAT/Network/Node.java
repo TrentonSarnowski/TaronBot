@@ -111,7 +111,7 @@ public class Node {
 
 
 	// retuns the list of input nodes for reference.
-	private List<Node> getInputNodes() {
+	public List<Node> getInputNodes() {
 		return inputNodes;
 	}
 
