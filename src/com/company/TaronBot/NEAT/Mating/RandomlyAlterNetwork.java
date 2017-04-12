@@ -29,35 +29,44 @@ public class RandomlyAlterNetwork {
 			if(node.getClass()!=InputNode.class){
 				for(Node input: node.getInputNodes()){
 					if(helper.getChanceToChangeCurrentInputLinkage() > helper.getRandomGenerator().nextDouble()){
-						//change the linkage
+						//change the linkage to another node
 					}
-					if(helper.getChanceToAddLinkagePerNode() > helper.getRandomGenerator().nextDouble()){
-						//change the linkage
-					}
+					
 					if(helper.getChanceToRemoveLinkagePerNode() > helper.getRandomGenerator().nextDouble()){
-						//change the linkage
+						//remove this linkage
 					}
+				}
+				
+				if(helper.getChanceToAddLinkagePerNode() > helper.getRandomGenerator().nextDouble()){
+					//add a linkage
 				}
 			}
 		}
 		
-		//todolist
-			//Lnkage modification
-				//change current linkage
-				//add linkage
-				//remove linkage
 		
-			//mutator modification
-				//chance to change value
-					//maximum increase
-					//maximun decrease
-				//chance to randomize value
+		//legend
+		// *** fully implemented
+		// ^^^ coding started
+		// ### ready for implementation
+		// @@@ not started
+		
+		//todolist							^^^
+			//Lnkage modification			###
+				//change current linkage	###
+				//add linkage				###
+				//remove linkage			###
+		
+			//mutator modification			@@@
+				//chance to change value	@@@
+					//maximum increase		@@@
+					//maximun decrease		@@@
+				//chance to randomize value	@@@
 	
-			//replace linkage with node
+			//replace linkage with node		@@@
 		
-			//add new node to map randomly
-				//maximum number of new nodes
-				//minimum number of new nodes
+			//add new node to map			@@@
+				//maximum num of new nodes	@@@
+				//minimum num of new nodes	@@@
 		
 		return network;
 
